@@ -1,0 +1,62 @@
+# =============================================
+# AI Interview Platform — .gitignore
+# =============================================
+
+# ---- Environment / Secrets ----
+.env
+.env.local
+.env.*.local
+.env.production
+*.env
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.Python
+*.egg-info/
+dist/
+build/
+*.so
+.pytest_cache/
+.mypy_cache/
+pip_install.log
+
+# ---- ML Models (large binaries — store in cloud storage) ----
+ml/models/saved_models/*.pkl
+ml/models/saved_models/*.joblib
+ml/models/saved_models/*.h5
+ml/models/saved_models/*.pt
+ml/models/saved_models/*.pth
+
+# ---- Node / Next.js ----
+node_modules/
+.next/
+out/
+npm_install.log
+npm_out.log
+node_path.log
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- Test / Coverage ----
+coverage/
+.coverage
+htmlcov/
