@@ -1,6 +1,6 @@
 {
-    "framework": "nextjs",
-    "installCommand": "cd frontend && npm install",
-    "buildCommand": "cd frontend && npm run build",
-    "outputDirectory": "frontend/.next"
+  "framework": "nextjs",
+  "installCommand": "cd frontend && npm install",
+  "buildCommand": "cd frontend && npm run build && node -e \"const fs=require('fs'); fs.cpSync('.next', '../.next', {recursive: true});\"",
+  "outputDirectory": "frontend/.next"
 }
