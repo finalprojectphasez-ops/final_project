@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { safeSessionStorage } from "@/lib/storage";
 
 const BACKEND = "http://localhost:8000";
 
@@ -8,7 +10,9 @@ type Message = { role: "ai" | "user"; text: string };
 
 type SessionContext = { role: string; difficulty: string; duration: number; resumeText: string };
 
-export default function InterviewProctorPage({ params }: { params: { id: string } }) {
+export default function InterviewProctorPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id: _id } = React.use(params);
+    const router = useRouter();
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [violations, setViolations] = useState(0);
     const [terminated, setTerminated] = useState(false);
@@ -42,7 +46,7 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
         setAiLoading(true);
         setAiError("");
         try {
-            const raw = sessionStorage.getItem("interviewContext");
+            const raw = safeSessionStorage.getItem("interviewContext");
             const ctx: SessionContext = raw ? JSON.parse(raw) : { role: "Software Engineer", difficulty: "Medium", duration: 30, resumeText: "" };
             setContext(ctx);
             const res = await fetch(`${BACKEND}/api/setup`, {
@@ -62,6 +66,7 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
         }
     }, []);
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { initSession(); }, [initSession]);
 
     // Auto-scroll chat
@@ -127,17 +132,22 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
                 analyserRef.current = analyser;
 
                 const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                const draw = () => {
+                let lastBarUpdate = 0;
+                const draw = (timestamp: number) => {
                     analyser.getByteFrequencyData(dataArray);
-                    const newBars = Array.from({ length: 40 }, (_, i) => {
-                        const idx = Math.floor((i / 40) * dataArray.length);
-                        return Math.max(4, (dataArray[idx] / 255) * 100);
-                    });
-                    setBars(newBars);
+                    // Throttle state updates to ~15 FPS to avoid re-render loop
+                    if (timestamp - lastBarUpdate > 66) {
+                        lastBarUpdate = timestamp;
+                        const newBars = Array.from({ length: 40 }, (_, i) => {
+                            const idx = Math.floor((i / 40) * dataArray.length);
+                            return Math.max(4, (dataArray[idx] / 255) * 100);
+                        });
+                        setBars(newBars);
+                    }
                     animFrameRef.current = requestAnimationFrame(draw);
                 };
-                draw();
-            } catch (err) {
+                requestAnimationFrame(draw);
+            } catch {
                 setCamError("Camera/mic permission denied. Please allow access and refresh.");
             }
         }
@@ -191,7 +201,7 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
             document.removeEventListener("fullscreenchange", handleFullscreenChange);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, []);
 
     const requestFullscreen = async () => {
@@ -309,10 +319,16 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
                                 <span className="text-5xl">🚫</span>
                             </div>
                         )}
-                        {/* Emotion badges */}
+                        {/* Live status badges */}
                         <div className="absolute inset-x-0 top-0 p-3 flex justify-between">
-                            <span className="px-2 py-1 bg-black/60 backdrop-blur rounded text-green-400 text-xs">Eye Contact: 88%</span>
-                            <span className="px-2 py-1 bg-black/60 backdrop-blur rounded text-blue-400 text-xs">Stress: Low</span>
+                            <span className={`px-2.5 py-1 bg-black/70 backdrop-blur rounded-md text-xs font-medium flex items-center gap-1.5 ${camOn ? "text-emerald-400" : "text-zinc-500"}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${camOn ? "bg-emerald-400 animate-pulse" : "bg-zinc-600"}`} />
+                                {camOn ? "Camera Active" : "Camera Muted"}
+                            </span>
+                            <span className={`px-2.5 py-1 bg-black/70 backdrop-blur rounded-md text-xs font-medium flex items-center gap-1.5 ${micOn ? "text-blue-400" : "text-amber-400"}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${micOn ? "bg-blue-400 animate-pulse" : "bg-amber-400"}`} />
+                                {micOn ? "Audio Listening" : "Mic Muted"}
+                            </span>
                         </div>
                         {/* Controls */}
                         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
@@ -327,21 +343,58 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
 
                     {/* Proctor Intelligence */}
                     <div className="flex-1 glass-panel rounded-2xl p-6 overflow-y-auto">
-                        <h3 className="font-bold text-white mb-4">Proctor Intelligence</h3>
-                        <ul className="space-y-4">
-                            <li className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm text-zinc-300">
-                                <span className="text-yellow-400 font-semibold block mb-1">Pacing Check</span>
-                                You are speaking slightly fast (140 WPM). Slow down.
-                            </li>
-                            <li className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm text-zinc-300">
-                                <span className="text-blue-400 font-semibold block mb-1">Current Focus</span>
-                                Software Architecture & Scale
-                            </li>
-                            <li className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm text-zinc-300">
-                                <span className="text-green-400 font-semibold block mb-1">Eye Contact</span>
-                                Maintain eye contact with the camera, not the screen.
-                            </li>
-                        </ul>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-bold text-white text-base">Proctor Intelligence</h3>
+                            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                                Active Guard
+                            </span>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm">
+                                <span className="text-zinc-400 text-xs block mb-1 uppercase tracking-wider font-semibold">Session Target</span>
+                                <div className="text-white font-medium flex items-center gap-2">
+                                    <span>{context.role || "Software Engineer"}</span>
+                                    <span className="text-xs px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
+                                        {context.difficulty || "Medium"}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-zinc-500 mt-1">Allocated Duration: {context.duration || 30} mins</p>
+                            </div>
+
+                            <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm">
+                                <span className="text-zinc-400 text-xs block mb-1 uppercase tracking-wider font-semibold">Integrity Monitor</span>
+                                <div className="flex items-center justify-between text-xs mt-1.5">
+                                    <span className="text-zinc-400">Security Violations:</span>
+                                    <span className={`font-bold ${violations > 0 ? "text-amber-400" : "text-emerald-400"}`}>
+                                        {violations} / {MAX_VIOLATIONS}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs mt-1">
+                                    <span className="text-zinc-400">Fullscreen Lock:</span>
+                                    <span className="text-emerald-400 font-medium">Enforced</span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs mt-1">
+                                    <span className="text-zinc-400">Tab Switch Guard:</span>
+                                    <span className="text-emerald-400 font-medium">Monitoring</span>
+                                </div>
+                            </div>
+
+                            <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm">
+                                <span className="text-zinc-400 text-xs block mb-1 uppercase tracking-wider font-semibold">Live Device Stream</span>
+                                <div className="flex items-center justify-between text-xs mt-1.5">
+                                    <span className="text-zinc-400">Video Capture:</span>
+                                    <span className={camOn ? "text-emerald-400 font-medium" : "text-zinc-500"}>
+                                        {camOn ? "Connected" : "Paused"}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs mt-1">
+                                    <span className="text-zinc-400">Audio Stream:</span>
+                                    <span className={micOn ? "text-blue-400 font-medium" : "text-amber-400 font-medium"}>
+                                        {micOn ? "Streaming" : "Muted"}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -443,7 +496,7 @@ export default function InterviewProctorPage({ params }: { params: { id: string 
                                     Send
                                 </button>
                                 <button
-                                    onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); window.location.href = "/dashboard"; }}
+                                    onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); router.push("/dashboard"); }}
                                     className="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 font-medium transition-all text-xs"
                                 >
                                     End

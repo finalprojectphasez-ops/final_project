@@ -5,7 +5,7 @@ import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 
 export default function ReportPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = React.use(params);
+    const { id: _id } = React.use(params);
     const skills = [
         { label: "Technical Depth", score: 85, color: "bg-blue-500" },
         { label: "Communication", score: 80, color: "bg-purple-500" },

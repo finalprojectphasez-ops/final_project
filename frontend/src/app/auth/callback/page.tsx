@@ -1,23 +1,26 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 export default function AuthCallbackPage() {
+    const router = useRouter();
+
     useEffect(() => {
         // Supabase automatically handles the token from the URL hash
         // Just redirect to dashboard after auth is confirmed
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
-                window.location.href = "/dashboard";
+                router.push("/dashboard");
             } else {
                 // Wait a moment for Supabase to process the OAuth code
                 setTimeout(() => {
-                    window.location.href = "/dashboard";
+                    router.push("/dashboard");
                 }, 2000);
             }
         });
-    }, []);
+    }, [router]);
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center">

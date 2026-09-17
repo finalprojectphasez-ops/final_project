@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 const NavIcons = {
@@ -60,9 +61,11 @@ export default function Sidebar({ active }: { active: "dashboard" | "interview" 
         });
     }, []);
 
+    const router = useRouter();
+
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        window.location.href = "/auth/login";
+        router.push("/auth/login");
     };
 
     return (

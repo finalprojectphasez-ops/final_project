@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+    const router = useRouter();
     const [form, setForm] = useState({ email: "", password: "" });
     const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
@@ -31,7 +33,7 @@ export default function LoginPage() {
             password: form.password,
         });
         if (error) setError(error.message);
-        else window.location.href = "/dashboard";
+        else router.push("/dashboard");
         setLoading(false);
     };
 

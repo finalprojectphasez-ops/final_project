@@ -184,6 +184,129 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing */}
+      <section id="pricing" className="px-6 pb-28 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs font-semibold uppercase tracking-widest text-primary/80 mb-4 px-3 py-1 rounded-full border border-primary/20 bg-primary/5">
+              Simple & Transparent
+            </span>
+            <h2 className="text-4xl font-bold text-white mb-4">Invest in Your Dream Job</h2>
+            <p className="text-zinc-400 max-w-xl mx-auto">
+              Start practicing for free. Upgrade whenever you need unlimited practice and deep emotional insights.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            {/* Free Tier */}
+            <div className="glass-panel rounded-2xl p-8 border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">Starter</h3>
+                <p className="text-xs text-zinc-400 mb-6">Perfect for trying out the platform</p>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-4xl font-extrabold text-white">$0</span>
+                  <span className="text-sm text-zinc-400">/ forever</span>
+                </div>
+                <ul className="space-y-3 text-sm text-zinc-300 mb-8">
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    3 Full AI Mock Interviews
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Resume PDF Parsing
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Basic Performance Summary
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Anti-Cheat Proctoring Check
+                  </li>
+                </ul>
+              </div>
+              <Link href="/auth/signup" className="w-full text-center py-3 px-4 rounded-xl border border-white/10 hover:bg-white/5 text-white text-sm font-semibold transition-all">
+                Get Started Free
+              </Link>
+            </div>
+
+            {/* Pro Tier (Popular) */}
+            <div className="glass-panel rounded-2xl p-8 border-2 border-primary relative flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.2)] hover:shadow-[0_0_60px_rgba(168,85,247,0.3)] transition-all">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[11px] font-bold uppercase tracking-wider py-1 px-4 rounded-full shadow-lg">
+                Most Popular
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">Candidate Pro</h3>
+                <p className="text-xs text-zinc-400 mb-6">For active job seekers who want to ace interviews</p>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-4xl font-extrabold text-white">$19</span>
+                  <span className="text-sm text-zinc-400">/ month</span>
+                </div>
+                <ul className="space-y-3 text-sm text-zinc-200 mb-8">
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    <strong className="text-white font-semibold">Unlimited</strong> AI Mock Interviews
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Real-Time Emotional & Eye Tracking
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Dynamic Adaptive Follow-up Questions
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Comprehensive Radar Skill Analysis
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Full Historical Trends & PDF Export
+                  </li>
+                </ul>
+              </div>
+              <Link href="/auth/signup" className="w-full text-center py-3.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+                Upgrade to Pro
+              </Link>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="glass-panel rounded-2xl p-8 border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">Campus & Team</h3>
+                <p className="text-xs text-zinc-400 mb-6">For universities, bootcamps & recruiting teams</p>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-4xl font-extrabold text-white">$99</span>
+                  <span className="text-sm text-zinc-400">/ month</span>
+                </div>
+                <ul className="space-y-3 text-sm text-zinc-300 mb-8">
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Multi-Seat Student/Team Accounts
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Custom Rubrics & Questions
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Faculty Analytics Dashboard
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    Full Integrity & Anti-Cheat Logs
+                  </li>
+                </ul>
+              </div>
+              <a href="mailto:contact@premock.ai" className="w-full text-center py-3 px-4 rounded-xl border border-white/10 hover:bg-white/5 text-white text-sm font-semibold transition-all">
+                Contact Sales
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="px-6 pb-28">
         <div className="max-w-3xl mx-auto text-center glass-panel rounded-3xl p-14 border border-primary/20 relative overflow-hidden">

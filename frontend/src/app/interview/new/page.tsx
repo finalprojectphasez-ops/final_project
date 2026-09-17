@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { safeSessionStorage } from "@/lib/storage";
 
 const roles = [
     { label: "Full Stack Engineer", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" /></svg> },
@@ -63,10 +64,10 @@ export default function NewInterviewPage() {
             }
         }
         // Save session context so the interview page can pick it up
-        sessionStorage.setItem("interviewContext", JSON.stringify({
+        safeSessionStorage.setItem("interviewContext", JSON.stringify({
             role,
             difficulty,
-            duration,
+            duration: parseInt(duration, 10),
             resumeText: resumeText.slice(0, 3000),
         }));
         const sessionId = "session-" + Date.now();
@@ -305,7 +306,7 @@ export default function NewInterviewPage() {
                             <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 flex gap-3">
                                 <svg className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                                 <p className="text-amber-300/80 text-xs leading-relaxed">
-                                    Session will be <strong className="text-amber-300">fullscreen locked</strong>. Tab switching, focus loss, and camera/mic refusals are logged as violations. <strong className="text-amber-300">3 violations terminate the session.</strong>
+                                    Session will be <strong className="text-amber-300">fullscreen locked</strong>. Tab switching, focus loss, and camera/mic refusals are logged as violations. <strong className="text-amber-300">4 violations terminate the session.</strong>
                                 </p>
                             </div>
 

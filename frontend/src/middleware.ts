@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Supabase middleware placeholder - auth will be wired up after npm install
-export async function middleware(request: NextRequest) {
+export async function middleware(_request: NextRequest) {
     return NextResponse.next()
 }
 
