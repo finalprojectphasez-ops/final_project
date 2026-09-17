@@ -2,18 +2,13 @@ import os
 import re
 import logging
 from openai import AsyncOpenAI
-from pydantic import BaseModel
 from typing import List, Dict, Optional
+from app.models.schemas import InterviewContext
+from app.config import settings
 
 logger = logging.getLogger("uvicorn.error")
 
-openai_api_key = os.getenv("OPENAI_API_KEY")
-client = AsyncOpenAI(api_key=openai_api_key) if openai_api_key else None
-
-class InterviewContext(BaseModel):
-    role: str
-    difficulty: str
-    resume_text: str
+client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
 
 # Standard curated question tracks by role & difficulty
 ROLE_QUESTION_BANKS = {
@@ -201,7 +196,7 @@ Rules:
             self.history.append({"role": "user", "content": user_answer})
 
         # 1. Try OpenAI if API key is provided
-        if client and openai_api_key:
+        if client and settings.OPENAI_API_KEY:
             try:
                 response = await client.chat.completions.create(
                     model="gpt-4o",
@@ -278,4 +273,3 @@ Rules:
             "problem_solving": 86,
             "feedback": "Strong structured thinking and clear explanations across core engineering principles."
         }
-

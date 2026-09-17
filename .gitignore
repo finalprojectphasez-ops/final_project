@@ -1,5 +1,5 @@
 # =============================================
-# AI Interview Platform — .gitignore
+# PreMock AI — .gitignore (Consolidated)
 # =============================================
 
 # ---- Environment / Secrets ----
@@ -8,6 +8,7 @@
 .env.*.local
 .env.production
 *.env
+!.env.example
 
 # ---- Python ----
 __pycache__/
@@ -25,13 +26,6 @@ build/
 .pytest_cache/
 .mypy_cache/
 pip_install.log
-
-# ---- ML Models (large binaries — store in cloud storage) ----
-ml/models/saved_models/*.pkl
-ml/models/saved_models/*.joblib
-ml/models/saved_models/*.h5
-ml/models/saved_models/*.pt
-ml/models/saved_models/*.pth
 
 # ---- Node / Next.js ----
 node_modules/
@@ -56,10 +50,13 @@ desktop.ini
 *.swp
 *.swo
 
-# ---- Scripts with credentials ----
-push_now.bat
-
 # ---- Test / Coverage ----
 coverage/
 .coverage
 htmlcov/
+
+# ---- Scripts with credentials ----
+push_now.bat
+
+# ---- Build artifacts ----
+*.tsbuildinfo

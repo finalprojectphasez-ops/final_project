@@ -1,19 +1,10 @@
 import uuid
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel
-from services.llm_engine import LLMEngine, InterviewContext
-from services.audio_parser import AudioStreamParser
+from app.models.schemas import SetupRequest, AnswerRequest, InterviewContext
+from app.services.llm_engine import LLMEngine
+from app.services.audio_parser import AudioStreamParser
 
 router = APIRouter()
-
-class SetupRequest(BaseModel):
-    role: str
-    difficulty: str
-    resume_text: str
-
-class AnswerRequest(BaseModel):
-    session_id: str
-    answer: str
 
 # In-memory store for active sessions
 active_sessions = {}

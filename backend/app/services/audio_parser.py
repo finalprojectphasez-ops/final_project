@@ -1,4 +1,3 @@
-import os
 import asyncio
 from deepgram import (
     DeepgramClient,
@@ -6,12 +5,12 @@ from deepgram import (
     LiveTranscriptionEvents,
     LiveOptions,
 )
+from app.config import settings
 
 class AudioStreamParser:
     def __init__(self, client_ws):
         self.client_ws = client_ws    # FastAPI websocket to user browser
-        API_KEY = os.getenv("DEEPGRAM_API_KEY")
-        self.deepgram = DeepgramClient(API_KEY)
+        self.deepgram = DeepgramClient(settings.DEEPGRAM_API_KEY)
         self.dg_connection = self.deepgram.listen.websocket.v("1")
 
     async def start_listening(self):
