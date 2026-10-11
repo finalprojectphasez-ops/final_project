@@ -25,7 +25,7 @@ PreMock AI is a full-stack interview preparation platform that simulates realist
 | **Frontend** | Next.js 16, React 19, TypeScript, TailwindCSS |
 | **Backend** | Python 3.11+, FastAPI, Uvicorn |
 | **AI Engine** | OpenAI GPT-4o (with fallback question banks) |
-| **Speech** | Deepgram Nova-2 (real-time transcription) |
+| **Speech** | Local Whisper ASR Sidecar (Fine-Tuned) |
 | **Auth** | Supabase Auth (Google OAuth + Email) |
 | **Storage** | Supabase Storage (resume PDFs) |
 | **Deployment** | Vercel (frontend), Railway/Render (backend) |

@@ -9,11 +9,13 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", "..", "fro
 class Settings:
     """Centralized application settings loaded from environment variables."""
 
-    # OpenAI
+    # LLM (OpenAI / Groq)
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 
-    # Deepgram
-    DEEPGRAM_API_KEY: str = os.getenv("DEEPGRAM_API_KEY", "")
+    # OpenRouter
+    OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
+    OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "google/gemma-4-26b-a4b-it:free")
 
     # Supabase
     SUPABASE_URL: str = os.getenv("NEXT_PUBLIC_SUPABASE_URL", "")

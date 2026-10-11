@@ -44,32 +44,51 @@ export default function NewInterviewPage() {
     const [difficulty, setDifficulty] = useState("Medium");
     const [duration, setDuration] = useState("30 min");
     const [fileName, setFileName] = useState("");
+    const [file, setFile] = useState<File | null>(null);
     const [dragOver, setDragOver] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleFile = (file: File | null | undefined) => {
-        if (file && file.name.endsWith(".pdf")) setFileName(file.name);
+    const handleFile = (selectedFile: File | null | undefined) => {
+        if (selectedFile && selectedFile.name.endsWith(".pdf")) {
+            setFileName(selectedFile.name);
+            setFile(selectedFile);
+        }
     };
 
     const handleStart = async () => {
         setLoading(true);
-        // Read the PDF as base64 text for the backend
         let resumeText = "";
-        const inputEl = fileRef.current;
-        if (inputEl?.files?.[0]) {
+        
+        if (file) {
             try {
-                resumeText = await inputEl.files[0].text();
-            } catch {
-                resumeText = fileName; // fallback to filename only
+                const formData = new FormData();
+                formData.append("file", file);
+                
+                const res = await fetch("http://localhost:8000/api/resume/upload", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (!res.ok) {
+                    throw new Error("Failed to upload and parse PDF");
+                }
+                
+                const data = await res.json();
+                resumeText = data.text;
+            } catch (err) {
+                console.error("Resume upload error:", err);
+                resumeText = fileName; // fallback
             }
         }
+        
         // Save session context so the interview page can pick it up
         safeSessionStorage.setItem("interviewContext", JSON.stringify({
             role,
             difficulty,
             duration: parseInt(duration, 10),
-            resumeText: resumeText.slice(0, 3000),
+            resumeText: resumeText, // Do not slice, we need the full text for LLM
         }));
+        
         const sessionId = "session-" + Date.now();
         router.push("/interview/" + sessionId);
     };
@@ -212,7 +231,7 @@ export default function NewInterviewPage() {
                                             </div>
                                             <p className="text-white font-medium text-sm">{fileName}</p>
                                             <p className="text-emerald-400 text-xs mt-1">✓ Ready to parse</p>
-                                            <button onClick={e => { e.stopPropagation(); setFileName(""); }} className="mt-3 text-xs text-zinc-600 hover:text-red-400 transition-colors">Remove</button>
+                                            <button onClick={e => { e.stopPropagation(); setFileName(""); setFile(null); }} className="mt-3 text-xs text-zinc-600 hover:text-red-400 transition-colors">Remove</button>
                                         </>
                                     ) : (
                                         <>
@@ -240,19 +259,12 @@ export default function NewInterviewPage() {
                                 <button onClick={() => setStep(1)} className="py-3 px-5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium">
                                     ← Back
                                 </button>
-                                <button
+                            <button
                                     onClick={() => setStep(3)}
-                                    disabled={!fileName}
-                                    className="flex-1 py-3 bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                                    className="flex-1 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-all text-sm flex items-center justify-center gap-2"
                                 >
-                                    {fileName ? (
-                                        <>
-                                            Continue to Review
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                                        </>
-                                    ) : (
-                                        "Upload a PDF to continue"
-                                    )}
+                                    Continue to Review
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                                 </button>
                             </div>
                         </div>

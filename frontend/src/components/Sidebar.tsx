@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 const NavIcons = {
@@ -36,17 +36,17 @@ const NavIcons = {
     ),
 };
 
-const navItems = [
-    { key: "dashboard", label: "Dashboard", href: "/dashboard", icon: NavIcons.dashboard },
-    { key: "interview", label: "New Interview", href: "/interview/new", icon: NavIcons.interview },
-    { key: "reports", label: "Reports", href: "/report/1", icon: NavIcons.reports },
-    { key: "profile", label: "Profile", href: "/profile", icon: NavIcons.profile },
-];
-
 export default function Sidebar({ active }: { active: "dashboard" | "interview" | "reports" | "profile" }) {
     const [collapsed, setCollapsed] = useState(false);
     const [userName, setUserName] = useState("User");
     const [userEmail, setUserEmail] = useState("");
+    const pathname = usePathname();
+    const isOnInterviewPage = pathname?.startsWith("/interview");
+    const [interviewOpen, setInterviewOpen] = useState(!!isOnInterviewPage);
+
+    useEffect(() => {
+        if (isOnInterviewPage) setInterviewOpen(true);
+    }, [isOnInterviewPage]);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data }) => {
@@ -67,6 +67,8 @@ export default function Sidebar({ active }: { active: "dashboard" | "interview" 
         await supabase.auth.signOut();
         router.push("/auth/login");
     };
+
+    const isInterviewActive = active === "interview";
 
     return (
         <>
@@ -103,28 +105,119 @@ export default function Sidebar({ active }: { active: "dashboard" | "interview" 
 
                 {/* Nav */}
                 <nav className="flex flex-col gap-1 flex-1 p-3 pt-4">
-                    {navItems.map((item) => {
-                        const isActive = active === item.key;
-                        return (
-                            <Link
-                                key={item.key}
-                                href={item.href}
-                                title={collapsed ? item.label : undefined}
-                                className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${collapsed ? "justify-center" : ""
-                                    } ${isActive
-                                        ? "bg-primary/15 text-white border border-primary/25 shadow-[0_0_12px_rgba(109,40,217,0.1)]"
-                                        : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                    {/* Dashboard */}
+                    <Link
+                        href="/dashboard"
+                        title={collapsed ? "Dashboard" : undefined}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${collapsed ? "justify-center" : ""} ${
+                            active === "dashboard"
+                                ? "bg-primary/15 text-white border border-primary/25 shadow-[0_0_12px_rgba(109,40,217,0.1)]"
+                                : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                        }`}
+                    >
+                        <span className={active === "dashboard" ? "text-primary" : "text-zinc-500"}>
+                            {NavIcons.dashboard}
+                        </span>
+                        {!collapsed && <span className="truncate transition-all duration-200">Dashboard</span>}
+                    </Link>
+
+                    {/* Interview (expandable) */}
+                    <div>
+                        <button
+                            onClick={() => {
+                                if (collapsed) {
+                                    router.push("/interview/new");
+                                } else {
+                                    setInterviewOpen(v => !v);
+                                }
+                            }}
+                            title={collapsed ? "Interview" : undefined}
+                            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${collapsed ? "justify-center" : ""} ${
+                                isInterviewActive
+                                    ? "bg-primary/15 text-white border border-primary/25 shadow-[0_0_12px_rgba(109,40,217,0.1)]"
+                                    : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                            }`}
+                        >
+                            <span className={isInterviewActive ? "text-primary" : "text-zinc-500"}>
+                                {NavIcons.interview}
+                            </span>
+                            {!collapsed && (
+                                <>
+                                    <span className="truncate transition-all duration-200 flex-1 text-left">Interview</span>
+                                    <svg
+                                        className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${interviewOpen ? "rotate-180" : ""} ${isInterviewActive ? "text-primary" : "text-zinc-600"}`}
+                                        fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </>
+                            )}
+                        </button>
+
+                        {/* Submenu */}
+                        {!collapsed && interviewOpen && (
+                            <div className="mt-1 ml-4 pl-3 border-l border-white/10 flex flex-col gap-0.5">
+                                <Link
+                                    href="/interview/new"
+                                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                                        pathname === "/interview/new"
+                                            ? "text-white bg-primary/10 border border-primary/20"
+                                            : "text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent"
                                     }`}
-                            >
-                                <span className={isActive ? "text-primary" : "text-zinc-500"}>
-                                    {item.icon}
-                                </span>
-                                {!collapsed && (
-                                    <span className="truncate transition-all duration-200">{item.label}</span>
-                                )}
-                            </Link>
-                        );
-                    })}
+                                >
+                                    <svg className={`w-3.5 h-3.5 shrink-0 ${pathname === "/interview/new" ? "text-primary" : "text-zinc-600"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    New Interview
+                                </Link>
+                                <Link
+                                    href="/interview/take"
+                                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                                        pathname === "/interview/take"
+                                            ? "text-white bg-primary/10 border border-primary/20"
+                                            : "text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent"
+                                    }`}
+                                >
+                                    <svg className={`w-3.5 h-3.5 shrink-0 ${pathname === "/interview/take" ? "text-primary" : "text-zinc-600"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
+                                    </svg>
+                                    Take Interview
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Reports */}
+                    <Link
+                        href="/dashboard"
+                        title={collapsed ? "Reports" : undefined}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${collapsed ? "justify-center" : ""} ${
+                            active === "reports"
+                                ? "bg-primary/15 text-white border border-primary/25 shadow-[0_0_12px_rgba(109,40,217,0.1)]"
+                                : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                        }`}
+                    >
+                        <span className={active === "reports" ? "text-primary" : "text-zinc-500"}>
+                            {NavIcons.reports}
+                        </span>
+                        {!collapsed && <span className="truncate transition-all duration-200">Reports</span>}
+                    </Link>
+
+                    {/* Profile */}
+                    <Link
+                        href="/profile"
+                        title={collapsed ? "Profile" : undefined}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${collapsed ? "justify-center" : ""} ${
+                            active === "profile"
+                                ? "bg-primary/15 text-white border border-primary/25 shadow-[0_0_12px_rgba(109,40,217,0.1)]"
+                                : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                        }`}
+                    >
+                        <span className={active === "profile" ? "text-primary" : "text-zinc-500"}>
+                            {NavIcons.profile}
+                        </span>
+                        {!collapsed && <span className="truncate transition-all duration-200">Profile</span>}
+                    </Link>
                 </nav>
 
                 {/* Footer */}

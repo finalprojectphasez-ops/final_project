@@ -3,12 +3,14 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { safeSessionStorage } from "@/lib/storage";
+import { supabase } from "@/lib/supabase/client";
 
 const BACKEND = "http://localhost:8000";
 
 type Message = { role: "ai" | "user"; text: string };
 
 type SessionContext = { role: string; difficulty: string; duration: number; resumeText: string };
+
 
 export default function InterviewProctorPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: _id } = React.use(params);
@@ -21,6 +23,9 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     const [camOn, setCamOn] = useState(true);
     const [camError, setCamError] = useState("");
     const [bars, setBars] = useState<number[]>(Array(40).fill(4));
+    
+    // Warning state
+    const [activeWarning, setActiveWarning] = useState<string | null>(null);
 
     // --- AI Q&A state ---
     const [messages, setMessages] = useState<Message[]>([]);
@@ -29,8 +34,54 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     const [aiLoading, setAiLoading] = useState(true);
     const [aiError, setAiError] = useState("");
     const [userInput, setUserInput] = useState("");
+    const [provisionalText, setProvisionalText] = useState("");
+    const recordingIdRef = useRef<number>(0);
     const [submitting, setSubmitting] = useState(false);
+    const [isEvaluating, setIsEvaluating] = useState(false);
     const chatEndRef = useRef<HTMLDivElement>(null);
+
+    // FIX: Speech synthesis + recognition state
+    const [isSpeaking, setIsSpeaking] = useState(false);
+
+    // --- Local Whisper State ---
+    const [isTranscribing, setIsTranscribing] = useState(false);
+    const [isWavRecording, setIsWavRecording] = useState(false);
+    const audioContextRef = useRef<AudioContext | null>(null);
+    const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
+    const audioChunksRef = useRef<Float32Array[]>([]);
+    const allAudioChunksRef = useRef<Float32Array[]>([]);
+    
+    // Streaming refs
+    const chunkIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const uploadQueueRef = useRef<Blob[]>([]);
+    const isUploadingRef = useRef(false);
+    const activeChunkAbortRef = useRef<AbortController | null>(null);
+
+    const mergeTranscripts = (existing: string, next: string) => {
+        if (!existing) return next.trim();
+        if (!next) return existing;
+        
+        const w1 = existing.trim().split(/\s+/);
+        const w2 = next.trim().split(/\s+/);
+        
+        let overlap = 0;
+        for (let i = 1; i <= Math.min(w1.length, w2.length, 4); i++) {
+            const endW1 = w1.slice(-i).join(" ").toLowerCase().replace(/[^a-z]/g, '');
+            const startW2 = w2.slice(0, i).join(" ").toLowerCase().replace(/[^a-z]/g, '');
+            if (endW1 === startW2 && endW1.length > 0) {
+                overlap = i;
+            }
+        }
+        
+        if (overlap > 0) {
+            return existing.trim() + " " + w2.slice(overlap).join(" ");
+        }
+        return existing.trim() + " " + next.trim();
+    };
+
+
+    // Timer state
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
     const MAX_VIOLATIONS = 4;
 
@@ -40,8 +91,432 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     const animFrameRef = useRef<number>(0);
     const lastViolationTime = useRef<number>(0);
     const violationCountRef = useRef<number>(0);
+    const emotionPredictionsRef = useRef<{emotion: string, confidence: number}[]>([]);
+    const facePresentRef = useRef<{facePresent: boolean}[]>([]);
+    const eyeContactPredictionsRef = useRef<{lookingAtCamera: boolean}[]>([]);
 
-    // --- Load session context + call /api/setup ---
+    // Warning counters
+    const consecutiveNoFace = useRef(0);
+    const consecutiveNoEyeContact = useRef(0);
+    const noFaceViolationCounted = useRef(false);
+    const multipleFaceViolationCounted = useRef(false);
+    const eyeContactViolationCounted = useRef(false);
+    const eyeContactViolationsRef = useRef(0);
+    const faceDetectionViolationsRef = useRef(0);
+    const answerEvaluationsRef = useRef<any[]>([]);
+    const currentQuestionRef = useRef("");
+
+    // -----------------------------------------------------------------------
+    // FIX: Speech Synthesis — speak text aloud using browser TTS
+    // -----------------------------------------------------------------------
+    const speakText = useCallback((text: string) => {
+        if (typeof window === "undefined" || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        utterance.lang = "en-US";
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+        // Prefer an English voice if available
+        const loadAndSpeak = () => {
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v => v.lang.startsWith("en") && /female|woman|samantha|karen|victoria|zira/i.test(v.name)) ||
+                voices.find(v => v.lang.startsWith("en"));
+            if (preferred) utterance.voice = preferred;
+            window.speechSynthesis.speak(utterance);
+        };
+        // Voices may not be loaded yet on first call
+        if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = loadAndSpeak;
+        } else {
+            loadAndSpeak();
+        }
+    }, []);
+
+    // -----------------------------------------------------------------------
+    // FIX: Local Whisper WAV Recording & Encoding
+    // -----------------------------------------------------------------------
+    const encodeWAV = (samples: Float32Array, sampleRate: number) => {
+        const buffer = new ArrayBuffer(44 + samples.length * 2);
+        const view = new DataView(buffer);
+        
+        const writeString = (view: DataView, offset: number, string: string) => {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        };
+        
+        writeString(view, 0, 'RIFF');
+        view.setUint32(4, 36 + samples.length * 2, true);
+        writeString(view, 8, 'WAVE');
+        writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeString(view, 36, 'data');
+        view.setUint32(40, samples.length * 2, true);
+        
+        let offset = 44;
+        for (let i = 0; i < samples.length; i++, offset += 2) {
+            let s = Math.max(-1, Math.min(1, samples[i]));
+            view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        }
+        
+        return new Blob([view], { type: 'audio/wav' });
+    };
+
+    const processUploadQueue = async (activeRecordingId: number) => {
+        if (isUploadingRef.current || uploadQueueRef.current.length === 0) return;
+        isUploadingRef.current = true;
+        
+        while (uploadQueueRef.current.length > 0) {
+            // Drop queued slices if recording has stopped or changed session
+            if (recordingIdRef.current !== activeRecordingId) {
+                uploadQueueRef.current = [];
+                break;
+            }
+            
+            const blob = uploadQueueRef.current.shift();
+            if (!blob) continue;
+            
+            const chunkId = Date.now() + Math.floor(Math.random() * 1000);
+            const chunkAbort = new AbortController();
+            activeChunkAbortRef.current = chunkAbort;
+            const chunkTimer = setTimeout(() => chunkAbort.abort(), 15000);
+            
+            try {
+                const formData = new FormData();
+                formData.append("audio", blob, "chunk.wav");
+                console.log(`[Chunk ${chunkId}] Uploading live slice: ${blob.size} bytes`);
+                
+                const res = await fetch(`${BACKEND}/api/speech/transcribe-local`, {
+                    method: "POST",
+                    body: formData,
+                    signal: chunkAbort.signal,
+                });
+                console.log(`[Chunk ${chunkId}] HTTP status ${res.status}`);
+                let data: any = {};
+                try { data = await res.json(); } catch { /* non-JSON body, ignore */ }
+                
+                // Only apply if THIS recording session is still active
+                if (recordingIdRef.current === activeRecordingId) {
+                    if (res.ok && typeof data.text === 'string' && data.text.trim()) {
+                        console.log(`[Chunk ${chunkId}] Whisper text: ${data.text.trim().length} chars`);
+                        setProvisionalText(prev => {
+                            const merged = mergeTranscripts(prev, data.text);
+                            return merged;
+                        });
+                    }
+                } else {
+                    console.log(`[Chunk ${chunkId}] Late chunk response ignored (session ended)`);
+                }
+            } catch (err: any) {
+                if (err?.name === 'AbortError') {
+                    console.log(`[Chunk ${chunkId}] Chunk upload aborted.`);
+                } else {
+                    console.error(`[Chunk ${chunkId}] Live chunk upload error:`, err);
+                }
+            } finally {
+                clearTimeout(chunkTimer);
+                if (activeChunkAbortRef.current === chunkAbort) {
+                    activeChunkAbortRef.current = null;
+                }
+            }
+        }
+        isUploadingRef.current = false;
+    };
+
+    const flushAudioChunks = (sr?: number) => {
+        if (!isWavRecording || recordingIdRef.current === 0) return;
+        const chunks = audioChunksRef.current;
+        if (chunks.length === 0) return;
+        
+        const overlapCount = 2; // ~0.5s overlap
+        audioChunksRef.current = chunks.slice(-overlapCount);
+        
+        const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+        const samples = new Float32Array(totalLength);
+        let offset = 0;
+        for (const chunk of chunks) {
+            samples.set(chunk, offset);
+            offset += chunk.length;
+        }
+        
+        const actualSampleRate = sr || audioContextRef.current?.sampleRate || 16000;
+        const wavBlob = encodeWAV(samples, actualSampleRate);
+        
+        if (uploadQueueRef.current.length < 5) {
+            uploadQueueRef.current.push(wavBlob);
+            processUploadQueue(recordingIdRef.current);
+        }
+    };
+
+    const startWavRecording = useCallback(async () => {
+        // Step 1: Ensure active, live audio track exists in streamRef.current
+        let audioTrack = streamRef.current?.getAudioTracks().find(t => t.readyState === 'live');
+        if (!audioTrack) {
+            try {
+                console.log("[MicDiag] No live audio track found. Requesting new audio stream...");
+                const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioTrack = audioStream.getAudioTracks()[0];
+                if (streamRef.current) {
+                    // Remove any dead/ended audio tracks
+                    streamRef.current.getAudioTracks().forEach(t => {
+                        if (t.readyState === 'ended') streamRef.current?.removeTrack(t);
+                    });
+                    streamRef.current.addTrack(audioTrack);
+                } else {
+                    streamRef.current = audioStream;
+                }
+                setMicOn(true);
+            } catch (err) {
+                console.error("[MicDiag] Microphone acquisition failed:", err);
+                setAiError("Microphone not available. Please allow microphone access.");
+                return;
+            }
+        } else {
+            // Ensure track is enabled
+            audioTrack.enabled = true;
+            setMicOn(true);
+        }
+
+        try {
+            console.log(`[MicDiag] Starting recording. Audio track: readyState=${audioTrack.readyState}, enabled=${audioTrack.enabled}, label=${audioTrack.label}`);
+            
+            const currentRecId = Date.now();
+            recordingIdRef.current = currentRecId;
+            audioChunksRef.current = [];
+            allAudioChunksRef.current = [];
+            uploadQueueRef.current = [];
+            isUploadingRef.current = false;
+            setProvisionalText("");
+            setUserInput(""); // Fresh input for new speech answer
+            
+            // Step 2: Initialize Web Audio pipeline
+            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+            audioContextRef.current = ctx;
+            if (ctx.state === 'suspended') {
+                console.log("[MicDiag] AudioContext is suspended. Resuming...");
+                await ctx.resume();
+            }
+            console.log(`[MicDiag] AudioContext active: sampleRate=${ctx.sampleRate}Hz, state=${ctx.state}`);
+
+            // Use the actual live audio track
+            const liveStream = new MediaStream([audioTrack]);
+            const source = ctx.createMediaStreamSource(liveStream);
+            const processor = ctx.createScriptProcessor(4096, 1, 1);
+            let chunkCount = 0;
+            
+            processor.onaudioprocess = (e) => {
+                const channelData = e.inputBuffer.getChannelData(0);
+                const chunk = new Float32Array(channelData);
+                audioChunksRef.current.push(chunk);
+                allAudioChunksRef.current.push(chunk);
+                
+                // Diagnostic logging for first chunks and periodically
+                if (chunkCount < 4) {
+                    const sumSq = chunk.reduce((s, x) => s + x * x, 0);
+                    const rms = Math.sqrt(sumSq / chunk.length);
+                    const peak = Math.max(...chunk.map(Math.abs));
+                    const dur = chunk.length / e.inputBuffer.sampleRate;
+                    console.log(`[MicDiag] Live Chunk #${chunkCount}: dur=${dur.toFixed(2)}s, sr=${e.inputBuffer.sampleRate}Hz, rms=${rms.toFixed(4)}, peak=${peak.toFixed(4)}`);
+                    chunkCount++;
+                }
+            };
+            
+            // Connect to muted gain node to prevent speaker feedback loop
+            const muteGain = ctx.createGain();
+            muteGain.gain.value = 0;
+            source.connect(processor);
+            processor.connect(muteGain);
+            muteGain.connect(ctx.destination);
+            scriptProcessorRef.current = processor;
+            
+            setIsWavRecording(true);
+            
+            if (chunkIntervalRef.current) clearInterval(chunkIntervalRef.current);
+            chunkIntervalRef.current = setInterval(() => {
+                flushAudioChunks();
+            }, 3000);
+            
+        } catch (err) {
+            console.error("[MicDiag] startWavRecording error:", err);
+            setAiError("Failed to start audio recording.");
+        }
+    }, []);
+
+    const stopWavRecordingAndTranscribe = useCallback(async () => {
+        const activeRecId = recordingIdRef.current;
+        console.log(`[MicDiag] stopWavRecordingAndTranscribe called. activeRecId=${activeRecId}`);
+        setIsWavRecording(false);
+        
+        // 1. Clear streaming interval immediately
+        if (chunkIntervalRef.current) {
+            clearInterval(chunkIntervalRef.current);
+            chunkIntervalRef.current = null;
+        }
+        
+        // 2. Disconnect processor and audio context
+        const actualSampleRate = audioContextRef.current?.sampleRate || 16000;
+        if (scriptProcessorRef.current) {
+            scriptProcessorRef.current.disconnect();
+            scriptProcessorRef.current = null;
+        }
+        if (audioContextRef.current) {
+            audioContextRef.current.close().catch(() => {});
+            audioContextRef.current = null;
+        }
+        
+        // 3. Mark recording session closed and immediately abort any in-flight chunk upload
+        recordingIdRef.current = 0;
+        uploadQueueRef.current = [];
+        if (activeChunkAbortRef.current) {
+            console.log("[MicDiag] Aborting in-flight chunk upload on stop.");
+            activeChunkAbortRef.current.abort();
+            activeChunkAbortRef.current = null;
+        }
+        
+        // 4. Wait for upload flag to clear (aborted fetch settles in <50ms)
+        if (isUploadingRef.current) {
+            console.log(`[MicDiag] Waiting for in-flight chunk upload to finish...`);
+            const drainStart = Date.now();
+            while (isUploadingRef.current && Date.now() - drainStart < 5000) {
+                await new Promise(r => setTimeout(r, 50));
+            }
+            console.log(`[MicDiag] Chunk drain complete in ${Date.now() - drainStart}ms. isUploading=${isUploadingRef.current}`);
+            isUploadingRef.current = false;
+        }
+        
+        // 5. Finalize complete recording — one single high-quality upload
+        const chunks = allAudioChunksRef.current;
+        const totalSamples = chunks.reduce((acc, c) => acc + c.length, 0);
+        const totalDuration = totalSamples / actualSampleRate;
+        console.log(`[MicDiag] Finalizing: recId=${activeRecId}, chunks=${chunks.length}, samples=${totalSamples}, sr=${actualSampleRate}Hz, dur=${totalDuration.toFixed(2)}s`);
+        
+        if (totalSamples === 0 || totalDuration < 0.5) {
+            const reason = totalSamples === 0
+                ? "No audio was recorded. Please speak before clicking Stop."
+                : `Recording too short (${totalDuration.toFixed(1)}s). Please speak for at least 0.5s.`;
+            console.log(`[MicDiag] ${reason}`);
+            setAiError(reason);
+            setProvisionalText("");
+            setIsTranscribing(false);
+            allAudioChunksRef.current = [];
+            audioChunksRef.current = [];
+            return;
+        }
+
+        setIsTranscribing(true);
+        try {
+            const fullSamples = new Float32Array(totalSamples);
+            let copyOffset = 0;
+            for (const c of chunks) {
+                fullSamples.set(c, copyOffset);
+                copyOffset += c.length;
+            }
+            
+            let sumSq = 0;
+            let peak = 0;
+            for (let i = 0; i < fullSamples.length; i++) {
+                const absSample = Math.abs(fullSamples[i]);
+                sumSq += fullSamples[i] * fullSamples[i];
+                if (absSample > peak) peak = absSample;
+            }
+            const rms = fullSamples.length > 0 ? Math.sqrt(sumSq / fullSamples.length) : 0;
+            console.log(`[MicDiag] Audio stats: rms=${rms.toFixed(4)}, peak=${peak.toFixed(4)}`);
+            
+            const wavBlob = encodeWAV(fullSamples, actualSampleRate);
+            console.log(`[MicDiag] Final WAV: ${wavBlob.size} bytes, ${wavBlob.type}`);
+            
+            const formData = new FormData();
+            formData.append("audio", wavBlob, "full_recording.wav");
+            
+            const finalAbort = new AbortController();
+            const finalTimer = setTimeout(() => finalAbort.abort(), 45000);
+            
+            let res: Response;
+            const t0 = performance.now();
+            try {
+                res = await fetch(`${BACKEND}/api/speech/transcribe-local`, {
+                    method: "POST",
+                    body: formData,
+                    signal: finalAbort.signal,
+                });
+            } finally {
+                clearTimeout(finalTimer);
+            }
+            
+            const elapsed = Math.round(performance.now() - t0);
+            console.log(`[MicDiag] Response: HTTP ${res.status} in ${elapsed}ms`);
+            
+            let data: any = {};
+            try { data = await res.json(); } catch { /* non-JSON error body */ }
+            
+            if (res.ok && typeof data.text === 'string') {
+                const finalTranscript = data.text.trim();
+                const charCount = finalTranscript.length;
+                console.log(`[MicDiag] Final transcript: ${charCount} chars`);
+                setProvisionalText("");
+                setUserInput(finalTranscript);
+                if (!finalTranscript) {
+                    console.warn(`[MicDiag] Whisper returned empty string — no speech detected in audio.`);
+                }
+            } else {
+                const code = data?.code || data?.detail || `HTTP ${res.status}`;
+                console.warn(`[MicDiag] Transcription non-OK: ${code}`, data);
+                setProvisionalText("");
+                if (res.status !== 200) {
+                    setAiError(`Transcription failed (${code}). Please try again.`);
+                }
+            }
+        } catch (err: any) {
+            if (err?.name === 'AbortError') {
+                console.error(`[MicDiag] Final transcription timed out after 45s.`);
+                setAiError("Transcription timed out. The Whisper service may be busy — please try again.");
+            } else {
+                console.error(`[MicDiag] Final transcription error:`, err);
+                setAiError("Transcription failed due to a network error. Please try again.");
+            }
+            setProvisionalText("");
+        } finally {
+            setIsTranscribing(false);
+            allAudioChunksRef.current = [];
+            audioChunksRef.current = [];
+        }
+    }, []);
+
+    const forceStopWavRecording = useCallback(() => {
+        setIsWavRecording(false);
+        if (chunkIntervalRef.current) {
+            clearInterval(chunkIntervalRef.current);
+            chunkIntervalRef.current = null;
+        }
+        if (scriptProcessorRef.current) {
+            scriptProcessorRef.current.disconnect();
+            scriptProcessorRef.current = null;
+        }
+        if (audioContextRef.current) {
+            audioContextRef.current.close().catch(() => {});
+            audioContextRef.current = null;
+        }
+        recordingIdRef.current = 0;
+        uploadQueueRef.current = [];
+        if (activeChunkAbortRef.current) {
+            activeChunkAbortRef.current.abort();
+            activeChunkAbortRef.current = null;
+        }
+        audioChunksRef.current = [];
+        allAudioChunksRef.current = [];
+    }, []);
+
+    // --- Load session context + call /api/interview/generate-question ---
     const initSession = useCallback(async () => {
         setAiLoading(true);
         setAiError("");
@@ -49,53 +524,300 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             const raw = safeSessionStorage.getItem("interviewContext");
             const ctx: SessionContext = raw ? JSON.parse(raw) : { role: "Software Engineer", difficulty: "Medium", duration: 30, resumeText: "" };
             setContext(ctx);
-            const res = await fetch(`${BACKEND}/api/setup`, {
+            setTimeLeft(ctx.duration * 60);
+            setSessionId(_id);
+            const res = await fetch(`${BACKEND}/api/interview/generate-question`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ role: ctx.role, difficulty: ctx.difficulty, resume_text: ctx.resumeText }),
+                body: JSON.stringify({ job_role: ctx.role, difficulty: ctx.difficulty, resume_text: ctx.resumeText }),
             });
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
             const data = await res.json();
-            setSessionId(data.session_id);
-            setMessages([{ role: "ai", text: data.first_question }]);
+            const firstQuestion = data.question as string;
+            currentQuestionRef.current = firstQuestion;
+            setMessages([{ role: "ai", text: firstQuestion }]);
+            // FIX: Speak the first AI question aloud
+            speakText(firstQuestion);
         } catch (e: unknown) {
             const msg = e instanceof Error ? e.message : String(e);
             setAiError("Could not connect to AI backend. Make sure the Python server is running on port 8000.\n" + msg);
         } finally {
             setAiLoading(false);
         }
-    }, []);
+    }, [speakText, _id]);
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { initSession(); }, [initSession]);
+
+    const endInterview = useCallback(async () => {
+        forceStopWavRecording();
+        if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+        streamRef.current?.getTracks().forEach(t => t.stop());
+        
+        if (!sessionId || !context) {
+            router.push("/dashboard");
+            return;
+        }
+
+        setIsEvaluating(true);
+        try {
+            const evaluations = answerEvaluationsRef.current;
+            const evalCount = Math.max(1, evaluations.length);
+            
+            const overall_score = Math.round(evaluations.reduce((acc, e) => acc + (e.score || 0), 0) / evalCount) || 0;
+            const technical_score = Math.round(evaluations.reduce((acc, e) => acc + (e.technical_depth || 0), 0) / evalCount) || 0;
+            const communication_score = Math.round(evaluations.reduce((acc, e) => acc + (e.clarity || 0), 0) / evalCount) || 0;
+            const answer_relevance = Math.round(evaluations.reduce((acc, e) => acc + (e.relevance || 0), 0) / evalCount) || 0;
+
+            const allStrengths = evaluations.flatMap(e => e.strengths || []);
+            const allWeaknesses = evaluations.flatMap(e => e.improvements || []);
+            const strengths = Array.from(new Set(allStrengths)).slice(0, 5);
+            const weaknesses = Array.from(new Set(allWeaknesses)).slice(0, 5);
+            
+            const improvement_suggestions = weaknesses;
+            const practice_areas = ["System Design", "Communication"].concat(weaknesses.slice(0, 2));
+            const general_feedback = "Interview completed. Evaluated over " + evaluations.length + " questions.";
+            
+            const question_feedback = evaluations.map(e => {
+                let feedbackText = e.evaluation || "";
+                if (!feedbackText && (e.strengths?.length > 0 || e.improvements?.length > 0)) {
+                    const parts = [];
+                    if (e.strengths?.length > 0) parts.push("Strengths: " + e.strengths.join(", "));
+                    if (e.improvements?.length > 0) parts.push("Improvements: " + e.improvements.join(", "));
+                    feedbackText = parts.join(". ") + ".";
+                }
+                
+                return {
+                    question: e.question || "",
+                    answer: e.answer || "",
+                    score: e.score ?? null,
+                    feedback: feedbackText,
+                    strengths: e.strengths || [],
+                    improvements: e.improvements || [],
+                    relevance: e.relevance ?? null,
+                    technical_depth: e.technical_depth ?? null,
+                    clarity: e.clarity ?? null,
+                    completeness: e.completeness ?? null,
+                    follow_up_needed: !!e.follow_up_needed,
+                    follow_up_question: e.follow_up_question || ""
+                };
+            });
+
+            const evaluation = {
+                overall_score,
+                technical_score,
+                communication_score,
+                answer_relevance,
+                strengths,
+                weaknesses,
+                improvement_suggestions,
+                practice_areas,
+                general_feedback,
+                question_feedback
+            };
+            const predictions = emotionPredictionsRef.current;
+            const total = predictions.length;
+
+            const facePresentData = facePresentRef.current;
+            const totalFaceFrames = facePresentData.length;
+            const facePresentCount = facePresentData.filter(d => d.facePresent).length;
+            const face_present_percent = totalFaceFrames > 0 ? Math.round((facePresentCount / totalFaceFrames) * 100) : null;
+
+            const gazeData = eyeContactPredictionsRef.current;
+            const totalGazeFrames = gazeData.length;
+            const eyeContactCount = gazeData.filter(d => d.lookingAtCamera).length;
+            const eye_contact_percent = totalGazeFrames > 0 ? Math.round((eyeContactCount / totalGazeFrames) * 100) : null;
+
+            console.log(`[Face Summary] processed frames: ${totalFaceFrames}, face present frames: ${facePresentCount}, face_present: ${face_present_percent}%`);
+            console.log(`[Gaze Summary] valid gaze frames: ${totalGazeFrames}, eye contact frames: ${eyeContactCount}, eye_contact: ${eye_contact_percent}%`);
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("Not authenticated");
+
+            let emotionInsertData: any = {
+                angry_expr: null,
+                disgust_expr: null,
+                fear_expr: null,
+                happy_expr: null,
+                neutral_expr: null,
+                sad_expr: null,
+                surprise_expr: null,
+                eye_contact: eye_contact_percent,
+                face_present: face_present_percent
+            };
+
+            if (total > 0) {
+                const counts: Record<string, number> = {
+                    angry: 0, disgust: 0, fear: 0, happy: 0, neutral: 0, sad: 0, surprise: 0
+                };
+                let totalConfidence = 0;
+
+                predictions.forEach(p => {
+                    const e = p.emotion.toLowerCase();
+                    if (counts[e] !== undefined) counts[e] += 1;
+                    totalConfidence += p.confidence;
+                });
+
+                const avgConfidence = totalConfidence / total;
+                const dominantEmotion = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+                
+                console.log(`Emotion Aggregation -> Total Frames: ${total}, Dominant: ${dominantEmotion}, Avg Confidence: ${(avgConfidence * 100).toFixed(1)}%`);
+
+
+                emotionInsertData = {
+                    ...emotionInsertData,
+                    angry_expr: Math.round((counts.angry / total) * 100),
+                    disgust_expr: Math.round((counts.disgust / total) * 100),
+                    fear_expr: Math.round((counts.fear / total) * 100),
+                    happy_expr: Math.round((counts.happy / total) * 100),
+                    neutral_expr: Math.round((counts.neutral / total) * 100),
+                    sad_expr: Math.round((counts.sad / total) * 100),
+                    surprise_expr: Math.round((counts.surprise / total) * 100)
+                };
+            }
+
+            const { data: sessionData, error } = await supabase
+                .from("interview_sessions")
+                .insert({
+                    user_id: user.id,
+                    role: context.role,
+                    difficulty: context.difficulty,
+                    duration_minutes: context.duration,
+                    backend_session_id: sessionId,
+                    status: "completed",
+                    violations: violations,
+                    eye_contact_violations: eyeContactViolationsRef.current,
+                    face_detection_violations: faceDetectionViolationsRef.current,
+                    overall_score: evaluation.overall_score,
+                    technical_score: evaluation.technical_score,
+                    communication_score: evaluation.communication_score,
+                    answer_relevance: evaluation.answer_relevance,
+                    strengths: evaluation.strengths,
+                    weaknesses: evaluation.weaknesses,
+                    improvement_suggestions: evaluation.improvement_suggestions,
+                    practice_areas: evaluation.practice_areas,
+                    general_feedback: evaluation.general_feedback,
+                    question_feedback: evaluation.question_feedback,
+                    completed_at: new Date().toISOString(),
+                    ...emotionInsertData
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            router.push(`/report/${sessionData.id}`);
+        } catch (e: any) {
+            console.error("End interview error:", e);
+            setAiError("Failed to save interview session: " + (e.message || String(e)));
+            setIsEvaluating(false);
+        }
+    }, [forceStopWavRecording, router, sessionId, context, violations]);
+
+    useEffect(() => {
+        if (!isFullscreen || timeLeft === null || timeLeft <= 0) return;
+        const intervalId = setInterval(() => {
+            setTimeLeft(prev => {
+                if (prev === null || prev <= 0) {
+                    clearInterval(intervalId);
+                    return prev;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [isFullscreen, timeLeft === null]);
+
+    useEffect(() => {
+        if (timeLeft === 0) {
+            endInterview();
+        }
+    }, [timeLeft, endInterview]);
 
     // Auto-scroll chat
     useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-    // Submit user answer → get next question
-    const handleSubmitAnswer = async () => {
-        if (!userInput.trim() || !sessionId || submitting) return;
-        const answer = userInput.trim();
+    // FIX: Submit user answer → get next question + speak it
+    const handleSubmitAnswer = async (retryAnswer?: string) => {
+        const answer = retryAnswer || userInput.trim();
+        if (!answer || !sessionId || submitting || !context) return;
+        forceStopWavRecording();
         setUserInput("");
-        setMessages(prev => [...prev, { role: "user", text: answer }]);
+        if (!retryAnswer) {
+            setMessages(prev => [...prev, { role: "user", text: answer }]);
+        }
         setSubmitting(true);
         try {
-            const res = await fetch(`${BACKEND}/api/answer`, {
+            const res = await fetch(`${BACKEND}/api/interview/evaluate-answer`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ session_id: sessionId, answer }),
+                body: JSON.stringify({ 
+                    resume_text: context.resumeText,
+                    job_role: context.role,
+                    question: currentQuestionRef.current,
+                    answer: answer
+                }),
             });
-            const data = await res.json();
-            setMessages(prev => [...prev, { role: "ai", text: data.next_question }]);
-        } catch {
-            setMessages(prev => [...prev, { role: "ai", text: "⚠️ Could not reach backend. Check that the Python server is running." }]);
+            
+            // First check if the response is valid JSON
+            let data;
+            try {
+                data = await res.json();
+            } catch (e) {
+                data = { detail: "Invalid JSON response from server." };
+            }
+            
+            if (!res.ok || data.error) {
+                const errMsg = data.detail || data.error || data.message || "Unknown API Error";
+                if (!retryAnswer) {
+                    setMessages(prev => [...prev, { role: "ai", text: `⚠️ ${errMsg}. Retrying once...` }]);
+                    setSubmitting(false);
+                    return handleSubmitAnswer(answer);
+                } else {
+                    setMessages(prev => [...prev, { role: "ai", text: "⚠️ AI evaluation failed. Please retry this answer." }]);
+                    return; // Stop here, do not save fake evaluation, do not advance question
+                }
+            } else {
+                answerEvaluationsRef.current.push({
+                    ...data,
+                    question: currentQuestionRef.current,
+                    answer: answer
+                });
+            }
+
+            // Always move to the next question, even on error (or if follow up is needed)
+            let nextQ = "";
+            if (data.follow_up_needed && data.follow_up_question) {
+                nextQ = data.follow_up_question;
+            } else {
+                const genRes = await fetch(`${BACKEND}/api/interview/generate-question`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ job_role: context.role, difficulty: context.difficulty, resume_text: context.resumeText }),
+                });
+                const genData = await genRes.json();
+                nextQ = genData.question || "Thank you. Could you elaborate further?";
+            }
+            
+            currentQuestionRef.current = nextQ;
+            setMessages(prev => [...prev, { role: "ai", text: nextQ }]);
+            speakText(nextQ);
+        } catch (err) {
+            console.error("Evaluation error:", err);
+            const errMsg = err instanceof Error ? err.message : String(err);
+            if (!retryAnswer) {
+                setMessages(prev => [...prev, { role: "ai", text: `⚠️ Network error. Retrying once...` }]);
+                setSubmitting(false);
+                return handleSubmitAnswer(answer);
+            } else {
+                setMessages(prev => [...prev, { role: "ai", text: "⚠️ AI evaluation failed. Please retry this answer." }]);
+            }
         } finally {
             setSubmitting(false);
         }
     };
 
-    // Carefully log a violation with 3-second cooldown to avoid double-fires
-    const logViolation = (reason: string) => {
+    // FIX: Wrapped in useCallback to avoid stale closure in event listeners
+    const logViolation = useCallback((reason: string) => {
         const now = Date.now();
         if (now - lastViolationTime.current < 3000) return; // cooldown
         lastViolationTime.current = now;
@@ -103,14 +825,12 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
         const count = violationCountRef.current;
         setViolations(count);
         if (count >= MAX_VIOLATIONS) {
-            // Stop all tracks
             streamRef.current?.getTracks().forEach(t => t.stop());
-            // Exit fullscreen
             if (document.fullscreenElement) document.exitFullscreen().catch(() => { });
             setTerminationReason(reason);
             setTerminated(true);
         }
-    };
+    }, []);
 
     // --- Start webcam + mic ---
     useEffect(() => {
@@ -155,8 +875,11 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
         return () => {
             streamRef.current?.getTracks().forEach(t => t.stop());
             cancelAnimationFrame(animFrameRef.current);
+            // FIX: Cleanup Local Whisper recording and speech synthesis on unmount
+            forceStopWavRecording();
+            if (typeof window !== "undefined") window.speechSynthesis?.cancel();
         };
-    }, []);
+    }, [forceStopWavRecording]);
 
     // Re-attach stream to video element once fullscreen is active
     // (the <video> element is only rendered inside the fullscreen view)
@@ -174,11 +897,146 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
         if (track) { track.enabled = !track.enabled; setCamOn(v => !v); }
     };
 
-    // Toggle mic track
-    const toggleMic = () => {
-        const track = streamRef.current?.getAudioTracks()[0];
-        if (track) { track.enabled = !track.enabled; setMicOn(v => !v); }
+    // FIX: Toggle mic track — safely handles re-acquisition if track was ended
+    const toggleMic = async () => {
+        let track = streamRef.current?.getAudioTracks().find(t => t.readyState === 'live');
+        if (!track) {
+            try {
+                console.log("[MicDiag] toggleMic: No live track. Reacquiring audio stream...");
+                const newStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                track = newStream.getAudioTracks()[0];
+                if (streamRef.current) {
+                    streamRef.current.getAudioTracks().forEach(t => streamRef.current?.removeTrack(t));
+                    streamRef.current.addTrack(track);
+                } else {
+                    streamRef.current = newStream;
+                }
+                track.enabled = true;
+                setMicOn(true);
+            } catch (err) {
+                console.error("[MicDiag] toggleMic reacquisition failed:", err);
+                setMicOn(false);
+            }
+            return;
+        }
+        
+        const newEnabled = !track.enabled;
+        track.enabled = newEnabled;
+        setMicOn(newEnabled);
+        if (!newEnabled) {
+            forceStopWavRecording();
+        }
+        console.log(`[MicDiag] toggleMic: enabled=${track.enabled}, readyState=${track.readyState}, label=${track.label}`);
     };
+
+    // --- Emotion API Capture ---
+    const isInterviewActive = isFullscreen && timeLeft !== null && timeLeft > 0 && !terminated && !isEvaluating;
+
+    useEffect(() => {
+        if (!isInterviewActive) return;
+
+        const captureFrame = async () => {
+            const video = videoRef.current;
+            if (!video || !camOn) return;
+
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            if (canvas.width === 0 || canvas.height === 0) return;
+
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) return;
+                const formData = new FormData();
+                formData.append("file", blob, "frame.jpg");
+
+                try {
+                    const res = await fetch(`${BACKEND}/api/emotion/predict`, {
+                        method: "POST",
+                        body: formData
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.emotion && data.confidence !== undefined) {
+                            emotionPredictionsRef.current.push({
+                                emotion: data.emotion,
+                                confidence: data.confidence
+                            });
+                        }
+                        
+                        if (data.face_present !== undefined) {
+                            facePresentRef.current.push({ facePresent: data.face_present });
+                        }
+                        
+                        if (data.looking_at_camera !== undefined && data.looking_at_camera !== null) {
+                            eyeContactPredictionsRef.current.push({ lookingAtCamera: data.looking_at_camera });
+                        }
+                        
+                        // WARNING LOGIC
+                        if (!data.error) {
+                            console.log(`[Diagnostic] face_count: ${data.face_count}, face_present: ${data.face_present}, looking_at_camera: ${data.looking_at_camera}, gaze_pitch: ${data.gaze_pitch}, gaze_yaw: ${data.gaze_yaw}, consecutiveNoEyeContact: ${consecutiveNoEyeContact.current}, activeWarning: ${activeWarning}`);
+                            
+                            if (data.face_count && data.face_count > 1) {
+                                setActiveWarning("⚠️ Only one person should be in the frame.");
+                                if (!multipleFaceViolationCounted.current) {
+                                    faceDetectionViolationsRef.current++;
+                                    multipleFaceViolationCounted.current = true;
+                                }
+                                consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
+                                consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                            } else if (data.face_present === false) {
+                                consecutiveNoFace.current += 1;
+                                if (consecutiveNoFace.current >= 2) {
+                                    setActiveWarning("⚠️ Please stay in the camera frame.");
+                                    if (!noFaceViolationCounted.current) {
+                                        faceDetectionViolationsRef.current++;
+                                        noFaceViolationCounted.current = true;
+                                    }
+                                }
+                                multipleFaceViolationCounted.current = false;
+                                consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                            } else if (data.face_present === true) {
+                                // Face is present and exactly 1 face
+                                consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
+                                multipleFaceViolationCounted.current = false;
+                                
+                                if (data.looking_at_camera === false) {
+                                    consecutiveNoEyeContact.current += 1;
+                                    if (consecutiveNoEyeContact.current >= 2) {
+                                        setActiveWarning("⚠️ Please look at the camera.");
+                                        if (!eyeContactViolationCounted.current) {
+                                            eyeContactViolationsRef.current++;
+                                            eyeContactViolationCounted.current = true;
+                                        }
+                                    } else {
+                                        setActiveWarning(null);
+                                    }
+                                } else if (data.looking_at_camera === true) {
+                                    consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                                    setActiveWarning(null);
+                                } else {
+                                    // looking_at_camera is null - keep existing eye contact warning, clear others
+                                    setActiveWarning(prev => {
+                                        if (prev && (prev.includes("camera frame") || prev.includes("Only one person"))) return null;
+                                        return prev;
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Fail silently to not break the interview
+                }
+            }, "image/jpeg", 0.8);
+        };
+
+        const intervalId = setInterval(captureFrame, 2000);
+
+        return () => clearInterval(intervalId);
+    }, [isInterviewActive, camOn]);
 
     // --- Anti-Cheating Engine ---
     useEffect(() => {
@@ -201,8 +1059,8 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             document.removeEventListener("fullscreenchange", handleFullscreenChange);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
-
-    }, []);
+    // FIX: logViolation is now stable via useCallback — safe as dependency
+    }, [logViolation]);
 
     const requestFullscreen = async () => {
         if (document.documentElement.requestFullscreen) {
@@ -280,10 +1138,47 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
 
     return (
         <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
+            {isEvaluating && (
+                <div className="fixed inset-0 bg-black/80 z-[1000] flex flex-col items-center justify-center p-6 backdrop-blur-sm">
+                    <div className="flex gap-2 mb-4">
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                    <h2 className="text-xl font-bold text-white mb-2">Analyzing Your Performance</h2>
+                    <p className="text-zinc-400 text-sm max-w-sm text-center">
+                        Our AI is generating personalized feedback, scoring your technical depth, and preparing your interview report.
+                    </p>
+                </div>
+            )}
             {/* Top Bar */}
             <header className="h-16 flex justify-between items-center px-6 border-b border-white/10 shrink-0 bg-black/60 backdrop-blur-xl">
-                <div className="flex items-center gap-2 text-white font-bold text-lg">PreMock</div>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 text-white font-bold text-lg">
+                    PreMock
+                    {timeLeft !== null && (
+                        <span className="text-zinc-300 font-mono text-base flex items-center gap-1.5 ml-2 border border-white/10 bg-white/5 px-3 py-1 rounded-full">
+                            ⏱ {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:{(timeLeft % 60).toString().padStart(2, '0')}
+                        </span>
+                    )}
+                </div>
+                <div className="flex items-center gap-4">
+                    {/* FIX: TTS indicator */}
+                    {isSpeaking && (
+                        <div className="flex items-center gap-2 px-3 py-1 rounded border bg-blue-500/10 border-blue-500/30 text-blue-400 text-xs font-medium animate-pulse">
+                            🔊 AI Speaking…
+                        </div>
+                    )}
+                    {/* FIX: STT indicator */}
+                    {isWavRecording && (
+                        <div className="flex items-center gap-2 px-3 py-1 rounded border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 text-xs font-medium animate-pulse">
+                            🎙️ Listening…
+                        </div>
+                    )}
+                    {isTranscribing && (
+                        <div className="flex items-center gap-2 px-3 py-1 rounded border bg-purple-500/10 border-purple-500/30 text-purple-400 text-xs font-medium animate-pulse">
+                            ⚙️ Transcribing…
+                        </div>
+                    )}
                     <div className={`flex items-center gap-2 px-3 py-1 rounded border text-sm font-mono ${violations >= 3 ? "bg-red-500/20 border-red-500/40 text-red-400" : violations >= 2 ? "bg-orange-500/15 border-orange-500/30 text-orange-400" : "bg-white/5 border-white/10 text-zinc-400"}`}>
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                         Violations: {violations}/{MAX_VIOLATIONS}
@@ -326,16 +1221,27 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                                 {camOn ? "Camera Active" : "Camera Muted"}
                             </span>
                             <span className={`px-2.5 py-1 bg-black/70 backdrop-blur rounded-md text-xs font-medium flex items-center gap-1.5 ${micOn ? "text-blue-400" : "text-amber-400"}`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${micOn ? "bg-blue-400 animate-pulse" : "bg-amber-400"}`} />
-                                {micOn ? "Audio Listening" : "Mic Muted"}
+                                <span className={`w-1.5 h-1.5 rounded-full ${micOn ? (isWavRecording ? "bg-red-400 animate-pulse" : isTranscribing ? "bg-purple-400 animate-pulse" : "bg-emerald-400") : "bg-amber-400"}`} />
+                                {micOn ? (isWavRecording ? "Audio Recording" : isTranscribing ? "Transcribing" : "Audio Ready") : "Mic Muted"}
                             </span>
                         </div>
+                        {/* WARNING BANNER */}
+                        {activeWarning && (
+                            <div className="absolute inset-x-0 top-12 mx-auto w-max px-4 py-2 rounded-lg font-bold text-sm shadow-xl flex items-center justify-center animate-in fade-in slide-in-from-top-2" style={{
+                                backgroundColor: activeWarning.includes("stay") || activeWarning.includes("Only one person") ? "rgba(220, 38, 38, 0.95)" : "rgba(245, 158, 11, 0.95)",
+                                color: "white",
+                                border: "1px solid rgba(255,255,255,0.2)",
+                                zIndex: 10
+                            }}>
+                                {activeWarning}
+                            </div>
+                        )}
                         {/* Controls */}
                         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                            <button onClick={toggleMic} className={`p-3 rounded-full backdrop-blur-md border transition-all ${micOn ? "bg-zinc-800/80 border-white/10 text-white" : "bg-red-500/80 border-red-500 text-white"}`}>
+                            <button onClick={toggleMic} title={micOn ? "Mute microphone" : "Unmute microphone"} className={`p-3 rounded-full backdrop-blur-md border transition-all ${micOn ? "bg-zinc-800/80 border-white/10 text-white" : "bg-red-500/80 border-red-500 text-white"}`}>
                                 {micOn ? "🎤" : "🔇"}
                             </button>
-                            <button onClick={toggleCam} className={`p-3 rounded-full backdrop-blur-md border transition-all ${camOn ? "bg-zinc-800/80 border-white/10 text-white" : "bg-red-500/80 border-red-500 text-white"}`}>
+                            <button onClick={toggleCam} title={camOn ? "Disable camera" : "Enable camera"} className={`p-3 rounded-full backdrop-blur-md border transition-all ${camOn ? "bg-zinc-800/80 border-white/10 text-white" : "bg-red-500/80 border-red-500 text-white"}`}>
                                 {camOn ? "📸" : "🚫"}
                             </button>
                         </div>
@@ -353,12 +1259,13 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                             <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm">
                                 <span className="text-zinc-400 text-xs block mb-1 uppercase tracking-wider font-semibold">Session Target</span>
                                 <div className="text-white font-medium flex items-center gap-2">
-                                    <span>{context.role || "Software Engineer"}</span>
+                                    {/* FIX: context?.role prevents null crash */}
+                                    <span>{context?.role || "Software Engineer"}</span>
                                     <span className="text-xs px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
-                                        {context.difficulty || "Medium"}
+                                        {context?.difficulty || "Medium"}
                                     </span>
                                 </div>
-                                <p className="text-xs text-zinc-500 mt-1">Allocated Duration: {context.duration || 30} mins</p>
+                                <p className="text-xs text-zinc-500 mt-1">Allocated Duration: {context?.duration || 30} mins</p>
                             </div>
 
                             <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-sm">
@@ -389,8 +1296,8 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                                 </div>
                                 <div className="flex items-center justify-between text-xs mt-1">
                                     <span className="text-zinc-400">Audio Stream:</span>
-                                    <span className={micOn ? "text-blue-400 font-medium" : "text-amber-400 font-medium"}>
-                                        {micOn ? "Streaming" : "Muted"}
+                                    <span className={micOn ? (isWavRecording ? "text-red-400 font-medium" : isTranscribing ? "text-purple-400 font-medium" : "text-emerald-400 font-medium") : "text-amber-400 font-medium"}>
+                                        {micOn ? (isWavRecording ? "Capturing" : isTranscribing ? "Transcribing" : "Standby") : "Muted"}
                                     </span>
                                 </div>
                             </div>
@@ -461,42 +1368,67 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
 
                     {/* Input area */}
                     <div className="border-t border-white/10 bg-black/40 p-4 shrink-0">
-                        {/* Session info */}
-                        {context && (
-                            <div className="flex items-center gap-3 mb-3 text-xs text-zinc-600">
-                                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.role}</span>
-                                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.difficulty}</span>
-                                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.duration} min</span>
-                                {/* Waveform */}
-                                <div className="flex-1 h-6 flex items-end gap-[2px] overflow-hidden ml-2">
-                                    {bars.slice(0, 24).map((h, i) => (
-                                        <div key={i} className="flex-1 rounded-full transition-all duration-75"
-                                            style={{ height: `${micOn ? h : 4}%`, background: micOn ? `hsl(${270 + i * 2}, 70%, 60%)` : "rgba(255,255,255,0.08)", minHeight: "2px" }} />
-                                    ))}
-                                </div>
+                        {/* Session info and Transcription Mode */}
+                        <div className="flex items-center gap-3 mb-3 text-xs text-zinc-600">
+                            {context && (
+                                <>
+                                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.role}</span>
+                                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.difficulty}</span>
+                                    <span className="px-2 py-0.5 rounded bg-white/5 border border-white/8">{context.duration} min</span>
+                                </>
+                            )}
+
+                            
+                            {/* Waveform */}
+                            <div className="flex-1 h-6 flex items-end gap-[2px] overflow-hidden ml-2">
+                                {bars.slice(0, 24).map((h, i) => (
+                                    <div key={i} className="flex-1 rounded-full transition-all duration-75"
+                                        style={{ height: `${micOn ? h : 4}%`, background: isWavRecording ? `hsl(${120 + i * 4}, 70%, 55%)` : micOn ? `hsl(${270 + i * 2}, 70%, 60%)` : "rgba(255,255,255,0.08)", minHeight: "2px" }} />
+                                ))}
                             </div>
-                        )}
+                        </div>
                         <div className="flex gap-3">
                             <textarea
-                                value={userInput}
+                                value={isWavRecording && provisionalText ? (userInput ? userInput + " " : "") + provisionalText : userInput}
                                 onChange={e => setUserInput(e.target.value)}
                                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmitAnswer(); } }}
-                                placeholder={aiLoading ? "Waiting for AI question..." : "Type your answer here... (Enter to send, Shift+Enter for new line)"}
-                                disabled={aiLoading || submitting || !!aiError}
+                                placeholder={aiLoading ? "Waiting for AI question..." : isTranscribing ? "Transcribing complete recording with Local Whisper... Please wait." : isWavRecording ? "🎙️ Recording... speak your answer, click ⏹️ Stop when done." : "Type your answer here or click 🎙️ to speak… (Enter to send)"}
+                                disabled={aiLoading || submitting || !!aiError || isTranscribing || isWavRecording}
                                 rows={3}
                                 className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 resize-none focus:outline-none focus:border-primary/40 focus:bg-white/8 transition-all disabled:opacity-40"
                             />
                             <div className="flex flex-col gap-2">
+                                {/* Speech recognition / WAV recording toggle button */}
                                 <button
-                                    onClick={handleSubmitAnswer}
-                                    disabled={!userInput.trim() || aiLoading || submitting || !!aiError}
+                                    onClick={() => {
+                                        isWavRecording ? stopWavRecordingAndTranscribe() : startWavRecording();
+                                    }}
+                                    disabled={aiLoading || submitting || !!aiError || !micOn || (!isWavRecording && isTranscribing)}
+                                    title={isWavRecording ? "Stop recording and transcribe" : "Start recording"}
+                                    className={`px-4 py-2 rounded-xl transition-all text-base flex items-center justify-center border ${
+                                        isWavRecording
+                                            ? "bg-red-500/20 border-red-500/40 text-red-400 animate-pulse"
+                                            : "bg-white/5 border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                                    } disabled:opacity-30 disabled:cursor-not-allowed`}
+                                >
+                                    {isTranscribing ? (
+                                        <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                    ) : isWavRecording ? (
+                                        "⏹️"
+                                    ) : (
+                                        "🎙️"
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => handleSubmitAnswer()}
+                                    disabled={!userInput.trim() || aiLoading || submitting || !!aiError || isTranscribing || isWavRecording}
                                     className="px-5 py-3 bg-primary hover:bg-primary/90 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all text-sm flex-1 flex items-center justify-center gap-2"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
                                     Send
                                 </button>
                                 <button
-                                    onClick={() => { streamRef.current?.getTracks().forEach(t => t.stop()); router.push("/dashboard"); }}
+                                    onClick={endInterview}
                                     className="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 font-medium transition-all text-xs"
                                 >
                                     End

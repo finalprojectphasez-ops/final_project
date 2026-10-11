@@ -60,3 +60,21 @@ push_now.bat
 
 # ---- Build artifacts ----
 *.tsbuildinfo
+
+# ---- ML & Virtual Envs ----
+*_venv/
+ml_venv/
+backend/ml_models/
+backend/data/
+ml/asr_model/
+ml/whisper_dataset/
+*.jpg
+*.webp
+*.mp4
+*.wav
+
+# Generated ML datasets and preprocessing caches - keep locally
+ml/eye_contact/dataset/processed/
+ml/emotion/dataset/processed/
+ml/asr_training/processed_data_pilot/
+ml/asr_training/processed_data_pilot_fixed/

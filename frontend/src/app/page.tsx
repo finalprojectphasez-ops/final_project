@@ -120,7 +120,7 @@ export default function LandingPage() {
               },
               {
                 title: "Live Transcription",
-                desc: "Powered by Deepgram's nova-2 model, your speech is transcribed in under 300ms with full filler word detection.",
+                desc: "Powered by a self-hosted Local Whisper model, your speech is securely transcribed without third-party APIs.",
                 color: "from-orange-500/10 to-transparent border-orange-500/20",
                 iconBg: "bg-orange-500/15",
                 iconColor: "text-orange-400",
@@ -169,7 +169,7 @@ export default function LandingPage() {
             {[
               { num: "01", title: "Upload Your Resume", desc: "Our AI parses your PDF and extracts your tech stack, projects, and experience to build a custom question set." },
               { num: "02", title: "Configure Your Session", desc: "Pick your target role (Frontend, Backend, DevOps, etc.) and difficulty (Easy to Hard). Go live instantly." },
-              { num: "03", title: "Interviewed in Real-Time", desc: "The AI conducts your interview via text — you respond via microphone. Deepgram transcribes your voice live." },
+              { num: "03", title: "Interviewed in Real-Time", desc: "The AI conducts your interview via text — you respond via microphone. Local Whisper transcribes your voice natively." },
               { num: "04", title: "Get Your Report", desc: "Receive a comprehensive analytics report with technical score, emotional insights, and actionable improvement tips." },
             ].map((s, i) => (
               <div key={i} className="flex gap-8 items-start">

@@ -129,7 +129,7 @@ export default function ProfilePage() {
                         {/* Avatar Section */}
                         <div className="glass-panel rounded-2xl p-8 flex items-center gap-6">
                             {photoPreview ? (
-                                <Image src={photoPreview} alt="Avatar" width={80} height={80} className="w-20 h-20 rounded-full object-cover shrink-0 border-2 border-primary/40" />
+                                <Image src={photoPreview} alt="Avatar" width={80} height={80} unoptimized className="w-20 h-20 rounded-full object-cover shrink-0 border-2 border-primary/40" />
                             ) : (
                                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white text-3xl font-black shrink-0">
                                     {initials}

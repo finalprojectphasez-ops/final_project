@@ -1,9 +1,12 @@
+import sys
+sys.modules['tensorflow'] = None
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 
 # Import Routes
-from app.routes import interview
+from app.routes import interview, emotion, resume, speech
 
 app = FastAPI(
     title="PreMock AI API",
@@ -21,7 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(interview.router, prefix="/api")
+app.include_router(interview.router, prefix="/api", tags=["Interview"])
+app.include_router(emotion.router, prefix="/api/emotion", tags=["Emotion"])
+app.include_router(resume.router, prefix="/api/resume", tags=["Resume"])
+app.include_router(speech.router, prefix="/api/speech", tags=["Speech"])
 
 @app.get("/")
 def health_check():

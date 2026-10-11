@@ -58,7 +58,7 @@ backend/
 │   └── services/
 │       ├── __init__.py
 │       ├── llm_engine.py     # OpenAI GPT-4o interview engine
-│       ├── audio_parser.py   # Deepgram real-time transcription
+
 │       └── resume_parser.py  # PDF resume text extraction
 ├── requirements.txt
 ├── .env.example

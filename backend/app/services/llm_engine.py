@@ -1,6 +1,9 @@
 import os
 import re
+import json
+import random
 import logging
+from pathlib import Path
 from openai import AsyncOpenAI
 from typing import List, Dict, Optional
 from app.models.schemas import InterviewContext
@@ -8,7 +11,15 @@ from app.config import settings
 
 logger = logging.getLogger("uvicorn.error")
 
-client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+if settings.GROQ_API_KEY:
+    client = AsyncOpenAI(
+        api_key=settings.GROQ_API_KEY,
+        base_url="https://api.groq.com/openai/v1"
+    )
+elif settings.OPENAI_API_KEY:
+    client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+else:
+    client = None
 
 # Standard curated question tracks by role & difficulty
 ROLE_QUESTION_BANKS = {
@@ -156,10 +167,36 @@ class LLMEngine:
     def __init__(self, context: InterviewContext):
         self.context = context
         self.question_index = 0
-        self.extracted_skills = self._extract_skills(context.resume_text)
+        
+        # Pull from Kaggle dataset if no resume provided
+        if not self.context.resume_text.strip():
+            self._inject_dataset_resume()
+            
+        self.extracted_skills = self._extract_skills(self.context.resume_text)
         self.history = [
             {"role": "system", "content": self._build_system_prompt()}
         ]
+        
+    def _inject_dataset_resume(self):
+        try:
+            backend_dir = Path(__file__).parent.parent.parent
+            json_path = backend_dir / "data" / "resume_dataset" / "cleaned_resumes.json"
+            if json_path.exists():
+                with open(json_path, "r", encoding="utf-8") as f:
+                    dataset = json.load(f)
+                
+                # Try to get resumes for the current role
+                role_resumes = dataset.get(self.context.role, [])
+                if role_resumes:
+                    self.context.resume_text = random.choice(role_resumes)
+                else:
+                    # Fallback to random if role not found
+                    all_resumes = [r for sublist in dataset.values() for r in sublist]
+                    if all_resumes:
+                        self.context.resume_text = random.choice(all_resumes)
+                logger.info(f"[LLMEngine] Injected realistic resume for role: {self.context.role}")
+        except Exception as e:
+            logger.error(f"[LLMEngine] Failed to load dataset resume: {e}")
         
     def _extract_skills(self, text: str) -> List[str]:
         """Detect technical keywords mentioned in the uploaded resume."""
@@ -195,11 +232,12 @@ Rules:
         if user_answer:
             self.history.append({"role": "user", "content": user_answer})
 
-        # 1. Try OpenAI if API key is provided
-        if client and settings.OPENAI_API_KEY:
+        # 1. Try LLM if API key is provided
+        if client:
             try:
+                model_name = "llama-3.1-70b-versatile" if settings.GROQ_API_KEY else "gpt-4o"
                 response = await client.chat.completions.create(
-                    model="gpt-4o",
+                    model=model_name,
                     messages=self.history,
                     temperature=0.7,
                     max_tokens=150,
@@ -210,7 +248,7 @@ Rules:
                 self.question_index += 1
                 return reply
             except Exception as e:
-                logger.warning(f"[LLMEngine] OpenAI API call failed ({e}). Using intelligent dynamic fallback question generator.")
+                logger.warning(f"[LLMEngine] LLM API call failed ({e}). Using intelligent dynamic fallback question generator.")
 
         # 2. Fallback Question Generator (100% reliable, zero external dependencies)
         return self._generate_fallback_question(user_answer)
@@ -266,10 +304,330 @@ Rules:
         return next_q
 
     async def generate_evaluation(self, full_transcript: List[Dict]) -> dict:
+        """
+        Evaluate the completed interview session.
+
+        History structure (built by get_next_question / _generate_fallback_question):
+          history[0]           → {role: "system",    content: system_prompt}
+          history[1]           → {role: "assistant",  content: first_question}
+          history[2]           → {role: "user",       content: first_answer}
+          history[3]           → {role: "assistant",  content: second_question}
+          history[4]           → {role: "user",       content: second_answer}
+          ...
+
+        Returns a dict that maps 1-to-1 with EvaluationResponse / interview_sessions columns.
+        """
+        # ── Extract Q&A pairs from history ──────────────────────────────────
+        qa_pairs: List[Dict] = []
+        msgs = self.history  # use the instance history (always up-to-date)
+        i = 1  # skip system prompt at index 0
+        while i < len(msgs) - 1:
+            if msgs[i]["role"] == "assistant" and msgs[i + 1]["role"] == "user":
+                qa_pairs.append({
+                    "question": msgs[i]["content"].strip(),
+                    "answer":   msgs[i + 1]["content"].strip(),
+                })
+                i += 2
+            else:
+                i += 1
+
+        if not qa_pairs:
+            # Session ended before any answer was submitted — return minimal result
+            return self._minimal_evaluation()
+
+        # ── 1. Try LLM structured evaluation ─────────────────────────────
+        if client:
+            try:
+                result = await self._openai_evaluate(qa_pairs)
+                if result:
+                    return result
+            except Exception as e:
+                logger.warning(f"[LLMEngine] LLM evaluation failed ({e}). Using rule-based fallback.")
+
+        # ── 2. Rule-based evaluation (no external dependencies) ──────────────
+        return self._rule_based_evaluate(qa_pairs)
+
+    # ── OpenAI evaluation ────────────────────────────────────────────────────
+
+    async def _openai_evaluate(self, qa_pairs: List[Dict]) -> Optional[dict]:
+        """Ask GPT-4o to evaluate the full transcript and return structured JSON."""
+        transcript_text = "\n\n".join(
+            f"Q{i+1}: {p['question']}\nA{i+1}: {p['answer']}"
+            for i, p in enumerate(qa_pairs)
+        )
+        system_msg = (
+            f"You are a senior hiring manager evaluating a {self.context.role} "
+            f"interview at {self.context.difficulty} difficulty. "
+            "Analyse the transcript and return ONLY valid JSON with exactly these keys:\n"
+            "overall_score (0-100 int), technical_score (0-100 int), "
+            "communication_score (0-100 int), answer_relevance (0-100 int), "
+            "strengths (list of 3 strings), weaknesses (list of 3 strings), "
+            "improvement_suggestions (list of 3 strings), practice_areas (list of 3 strings), "
+            "general_feedback (2-3 sentence string), "
+            "question_feedback (list of objects each with: question, answer, score 0-100, feedback string)."
+        )
+        model_name = "llama-3.1-70b-versatile" if settings.GROQ_API_KEY else "gpt-4o"
+        response = await client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "system",  "content": system_msg},
+                {"role": "user",    "content": f"Interview transcript:\n\n{transcript_text}"},
+            ],
+            temperature=0.3,
+            max_tokens=1200,
+            timeout=20.0,
+            response_format={"type": "json_object"},
+        )
+        raw = response.choices[0].message.content.strip()
+        data = json.loads(raw)
+
+        # Normalise question_feedback to include question + answer text
+        qf = []
+        for idx, item in enumerate(data.get("question_feedback", [])):
+            pair = qa_pairs[idx] if idx < len(qa_pairs) else {}
+            qf.append({
+                "question": item.get("question", pair.get("question", "")),
+                "answer":   item.get("answer",   pair.get("answer",   "")),
+                "score":    int(item.get("score", 70)),
+                "feedback": item.get("feedback", ""),
+            })
+        # Fill missing entries if GPT returned fewer items than pairs
+        for idx in range(len(qf), len(qa_pairs)):
+            qf.append({
+                "question": qa_pairs[idx]["question"],
+                "answer":   qa_pairs[idx]["answer"],
+                "score":    70,
+                "feedback": "Answer assessed.",
+            })
+        data["question_feedback"] = qf
+
+        # Clamp scores
+        for key in ("overall_score", "technical_score", "communication_score", "answer_relevance"):
+            data[key] = max(0, min(100, int(data.get(key, 70))))
+
+        return data
+
+    # ── Rule-based evaluation ────────────────────────────────────────────────
+
+    # Technical terms that signal strong, specific answers
+    TECH_TERMS = {
+        "algorithm", "complexity", "o(n", "o(log", "cache", "index", "async", "await",
+        "promise", "thread", "mutex", "race condition", "deadlock", "distributed",
+        "microservice", "api", "rest", "graphql", "http", "tcp", "dns", "cdn",
+        "database", "sql", "nosql", "transaction", "acid", "cap theorem",
+        "kubernetes", "docker", "ci/cd", "pipeline", "deployment", "load balanc",
+        "horizontal", "vertical", "shard", "replica", "partition", "throughput",
+        "latency", "bottleneck", "profil", "benchmark", "test", "tdd", "bdd",
+        "design pattern", "solid", "dry", "abstraction", "encapsulat",
+        "polymorphism", "inheritance", "interface", "dependency injection",
+        "memory", "heap", "stack", "garbage collect", "pointer", "buffer",
+        "token", "oauth", "jwt", "encrypt", "hash", "salt", "cors", "csrf",
+        "webpack", "vite", "bundle", "tree shak", "lazy load", "virtual dom",
+        "react", "vue", "angular", "next", "server side", "client side", "ssr",
+        "python", "javascript", "typescript", "golang", "java", "rust", "c++",
+    }
+
+    # Sentence-structure markers that indicate clear communication
+    COMM_MARKERS = {
+        "because", "therefore", "however", "although", "which means",
+        "for example", "such as", "in other words", "specifically",
+        "first", "second", "third", "finally", "additionally",
+        "the reason", "the benefit", "the trade-off", "in my experience",
+        "i would", "i have", "we used", "i implemented", "i built",
+    }
+
+    def _score_answer(self, question: str, answer: str) -> Dict:
+        """
+        Score a single Q&A pair on three axes and produce feedback.
+        Returns {score, technical_contribution, communication_contribution,
+                 relevance_contribution, feedback}.
+        """
+        words = answer.lower().split()
+        word_count = len(words)
+        answer_lower = answer.lower()
+        question_lower = question.lower()
+
+        # ── Completeness (0-40 pts): based on answer length ──
+        if word_count == 0:
+            completeness = 0
+        elif word_count < 20:
+            completeness = 10
+        elif word_count < 50:
+            completeness = 20
+        elif word_count < 100:
+            completeness = 30
+        else:
+            completeness = 40
+
+        # ── Technical depth (0-35 pts): tech term density ──
+        tech_hits = sum(1 for t in self.TECH_TERMS if t in answer_lower)
+        tech_score_raw = min(35, tech_hits * 7)
+
+        # ── Communication (0-25 pts): structure markers ──
+        comm_hits = sum(1 for m in self.COMM_MARKERS if m in answer_lower)
+        comm_score_raw = min(25, comm_hits * 6)
+
+        # ── Relevance bonus: keyword overlap with question ──
+        q_words = set(re.sub(r'[^\w\s]', '', question_lower).split()) - {
+            "the","a","an","is","are","what","how","why","when","where","you","your",
+            "can","could","would","should","do","does","did","have","has","had","will",
+            "and","or","but","if","in","on","at","to","of","for","with","that","this",
+        }
+        a_words = set(re.sub(r'[^\w\s]', '', answer_lower).split())
+        overlap = len(q_words & a_words)
+        relevance_bonus = min(10, overlap * 2)
+
+        raw = completeness + tech_score_raw + comm_score_raw + relevance_bonus
+        score = max(10, min(100, raw))
+
+        # ── Verbal feedback ──
+        if score >= 80:
+            feedback = (
+                "Strong, detailed answer with good technical depth. "
+                "You demonstrated clear reasoning and relevant specifics."
+            )
+        elif score >= 60:
+            feedback = (
+                "Solid response covering the core points. "
+                "Adding more concrete examples or trade-off analysis would strengthen it further."
+            )
+        elif score >= 40:
+            feedback = (
+                "Partial answer — you touched on the right area but lacked depth. "
+                "Try to explain the 'why' and include specific technical details."
+            )
+        else:
+            feedback = (
+                "The answer was too brief or did not address the question directly. "
+                "Practice structuring responses: state your approach, give an example, explain trade-offs."
+            )
+
         return {
-            "overall_score": 85,
-            "technical_depth": 88,
-            "communication": 82,
-            "problem_solving": 86,
-            "feedback": "Strong structured thinking and clear explanations across core engineering principles."
+            "score":                    score,
+            "technical_contribution":   tech_score_raw,
+            "communication_contribution": comm_score_raw,
+            "relevance_contribution":   relevance_bonus,
+            "feedback":                 feedback,
+        }
+
+    def _rule_based_evaluate(self, qa_pairs: List[Dict]) -> dict:
+        """
+        Deterministic evaluation using the scoring rubric above.
+        Produces the full EvaluationResponse-compatible dict.
+        """
+        scored = []
+        for pair in qa_pairs:
+            result = self._score_answer(pair["question"], pair["answer"])
+            scored.append({**pair, **result})
+
+        scores      = [s["score"] for s in scored]
+        tech_vals   = [s["technical_contribution"] for s in scored]
+        comm_vals   = [s["communication_contribution"] for s in scored]
+        rel_vals    = [s["relevance_contribution"] for s in scored]
+
+        def avg(lst): return int(round(sum(lst) / len(lst))) if lst else 0
+
+        overall_score       = avg(scores)
+        # Scale sub-scores to 0-100
+        technical_score     = min(100, int(avg(tech_vals) * 100 / 35))
+        communication_score = min(100, int(avg(comm_vals) * 100 / 25))
+        answer_relevance    = min(100, int(avg(rel_vals)  * 100 / 10))
+
+        # ── Strengths ──
+        strengths = []
+        if technical_score >= 60:
+            strengths.append(f"Demonstrated solid technical knowledge relevant to {self.context.role}.")
+        if communication_score >= 60:
+            strengths.append("Communicated answers clearly with good use of structure and examples.")
+        if answer_relevance >= 60:
+            strengths.append("Responses stayed focused and directly addressed the questions asked.")
+        if overall_score >= 75:
+            strengths.append("Maintained consistent quality across multiple questions.")
+        if len(strengths) < 2:
+            strengths.append("Showed willingness to engage with complex technical topics.")
+
+        # ── Weaknesses ──
+        weaknesses = []
+        if technical_score < 60:
+            weaknesses.append("Answers lacked sufficient technical depth and specificity.")
+        if communication_score < 60:
+            weaknesses.append("Could improve clarity by using structured communication (e.g., 'First... Then... Finally...').")
+        if answer_relevance < 60:
+            weaknesses.append("Some answers drifted from the core question — focus on directly addressing what is asked.")
+        if any(s["score"] < 40 for s in scored):
+            weaknesses.append("One or more questions received minimal responses — aim for at least 50+ word answers.")
+        if len(weaknesses) < 2:
+            weaknesses.append("Practice elaborating on answers with concrete real-world examples.")
+
+        # ── Improvement suggestions ──
+        improvement_suggestions = [
+            "Use the STAR method (Situation, Task, Action, Result) for behavioural questions.",
+            f"Study advanced topics specific to {self.context.role} at {self.context.difficulty} difficulty.",
+            "Record yourself answering common questions to improve verbal clarity and pacing.",
+        ]
+
+        # ── Practice areas ──
+        practice_areas = [self.context.role + " fundamentals", "System design", "Communication skills"]
+        if self.context.difficulty == "Hard":
+            practice_areas.append("Advanced distributed systems")
+        elif self.context.difficulty == "Medium":
+            practice_areas.append("Intermediate architecture patterns")
+
+        # ── General feedback ──
+        if overall_score >= 80:
+            verdict = "Strong performance"
+            tone    = "You are well-prepared for industry interviews at this level."
+        elif overall_score >= 65:
+            verdict = "Solid showing"
+            tone    = "With focused practice on depth and structure, you can reach a higher tier."
+        elif overall_score >= 50:
+            verdict = "Developing candidate"
+            tone    = "Work on expanding your technical vocabulary and practise explaining concepts in detail."
+        else:
+            verdict = "Needs significant improvement"
+            tone    = "Focus on building foundational knowledge and practise speaking answers aloud before interviews."
+
+        general_feedback = (
+            f"{verdict} for a {self.context.role} interview at {self.context.difficulty} difficulty. "
+            f"{tone} "
+            f"Attempted {len(qa_pairs)} question(s) with an average response score of {overall_score}/100."
+        )
+
+        # ── question_feedback list (matches QuestionFeedback schema) ──
+        question_feedback = [
+            {
+                "question": s["question"],
+                "answer":   s["answer"],
+                "score":    s["score"],
+                "feedback": s["feedback"],
+            }
+            for s in scored
+        ]
+
+        return {
+            "overall_score":           overall_score,
+            "technical_score":         technical_score,
+            "communication_score":     communication_score,
+            "answer_relevance":        answer_relevance,
+            "strengths":               strengths[:4],
+            "weaknesses":              weaknesses[:4],
+            "question_feedback":       question_feedback,
+            "improvement_suggestions": improvement_suggestions,
+            "practice_areas":          practice_areas,
+            "general_feedback":        general_feedback,
+        }
+
+    def _minimal_evaluation(self) -> dict:
+        """Returned when the session ended with no answers submitted."""
+        return {
+            "overall_score":           0,
+            "technical_score":         0,
+            "communication_score":     0,
+            "answer_relevance":        0,
+            "strengths":               [],
+            "weaknesses":              ["No answers were submitted during this session."],
+            "question_feedback":       [],
+            "improvement_suggestions": ["Complete at least one question before ending the session."],
+            "practice_areas":          [self.context.role + " fundamentals"],
+            "general_feedback":        "Session ended without any answers being recorded.",
         }
