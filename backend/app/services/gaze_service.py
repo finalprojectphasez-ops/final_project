@@ -32,15 +32,19 @@ class GazeService:
         self._load_config()
 
     def _init_mediapipe(self):
-        if mp is None:
-            logger.warning("MediaPipe is not installed. Face presence will fail.")
+        if mp is None or not hasattr(mp, "solutions"):
+            logger.warning("MediaPipe solutions is not available. Face presence will fail.")
             return
         
-        self.face_mesh = mp.solutions.face_mesh.FaceMesh(
-            static_image_mode=True, 
-            max_num_faces=10, 
-            refine_landmarks=True
-        )
+        try:
+            self.face_mesh = mp.solutions.face_mesh.FaceMesh(
+                static_image_mode=True, 
+                max_num_faces=10, 
+                refine_landmarks=True
+            )
+        except Exception as e:
+            logger.warning(f"Failed to initialize MediaPipe FaceMesh: {e}")
+            self.face_mesh = None
 
     def _load_config(self):
         if not os.path.exists(self.config_path):

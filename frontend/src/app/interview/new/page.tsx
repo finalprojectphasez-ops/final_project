@@ -15,26 +15,44 @@ const roles = [
 
 const difficulties = [
     {
-        label: "Easy", desc: "Conceptual & beginner-friendly", tag: "< 2 YOE",
+        label: "Easy", apiValue: "beginner", desc: "Fundamentals & small practical examples", tag: "Beginner",
         color: "border-emerald-500/40 bg-emerald-500/5", textColor: "text-emerald-400", dot: "bg-emerald-400",
     },
     {
-        label: "Medium", desc: "Real interview standard", tag: "2–5 YOE",
+        label: "Medium", apiValue: "intermediate", desc: "Applied scenarios, debugging & decisions", tag: "Intermediate",
         color: "border-blue-500/40 bg-blue-500/5", textColor: "text-blue-400", dot: "bg-blue-400",
     },
     {
-        label: "Hard", desc: "FAANG / senior-level grilling", tag: "5+ YOE",
+        label: "Hard", apiValue: "advanced", desc: "Architecture, constraints & failure analysis", tag: "Advanced",
         color: "border-rose-500/40 bg-rose-500/5", textColor: "text-rose-400", dot: "bg-rose-400",
     },
 ];
 
 const durations = [
-    { label: "15 min", sub: "Quick warm-up" },
-    { label: "30 min", sub: "Standard session" },
-    { label: "45 min", sub: "Full interview" },
+    { label: "15 min", value: 15, target: "4 questions target", sub: "Quick warm-up" },
+    { label: "30 min", value: 30, target: "6 questions target", sub: "Standard session" },
+    { label: "45 min", value: 45, target: "8 questions target", sub: "Full interview" },
 ];
 
 const STEP_LABELS = ["Role & Difficulty", "Resume Upload", "Review & Launch"];
+
+type ExtractedProfile = {
+    current_title?: string | null;
+    previous_titles?: string[];
+    current_company?: string | null;
+    previous_companies?: string[];
+    years_experience?: number | null;
+    seniority?: string | null;
+    primary_domain?: string | null;
+    industries?: string[];
+    core_skills?: string[];
+    secondary_skills?: string[];
+    tools?: string[];
+    leadership_experience?: boolean | null;
+    key_achievements?: string[];
+    location?: string | null;
+    summary?: string | null;
+};
 
 export default function NewInterviewPage() {
     const router = useRouter();
@@ -42,55 +60,139 @@ export default function NewInterviewPage() {
     const [step, setStep] = useState(1);
     const [role, setRole] = useState("Full Stack Engineer");
     const [difficulty, setDifficulty] = useState("Medium");
-    const [duration, setDuration] = useState("30 min");
+    const [durationMinutes, setDurationMinutes] = useState(30);
+    
+    // File upload & extraction state
     const [fileName, setFileName] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [dragOver, setDragOver] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [extracting, setExtracting] = useState(false);
+    const [extractionError, setExtractionError] = useState("");
+    const [rawResumeText, setRawResumeText] = useState("");
+    
+    // Editable Profile state
+    const [profile, setProfile] = useState<ExtractedProfile | null>(null);
+    const [editTitle, setEditTitle] = useState("");
+    const [editYears, setEditYears] = useState("");
+    const [editSeniority, setEditSeniority] = useState("");
+    const [editSkills, setEditSkills] = useState("");
+    const [editTools, setEditTools] = useState("");
+    const [editSummary, setEditSummary] = useState("");
 
-    const handleFile = (selectedFile: File | null | undefined) => {
-        if (selectedFile && selectedFile.name.endsWith(".pdf")) {
-            setFileName(selectedFile.name);
-            setFile(selectedFile);
+    // Launch loading state
+    const [launching, setLaunching] = useState(false);
+    const [launchError, setLaunchError] = useState("");
+
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
+    const handleFileSelect = async (selectedFile: File | null | undefined) => {
+        if (!selectedFile) return;
+        const name = selectedFile.name.toLowerCase();
+        const valid = name.endsWith(".pdf") || name.endsWith(".docx") || name.endsWith(".doc") || name.endsWith(".txt") || name.endsWith(".text");
+        if (!valid) {
+            setExtractionError("Supported file formats are PDF, DOCX, and TXT.");
+            return;
+        }
+
+        setFileName(selectedFile.name);
+        setFile(selectedFile);
+        setExtractionError("");
+        setExtracting(true);
+
+        try {
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            const res = await fetch(`${backendUrl}/api/resume/upload`, {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                const errDetail = data?.error || data?.detail || "Failed to extract resume text.";
+                setExtractionError(errDetail);
+                setProfile(null);
+            } else {
+                setRawResumeText(data.text || "");
+                if (data.profile) {
+                    setProfile(data.profile);
+                    setEditTitle(data.profile.current_title || "");
+                    setEditYears(data.profile.years_experience ? String(data.profile.years_experience) : "");
+                    setEditSeniority(data.profile.seniority || "");
+                    setEditSkills((data.profile.core_skills || []).join(", "));
+                    setEditTools((data.profile.tools || []).join(", "));
+                    setEditSummary(data.profile.summary || "");
+                }
+            }
+        } catch (err: any) {
+            setExtractionError(err?.message || "Failed to process resume file locally.");
+            setProfile(null);
+        } finally {
+            setExtracting(false);
         }
     };
 
-    const handleStart = async () => {
-        setLoading(true);
-        let resumeText = "";
-        
-        if (file) {
-            try {
-                const formData = new FormData();
-                formData.append("file", file);
-                
-                const res = await fetch("http://localhost:8000/api/resume/upload", {
-                    method: "POST",
-                    body: formData
-                });
-                
-                if (!res.ok) {
-                    throw new Error("Failed to upload and parse PDF");
-                }
-                
-                const data = await res.json();
-                resumeText = data.text;
-            } catch (err) {
-                console.error("Resume upload error:", err);
-                resumeText = fileName; // fallback
-            }
+    const handleStartInterview = async () => {
+        setLaunching(true);
+        setLaunchError("");
+
+        // Construct confirmed profile with candidate review edits
+        let confirmedProfile: ExtractedProfile | null = null;
+        if (profile) {
+            confirmedProfile = {
+                ...profile,
+                current_title: editTitle.trim() || null,
+                years_experience: editYears ? parseFloat(editYears) : null,
+                seniority: editSeniority.trim() || null,
+                core_skills: editSkills ? editSkills.split(",").map(s => s.trim()).filter(Boolean) : [],
+                tools: editTools ? editTools.split(",").map(t => t.trim()).filter(Boolean) : [],
+                summary: editSummary.trim() || null
+            };
         }
-        
-        // Save session context so the interview page can pick it up
-        safeSessionStorage.setItem("interviewContext", JSON.stringify({
-            role,
-            difficulty,
-            duration: parseInt(duration, 10),
-            resumeText: resumeText, // Do not slice, we need the full text for LLM
-        }));
-        
-        const sessionId = "session-" + Date.now();
-        router.push("/interview/" + sessionId);
+
+        try {
+            // Call session creation on backend
+            // Selected role & difficulty remain strictly authoritative
+            const res = await fetch(`${backendUrl}/api/interview/session/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    role: role,
+                    difficulty: difficulty,
+                    duration_minutes: durationMinutes,
+                    resume_profile: confirmedProfile,
+                    resume_text: rawResumeText
+                })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData?.detail || `Server returned HTTP ${res.status}`);
+            }
+
+            const sessionData = await res.json();
+            const sessionId = sessionData.session_id;
+
+            // Save interview context so page can mount seamlessly
+            safeSessionStorage.setItem("interviewContext", JSON.stringify({
+                role: sessionData.role,
+                difficulty: sessionData.difficulty,
+                duration: sessionData.duration_minutes,
+                resumeText: rawResumeText,
+                profile: confirmedProfile,
+                firstQuestion: sessionData.question?.question,
+                firstTopic: sessionData.question?.topic,
+                plannedTopics: sessionData.planned_topics,
+                deadlineTimestamp: sessionData.deadline_timestamp
+            }));
+
+            // Launch session
+            router.push(`/interview/${sessionId}`);
+        } catch (err: any) {
+            console.error("Session launch error:", err);
+            setLaunchError(err?.message || "Could not launch session. Please try again.");
+            setLaunching(false);
+        }
     };
 
     const difficultyObj = difficulties.find(d => d.label === difficulty)!;
@@ -139,7 +241,7 @@ export default function NewInterviewPage() {
                 {/* Card */}
                 <div className="rounded-2xl border border-white/8 overflow-hidden" style={{ background: "rgba(10,10,14,0.85)", backdropFilter: "blur(20px)" }}>
 
-                    {/* ── STEP 1 ── */}
+                    {/* ── STEP 1: Role, Difficulty, Duration ── */}
                     {step === 1 && (
                         <div className="p-7 space-y-7">
                             {/* Role */}
@@ -180,16 +282,17 @@ export default function NewInterviewPage() {
 
                             {/* Duration */}
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-3">Session Duration</label>
+                                <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-3">Session Duration & Planning Target</label>
                                 <div className="grid grid-cols-3 gap-2.5">
                                     {durations.map(d => (
-                                        <button key={d.label} onClick={() => setDuration(d.label)}
-                                            className={`py-3 px-4 rounded-xl border text-left transition-all ${duration === d.label
+                                        <button key={d.label} onClick={() => setDurationMinutes(d.value)}
+                                            className={`py-3 px-4 rounded-xl border text-left transition-all ${durationMinutes === d.value
                                                 ? "border-primary/50 bg-primary/8 text-white"
                                                 : "border-white/8 bg-white/[0.03] text-zinc-500 hover:border-white/15"
                                                 }`}>
                                             <div className="font-bold text-sm">{d.label}</div>
-                                            <div className="text-xs text-zinc-600 mt-0.5">{d.sub}</div>
+                                            <div className="text-xs text-primary/80 mt-0.5">{d.target}</div>
+                                            <div className="text-[11px] text-zinc-600 mt-0.5">{d.sub}</div>
                                         </button>
                                     ))}
                                 </div>
@@ -203,63 +306,149 @@ export default function NewInterviewPage() {
                         </div>
                     )}
 
-                    {/* ── STEP 2 ── */}
+                    {/* ── STEP 2: Resume Upload & Editable Profile Review ── */}
                     {step === 2 && (
                         <div className="p-7 space-y-6">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-1">Upload Resume</label>
-                                <p className="text-zinc-600 text-xs mb-4">PDF only · max 5 MB · <span className="text-amber-400 font-medium">Required to proceed</span></p>
+                                <label className="block text-xs font-semibold uppercase tracking-widest text-zinc-500 mb-1">Upload Resume (Optional)</label>
+                                <p className="text-zinc-400 text-xs mb-4">Supported formats: PDF, DOCX, TXT · max 5 MB</p>
 
                                 {/* Drop zone */}
                                 <div
                                     onClick={() => fileRef.current?.click()}
                                     onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                                     onDragLeave={() => setDragOver(false)}
-                                    onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
-                                    className={`relative rounded-xl border-2 border-dashed p-10 flex flex-col items-center text-center cursor-pointer transition-all duration-200 ${dragOver
+                                    onDrop={e => { e.preventDefault(); setDragOver(false); handleFileSelect(e.dataTransfer.files[0]); }}
+                                    className={`relative rounded-xl border-2 border-dashed p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-200 ${dragOver
                                         ? "border-primary/60 bg-primary/5"
-                                        : fileName
+                                        : fileName && profile
                                             ? "border-emerald-500/40 bg-emerald-500/5"
-                                            : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+                                            : extractionError
+                                                ? "border-rose-500/40 bg-rose-500/5"
+                                                : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
                                         }`}>
-                                    <input ref={fileRef} type="file" accept=".pdf" onChange={e => handleFile(e.target.files?.[0])} className="hidden" />
+                                    <input ref={fileRef} type="file" accept=".pdf,.docx,.doc,.txt,.text" onChange={e => handleFileSelect(e.target.files?.[0])} className="hidden" />
 
-                                    {fileName ? (
+                                    {extracting ? (
+                                        <div className="flex flex-col items-center py-4">
+                                            <svg className="w-8 h-8 animate-spin text-primary mb-3" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                            <p className="text-white text-sm font-medium">Extracting professional information...</p>
+                                            <p className="text-zinc-500 text-xs mt-1">Processing locally using shared local language model</p>
+                                        </div>
+                                    ) : fileName && profile ? (
                                         <>
-                                            <div className="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
-                                                <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-3">
+                                                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                             </div>
                                             <p className="text-white font-medium text-sm">{fileName}</p>
-                                            <p className="text-emerald-400 text-xs mt-1">✓ Ready to parse</p>
-                                            <button onClick={e => { e.stopPropagation(); setFileName(""); setFile(null); }} className="mt-3 text-xs text-zinc-600 hover:text-red-400 transition-colors">Remove</button>
+                                            <p className="text-emerald-400 text-xs mt-1">✓ Professional profile successfully extracted</p>
+                                            <button onClick={e => { e.stopPropagation(); setFileName(""); setFile(null); setProfile(null); }} className="mt-2 text-xs text-zinc-500 hover:text-rose-400 transition-colors">Replace / Remove</button>
                                         </>
                                     ) : (
                                         <>
-                                            <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-                                                <svg className="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+                                                <svg className="w-5 h-5 text-zinc-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
                                             </div>
-                                            <p className="text-white text-sm font-medium">Drop your PDF here</p>
-                                            <p className="text-zinc-600 text-xs mt-1">or click to browse files</p>
+                                            <p className="text-white text-sm font-medium">Drop your PDF, DOCX or TXT file here</p>
+                                            <p className="text-zinc-500 text-xs mt-1">or click to browse files</p>
                                         </>
                                     )}
                                 </div>
 
-                                {/* Session summary */}
-                                <div className="mt-4 p-3.5 rounded-xl bg-white/[0.03] border border-white/8 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                                        <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                                {/* Extraction Error Display */}
+                                {extractionError && (
+                                    <div className="mt-3 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-2.5 text-xs text-rose-300">
+                                        <svg className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                                        <div>
+                                            <span className="font-semibold block mb-0.5">Extraction Error:</span>
+                                            {extractionError}
+                                        </div>
                                     </div>
-                                    <p className="text-zinc-500 text-xs leading-relaxed">
-                                        Questions will be tailored for <span className="text-white font-medium">{role}</span> at <span className={`font-medium ${difficultyObj.textColor}`}>{difficulty}</span> difficulty • <span className="text-white font-medium">{duration}</span> session
-                                    </p>
-                                </div>
+                                )}
+
+                                {/* Editable Extracted Profile Review Form */}
+                                {profile && (
+                                    <div className="mt-5 p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-3.5 animate-in fade-in">
+                                        <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                                            <span className="text-xs font-semibold text-white uppercase tracking-wider">Review & Edit Extracted Profile</span>
+                                            <span className="text-[11px] text-zinc-500">15-field profile contract</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3 text-xs">
+                                            <div>
+                                                <label className="text-zinc-500 block mb-1">Current Title</label>
+                                                <input
+                                                    type="text"
+                                                    value={editTitle}
+                                                    onChange={e => setEditTitle(e.target.value)}
+                                                    placeholder="e.g. Senior Software Engineer"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder-zinc-600 focus:outline-none focus:border-primary/50"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-zinc-500 block mb-1">Years of Experience</label>
+                                                <input
+                                                    type="number"
+                                                    value={editYears}
+                                                    onChange={e => setEditYears(e.target.value)}
+                                                    placeholder="e.g. 5"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder-zinc-600 focus:outline-none focus:border-primary/50"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="text-xs">
+                                            <label className="text-zinc-500 block mb-1">Core Technical Skills (comma separated)</label>
+                                            <input
+                                                type="text"
+                                                value={editSkills}
+                                                onChange={e => setEditSkills(e.target.value)}
+                                                placeholder="React, TypeScript, Node.js, PostgreSQL"
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder-zinc-600 focus:outline-none focus:border-primary/50"
+                                            />
+                                        </div>
+
+                                        <div className="text-xs">
+                                            <label className="text-zinc-500 block mb-1">Tools & Platforms</label>
+                                            <input
+                                                type="text"
+                                                value={editTools}
+                                                onChange={e => setEditTools(e.target.value)}
+                                                placeholder="Docker, Git, AWS, Kubernetes"
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder-zinc-600 focus:outline-none focus:border-primary/50"
+                                            />
+                                        </div>
+
+                                        <div className="text-xs">
+                                            <label className="text-zinc-500 block mb-1">Professional Summary</label>
+                                            <textarea
+                                                rows={2}
+                                                value={editSummary}
+                                                onChange={e => setEditSummary(e.target.value)}
+                                                placeholder="Brief grounded professional summary..."
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-white placeholder-zinc-600 resize-none focus:outline-none focus:border-primary/50"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!profile && (
+                                    <div className="mt-4 p-3.5 rounded-xl bg-white/[0.03] border border-white/8 flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                                            <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                                        </div>
+                                        <p className="text-zinc-500 text-xs leading-relaxed">
+                                            No resume? You can proceed to a standard <strong className="text-white">Role-Only Interview</strong> with hypothetical scenarios.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex gap-3">
                                 <button onClick={() => setStep(1)} className="py-3 px-5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium">
                                     ← Back
                                 </button>
-                            <button
+                                <button
                                     onClick={() => setStep(3)}
                                     className="flex-1 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-all text-sm flex items-center justify-center gap-2"
                                 >
@@ -270,65 +459,72 @@ export default function NewInterviewPage() {
                         </div>
                     )}
 
-                    {/* ── STEP 3 ── */}
+                    {/* ── STEP 3: Review & Launch ── */}
                     {step === 3 && (
                         <div className="p-7 space-y-5">
                             <div>
                                 <h2 className="text-lg font-bold text-white mb-1">Review & Launch</h2>
-                                <p className="text-zinc-600 text-xs">Confirm your session settings before going live.</p>
+                                <p className="text-zinc-400 text-xs">Confirm your session settings. The selected role and difficulty remain authoritative.</p>
                             </div>
 
                             {/* Summary cards */}
-                            <div className="space-y-2">
-                                {[
-                                    {
-                                        label: "Role",
-                                        value: role,
-                                        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" /></svg>,
-                                    },
-                                    {
-                                        label: "Difficulty",
-                                        value: difficulty,
-                                        valueClass: difficultyObj.textColor,
-                                        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
-                                    },
-                                    {
-                                        label: "Duration",
-                                        value: duration,
-                                        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-                                    },
-                                    {
-                                        label: "Resume",
-                                        value: fileName || "None (generic questions)",
-                                        valueClass: fileName ? "text-emerald-400" : "text-zinc-500",
-                                        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>,
-                                    },
-                                ].map((r, i) => (
-                                    <div key={i} className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/[0.03] border border-white/8">
-                                        <div className="flex items-center gap-2.5 text-zinc-500">
-                                            {r.icon}
-                                            <span className="text-sm">{r.label}</span>
-                                        </div>
-                                        <span className={`text-sm font-medium truncate max-w-[55%] text-right ${r.valueClass || "text-white"}`}>{r.value}</span>
+                            <div className="space-y-2.5">
+                                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/[0.03] border border-white/8">
+                                    <div className="flex items-center gap-2.5 text-zinc-400">
+                                        <span className="text-xs font-semibold uppercase tracking-wider">Authoritative Role</span>
                                     </div>
-                                ))}
+                                    <span className="text-sm font-bold text-white">{role}</span>
+                                </div>
+
+                                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/[0.03] border border-white/8">
+                                    <div className="flex items-center gap-2.5 text-zinc-400">
+                                        <span className="text-xs font-semibold uppercase tracking-wider">Difficulty Level</span>
+                                    </div>
+                                    <span className={`text-sm font-bold ${difficultyObj.textColor}`}>{difficulty} ({difficultyObj.tag})</span>
+                                </div>
+
+                                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/[0.03] border border-white/8">
+                                    <div className="flex items-center gap-2.5 text-zinc-400">
+                                        <span className="text-xs font-semibold uppercase tracking-wider">Duration & Targets</span>
+                                    </div>
+                                    <span className="text-sm font-medium text-white">{durationMinutes} min ({durationMinutes === 15 ? 4 : durationMinutes === 30 ? 6 : 8} main questions, max 2 follow-ups)</span>
+                                </div>
+
+                                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/[0.03] border border-white/8">
+                                    <div className="flex items-center gap-2.5 text-zinc-400">
+                                        <span className="text-xs font-semibold uppercase tracking-wider">Candidate Profile</span>
+                                    </div>
+                                    <span className={`text-sm font-medium truncate max-w-[55%] text-right ${profile ? "text-emerald-400" : "text-zinc-500"}`}>
+                                        {profile ? (editTitle || "Extracted Profile Attached") : "Role-Only (No Resume)"}
+                                    </span>
+                                </div>
+
+                                {profile && editSkills && (
+                                    <div className="py-2.5 px-4 rounded-xl bg-white/[0.02] border border-white/5 text-xs text-zinc-400">
+                                        <span className="text-zinc-500 block mb-0.5">Resume Grounding Skills:</span>
+                                        <span className="text-zinc-200">{editSkills}</span>
+                                    </div>
+                                )}
                             </div>
 
-                            {/* Warning */}
-                            <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 flex gap-3">
-                                <svg className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                                <p className="text-amber-300/80 text-xs leading-relaxed">
-                                    Session will be <strong className="text-amber-300">fullscreen locked</strong>. Tab switching, focus loss, and camera/mic refusals are logged as violations. <strong className="text-amber-300">4 violations terminate the session.</strong>
-                                </p>
+                            {/* Authoritative Guard Notice */}
+                            <div className="p-3.5 rounded-xl bg-blue-500/5 border border-blue-500/20 text-xs text-blue-300/90 leading-relaxed">
+                                <strong>System Note:</strong> Selected job role and difficulty remain strictly authoritative. Resume background personalizes technical context but will never override your selected role or difficulty.
                             </div>
+
+                            {launchError && (
+                                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300">
+                                    {launchError}
+                                </div>
+                            )}
 
                             <div className="flex gap-3 pt-1">
                                 <button onClick={() => setStep(2)} className="py-3 px-5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium">
                                     ← Back
                                 </button>
-                                <button onClick={handleStart} disabled={loading}
+                                <button onClick={handleStartInterview} disabled={launching}
                                     className="flex-1 py-3.5 bg-primary hover:bg-primary/90 disabled:opacity-60 text-white font-bold rounded-xl transition-all text-sm flex items-center justify-center gap-2">
-                                    {loading ? (
+                                    {launching ? (
                                         <>
                                             <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                                             Starting session...
@@ -336,7 +532,7 @@ export default function NewInterviewPage() {
                                     ) : (
                                         <>
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
-                                            Begin Interview
+                                            Launch Interview Session
                                         </>
                                     )}
                                 </button>
@@ -345,7 +541,7 @@ export default function NewInterviewPage() {
                     )}
                 </div>
 
-                <p className="text-center text-zinc-700 text-xs mt-5">Your session is encrypted and never stored permanently.</p>
+                <p className="text-center text-zinc-700 text-xs mt-5">Session timer begins upon launch after review.</p>
             </div>
         </div>
     );

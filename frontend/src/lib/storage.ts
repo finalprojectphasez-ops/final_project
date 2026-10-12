@@ -6,7 +6,10 @@ export const safeSessionStorage = {
   getItem: (key: string): string | null => {
     try {
       if (typeof window !== "undefined") {
-        return window.sessionStorage.getItem(key);
+        const sessionVal = window.sessionStorage.getItem(key);
+        if (sessionVal !== null) return sessionVal;
+        const localVal = window.localStorage.getItem(key);
+        if (localVal !== null) return localVal;
       }
     } catch {
       // Storage access is denied (SecurityError)
@@ -17,7 +20,8 @@ export const safeSessionStorage = {
   setItem: (key: string, value: string): void => {
     try {
       if (typeof window !== "undefined") {
-        window.sessionStorage.setItem(key, value);
+        try { window.sessionStorage.setItem(key, value); } catch {}
+        try { window.localStorage.setItem(key, value); } catch {}
         return;
       }
     } catch {
@@ -29,7 +33,8 @@ export const safeSessionStorage = {
   removeItem: (key: string): void => {
     try {
       if (typeof window !== "undefined") {
-        window.sessionStorage.removeItem(key);
+        try { window.sessionStorage.removeItem(key); } catch {}
+        try { window.localStorage.removeItem(key); } catch {}
       }
     } catch {
       // Storage access is denied (SecurityError)

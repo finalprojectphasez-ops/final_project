@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 
 # Import Routes
-from app.routes import interview, emotion, resume, speech
+from app.routes import interview, emotion, resume, speech, reports, rubric
 
 app = FastAPI(
     title="PreMock AI API",
@@ -28,6 +28,8 @@ app.include_router(interview.router, prefix="/api", tags=["Interview"])
 app.include_router(emotion.router, prefix="/api/emotion", tags=["Emotion"])
 app.include_router(resume.router, prefix="/api/resume", tags=["Resume"])
 app.include_router(speech.router, prefix="/api/speech", tags=["Speech"])
+app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
+app.include_router(rubric.router, prefix="/api/rubric", tags=["Rubric"])
 
 @app.get("/")
 def health_check():

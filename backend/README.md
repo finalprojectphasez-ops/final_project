@@ -35,11 +35,17 @@ uvicorn app.main:app --reload --port 8000
 ## API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+|---|---|---|
 | `GET` | `/` | Health check |
-| `POST` | `/api/setup` | Initialize interview session |
-| `POST` | `/api/answer` | Submit answer, get next question |
-| `WS` | `/api/stream/{session_id}` | Real-time audio streaming |
+| `GET` | `/api/rubric/config` | 100-mark rubric version, criteria & anchors |
+| `POST` | `/api/rubric/assess` | Deterministic local evaluation across 7 criteria |
+| `POST` | `/api/rubric/manual-review` | Human assessor override / spoken delivery rating |
+| `GET` | `/api/rubric/export/{session_id}` | Export JSON/CSV provenance and evidence audit |
+| `POST` | `/api/reports/save` | Persistent report storage on disk |
+| `GET` | `/api/reports/{id}` | Retrieve report with rubric breakdown |
+| `POST` | `/api/interview/next-turn` | Instant 3-part turn progression |
+
+For complete documentation on the 100-mark assessment rubric, see [docs/RUBRIC_100_GUIDE.md](docs/RUBRIC_100_GUIDE.md).
 
 ## Project Structure
 

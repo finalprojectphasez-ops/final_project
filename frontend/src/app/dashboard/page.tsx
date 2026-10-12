@@ -5,6 +5,10 @@ import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import { supabase } from "@/lib/supabase/client";
 
+import { safeSessionStorage } from "@/lib/storage";
+
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
 const ICONS = {
     interviews: <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>,
     avgScore: <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>,
@@ -32,33 +36,74 @@ export default function DashboardPage() {
             setFirstName(fullName.split(" ")[0]);
         });
         
-        supabase
-            .from("interview_sessions")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .then(({ data, error }) => {
-                if (error) {
-                    console.error("Error fetching history:", error);
-                    return;
+        async function loadHistory() {
+            const combinedMap = new Map<string, any>();
+
+            // 1. From local storage history
+            try {
+                const localHist = JSON.parse(safeSessionStorage.getItem("premock_session_history") || "[]");
+                if (Array.isArray(localHist)) {
+                    localHist.forEach((item: any) => {
+                        const key = item.id || item.backend_session_id;
+                        if (key) combinedMap.set(key, item);
+                    });
                 }
-                if (data) {
-                    setHistory(data);
-                    
-                    const count = data.length;
-                    if (count > 0) {
-                        const sumScore = data.reduce((acc, curr) => acc + (curr.overall_score || 0), 0);
-                        const best = Math.max(...data.map(s => s.overall_score || 0));
-                        const minutes = data.reduce((acc, curr) => acc + (curr.duration_minutes || 0), 0);
-                        
-                        setStats([
-                            { label: "Interviews Done", value: count.toString(), color: "text-violet-400", iconColor: "text-violet-400", icon: ICONS.interviews },
-                            { label: "Avg Score", value: Math.round(sumScore / count).toString(), color: "text-blue-400", iconColor: "text-blue-400", icon: ICONS.avgScore },
-                            { label: "Best Score", value: best.toString(), color: "text-amber-400", iconColor: "text-amber-400", icon: ICONS.bestScore },
-                            { label: "Hours Practiced", value: (minutes / 60).toFixed(1), color: "text-emerald-400", iconColor: "text-emerald-400", icon: ICONS.hours },
-                        ]);
+            } catch (e) {}
+
+            // 2. From Backend server disk
+            try {
+                const res = await fetch(`${BACKEND}/api/reports`);
+                if (res.ok) {
+                    const serverReports = await res.json();
+                    if (Array.isArray(serverReports)) {
+                        serverReports.forEach((item: any) => {
+                            const key = item.id || item.backend_session_id;
+                            if (key) combinedMap.set(key, item);
+                        });
                     }
                 }
+            } catch (e) {}
+
+            // 3. From Supabase DB
+            try {
+                const { data: dbSessions } = await supabase
+                    .from("interview_sessions")
+                    .select("*")
+                    .order("created_at", { ascending: false });
+
+                if (Array.isArray(dbSessions)) {
+                    dbSessions.forEach((item: any) => {
+                        const key = item.id || item.backend_session_id;
+                        if (key) combinedMap.set(key, item);
+                    });
+                }
+            } catch (e) {}
+
+            const merged = Array.from(combinedMap.values());
+            merged.sort((a, b) => {
+                const tA = new Date(a.created_at || a.completed_at || 0).getTime();
+                const tB = new Date(b.created_at || b.completed_at || 0).getTime();
+                return tB - tA;
             });
+
+            setHistory(merged);
+
+            const count = merged.length;
+            if (count > 0) {
+                const sumScore = merged.reduce((acc, curr) => acc + (curr.overall_score || 0), 0);
+                const best = Math.max(...merged.map(s => s.overall_score || 0));
+                const minutes = merged.reduce((acc, curr) => acc + (curr.duration_minutes || 0), 0);
+
+                setStats([
+                    { label: "Interviews Done", value: count.toString(), color: "text-violet-400", iconColor: "text-violet-400", icon: ICONS.interviews },
+                    { label: "Avg Score", value: Math.round(sumScore / count).toString(), color: "text-blue-400", iconColor: "text-blue-400", icon: ICONS.avgScore },
+                    { label: "Best Score", value: best.toString(), color: "text-amber-400", iconColor: "text-amber-400", icon: ICONS.bestScore },
+                    { label: "Hours Practiced", value: (minutes / 60).toFixed(1), color: "text-emerald-400", iconColor: "text-emerald-400", icon: ICONS.hours },
+                ]);
+            }
+        }
+
+        loadHistory();
     }, []);
 
     return (
