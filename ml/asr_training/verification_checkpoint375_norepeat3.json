@@ -1,0 +1,3056 @@
+{
+  "metadata": {
+    "verification_experiment": "checkpoint375_norepeat3_verification",
+    "timestamp": "2026-10-14T20:26:11",
+    "model_path": "D:\\project phase 2\\final_project-1\\ml\\asr_model\\whisper_tech_interviews_lora\\phase1_10k\\checkpoint-375",
+    "base_model": "openai/whisper-base.en",
+    "quantization": "8-bit",
+    "decoding_parameters": {
+      "max_length": 225,
+      "num_beams": 1,
+      "do_sample": false,
+      "no_repeat_ngram_size": 3
+    },
+    "num_samples_evaluated": 200,
+    "cuda_device": "NVIDIA GeForce RTX 3050 Laptop GPU"
+  },
+  "summary_metrics": {
+    "model_id": "D:\\project phase 2\\final_project-1\\ml\\asr_model\\whisper_tech_interviews_lora\\phase1_10k\\checkpoint-375",
+    "base_model": "openai/whisper-base.en",
+    "quantization": "8-bit",
+    "decoding": {
+      "max_length": 225,
+      "num_beams": 1,
+      "do_sample": false,
+      "no_repeat_ngram_size": 3
+    },
+    "num_samples_evaluated": 200,
+    "total_audio_duration_seconds": 3137.27,
+    "total_inference_seconds": 180.11,
+    "normalized_wer_pct": 32.76,
+    "raw_wer_pct": 36.99,
+    "normalized_cer_pct": 19.92,
+    "technical_term_recall_pct": 77.35,
+    "technical_terms_matched": 181,
+    "technical_terms_total": 234,
+    "repetition_failures_count": 0,
+    "repetition_failure_rate_pct": 0.0,
+    "mean_latency_ms": 900.55,
+    "median_latency_ms": 817.67,
+    "real_time_factor": 0.0574,
+    "comparison_with_deployed_model_a": {
+      "model_a_deployed_wer_pct": 50.21,
+      "model_b_baseline_greedy_wer_pct": 40.76,
+      "model_b_norepeat3_wer_pct": 32.76,
+      "absolute_wer_improvement_vs_model_a": 17.45,
+      "absolute_wer_improvement_vs_greedy": 8.0,
+      "wins_vs_model_a": 84,
+      "ties_vs_model_a": 81,
+      "losses_vs_model_a": 39,
+      "wilcoxon_stat_vs_model_a": 4613.0,
+      "wilcoxon_p_value_vs_model_a": 7.53753312173383e-07
+    }
+  },
+  "per_recording_results": [
+    {
+      "index": 1,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm not sure.",
+      "reference_norm": "i m not sure ",
+      "prediction_raw": " .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 1207.2,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 2,
+      "source_file": "valid.json",
+      "duration_sec": 4.76,
+      "reference_raw": "complex complex. I'm promised to be there.",
+      "reference_norm": "complex complex i m promised to be there ",
+      "prediction_raw": " promise to you",
+      "prediction_norm": " promise to you",
+      "normalized_wer_pct": 87.5,
+      "latency_ms": 319.06,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 3,
+      "source_file": "valid.json",
+      "duration_sec": 14.56,
+      "reference_raw": "is very effective on page replacement algorithm. the page replacement when the page is replacing the memory hierarchy show the effectiveness on the algorithm.",
+      "reference_norm": "is very effective on page replacement algorithm the page replacement when the page is replacing the memory hierarchy show the effectiveness on the algorithm ",
+      "prediction_raw": " The memory hierarchy show the effectiveness on the algorithm.",
+      "prediction_norm": " the memory hierarchy show the effectiveness on the algorithm ",
+      "normalized_wer_pct": 62.5,
+      "latency_ms": 402.32,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 4,
+      "source_file": "valid.json",
+      "duration_sec": 13.54,
+      "reference_raw": "the distance in which open shortest path first is used as the the path which is open for the shortest routing.",
+      "reference_norm": "the distance in which open shortest path first is used as the the path which is open for the shortest routing ",
+      "prediction_raw": " in the distance in which open shortest park first is used as the the park which is open shortest routing",
+      "prediction_norm": " in the distance in which open shortest park first is used as the the park which is open shortest routing",
+      "normalized_wer_pct": 23.81,
+      "latency_ms": 815.42,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 5,
+      "source_file": "valid.json",
+      "duration_sec": 16.2,
+      "reference_raw": "I'm going to go ahead and start.",
+      "reference_norm": "i m going to go ahead and start ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 114.94,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 6,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "that label set of data can be predicted of the old data or the stacked data but the new data will not be predicted. The new data the new data will not be tested by the old. It can be overcome by the new techniques new techniques like new",
+      "reference_norm": "that label set of data can be predicted of the old data or the stacked data but the new data will not be predicted the new data the new data will not be tested by the old it can be overcome by the new techniques new techniques like new",
+      "prediction_raw": " that level of data can be predicted of the volt data or the stack data but the new data will not be predicted. The new data not be tested by the voltage it can be over combination that you take new techniques like",
+      "prediction_norm": " that level of data can be predicted of the volt data or the stack data but the new data will not be predicted the new data not be tested by the voltage it can be over combination that you take new techniques like",
+      "normalized_wer_pct": 30.61,
+      "latency_ms": 1402.97,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 7,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "memorization or dynamic programming when applied to are used to apply the factorial calculation memorization approach is the best approach.",
+      "reference_norm": "memorization or dynamic programming when applied to are used to apply the factorial calculation memorization approach is the best approach ",
+      "prediction_raw": " Just memorization or dynamic programming when applying to our user to apply the factorial calculation. Memorization approach is the best of",
+      "prediction_norm": " just memorization or dynamic programming when applying to our user to apply the factorial calculation memorization approach is the best of",
+      "normalized_wer_pct": 25.0,
+      "latency_ms": 807.24,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 8,
+      "source_file": "valid.json",
+      "duration_sec": 4.76,
+      "reference_raw": "Hello.",
+      "reference_norm": "hello ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 117.71,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 9,
+      "source_file": "valid.json",
+      "duration_sec": 12.92,
+      "reference_raw": "across a shared is especially during during updates or or when handling failures requires a careful design of the system to avoid issues like stale data or conflicts.",
+      "reference_norm": "across a shared is especially during during updates or or when handling failures requires a careful design of the system to avoid issues like stale data or conflicts ",
+      "prediction_raw": " across the charity is an inter-expicular during updates or or of handling failures required the careful detail of the system to avoid issues like stay later or conflicts.",
+      "prediction_norm": " across the charity is an inter expicular during updates or or of handling failures required the careful detail of the system to avoid issues like stay later or conflicts ",
+      "normalized_wer_pct": 39.29,
+      "latency_ms": 1051.83,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 10,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "in the hybrid database architecture use SQLs and both.",
+      "reference_norm": "in the hybrid database architecture use sqls and both ",
+      "prediction_raw": " in the hybrid database structure use scales and both",
+      "prediction_norm": " in the hybrid database structure use scales and both",
+      "normalized_wer_pct": 22.22,
+      "latency_ms": 366.98,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 11,
+      "source_file": "valid.json",
+      "duration_sec": 14.68,
+      "reference_raw": "other digital systems but they serve different functions. Input devices are examples of keyboard and mouse. Output devices are have examples of computer and printer.",
+      "reference_norm": "other digital systems but they serve different functions input devices are examples of keyboard and mouse output devices are have examples of computer and printer ",
+      "prediction_raw": " other digital as systems but their server different functions input devices are examples of keyboard and mouse output devices are have examples of computer and print",
+      "prediction_norm": " other digital as systems but their server different functions input devices are examples of keyboard and mouse output devices are have examples of computer and print",
+      "normalized_wer_pct": 16.0,
+      "latency_ms": 883.3,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 12,
+      "source_file": "valid.json",
+      "duration_sec": 3.02,
+      "reference_raw": "additional overhead",
+      "reference_norm": "additional overhead",
+      "prediction_raw": " is done overhead.",
+      "prediction_norm": " is done overhead ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 214.54,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 13,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Universal bank syndicated risk management across different verticals through various strategies. Enterprise risk management, integrated risk management system, strong governance and controls, collaboration and",
+      "reference_norm": "universal bank syndicated risk management across different verticals through various strategies enterprise risk management integrated risk management system strong governance and controls collaboration and",
+      "prediction_raw": " The new event bank indicated in the summary of different derivatives flow by its energy. Enterprise management, integrated derivatives from energy success, found bond and the run from collaboration and",
+      "prediction_norm": " the new event bank indicated in the summary of different derivatives flow by its energy enterprise management integrated derivatives from energy success found bond and the run from collaboration and",
+      "normalized_wer_pct": 95.83,
+      "latency_ms": 1116.18,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 14,
+      "source_file": "valid.json",
+      "duration_sec": 11.22,
+      "reference_raw": "Please, sir.",
+      "reference_norm": "please sir ",
+      "prediction_raw": " Hey!",
+      "prediction_norm": " hey ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 164.38,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 15,
+      "source_file": "valid.json",
+      "duration_sec": 5.4,
+      "reference_raw": "The decision tree works as a splitting first it splits.",
+      "reference_norm": "the decision tree works as a splitting first it splits ",
+      "prediction_raw": " The decision tree works as a splitting first is splitting.",
+      "prediction_norm": " the decision tree works as a splitting first is splitting ",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 421.98,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 16,
+      "source_file": "valid.json",
+      "duration_sec": 18.64,
+      "reference_raw": "of money. It usually collect the money from the people who surplus and give it to in form of loans to the people who need it. And it also offers financial services as like I told deposit, loans, investment banking, financial analysis, asset management, etc.",
+      "reference_norm": "of money it usually collect the money from the people who surplus and give it to in form of loans to the people who need it and it also offers financial services as like i told deposit loans investment banking financial analysis asset management etc ",
+      "prediction_raw": " of money. It usually collect the money from the people who surplus and give it to in form of loans to the people whom need it. And it also offers financial services as like I told deposit loans, investment banking, financial analysis, asset management etc.",
+      "prediction_norm": " of money it usually collect the money from the people who surplus and give it to in form of loans to the people whom need it and it also offers financial services as like i told deposit loans investment banking financial analysis asset management etc ",
+      "normalized_wer_pct": 2.22,
+      "latency_ms": 1680.19,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 17,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What?",
+      "reference_norm": "what ",
+      "prediction_raw": " walked",
+      "prediction_norm": " walked",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 249.94,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 18,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "uh solid state discs SSDs also.",
+      "reference_norm": "uh solid state discs ssds also ",
+      "prediction_raw": " solid state disks SSDs also.",
+      "prediction_norm": " solid state disks ssds also ",
+      "normalized_wer_pct": 33.33,
+      "latency_ms": 278.57,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 19,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What is the significance of the second schedule of the ENTITY_ORGANIZATION Reserve Bank of India END Act 1934? Second schedule.",
+      "reference_norm": "what is the significance of the second schedule of the entity organization reserve bank of india end act 1934 second schedule ",
+      "prediction_raw": " What is the significance of the second schedule of the reserve bank of Kenya at 1934? Second schedule",
+      "prediction_norm": " what is the significance of the second schedule of the reserve bank of kenya at 1934 second schedule",
+      "normalized_wer_pct": 23.81,
+      "latency_ms": 631.75,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 20,
+      "source_file": "valid.json",
+      "duration_sec": 18.36,
+      "reference_raw": "Assigns a unique identifier to transaction to included with a began. The time swap is used to ensure that real one transaction access that most recently version of the data.",
+      "reference_norm": "assigns a unique identifier to transaction to included with a began the time swap is used to ensure that real one transaction access that most recently version of the data ",
+      "prediction_raw": " Assign says unique identifier to transfer transaction to included with a begin. The time swap is used to ensure that real one transaction access that most recently version of the data.",
+      "prediction_norm": " assign says unique identifier to transfer transaction to included with a begin the time swap is used to ensure that real one transaction access that most recently version of the data ",
+      "normalized_wer_pct": 13.33,
+      "latency_ms": 1076.84,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 21,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "with a hard disk drive to manage data fragments. And uh this is uh and this is uh important uh for performance and uh uh when you come to uh disk drive management data fragment of the hard disk. Hard disk generally",
+      "reference_norm": "with a hard disk drive to manage data fragments and uh this is uh and this is uh important uh for performance and uh uh when you come to uh disk drive management data fragment of the hard disk hard disk generally",
+      "prediction_raw": " with the hard disk drive to manage data fragments. And if this is and this is important for performance and when you come to disk drive management data fragment of the hard disks, hard disk generally",
+      "prediction_norm": " with the hard disk drive to manage data fragments and if this is and this is important for performance and when you come to disk drive management data fragment of the hard disks hard disk generally",
+      "normalized_wer_pct": 21.43,
+      "latency_ms": 1246.52,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 22,
+      "source_file": "valid.json",
+      "duration_sec": 14.56,
+      "reference_raw": "of mind by protecting your and your loved ones. the importance of the insurance benefits is financial protection, risk management, peace mind and reducing the",
+      "reference_norm": "of mind by protecting your and your loved ones the importance of the insurance benefits is financial protection risk management peace mind and reducing the",
+      "prediction_raw": " of mind by protecting your and your loved ones. The importance of the insurance benefits is financial protection risk management peace mind and reducing the",
+      "prediction_norm": " of mind by protecting your and your loved ones the importance of the insurance benefits is financial protection risk management peace mind and reducing the",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 1201.19,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 23,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 129.3,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 24,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "but it's not actually when the virtual memory is divided into many portions called the pages. pages are placed in frames. simply know that the virtual memory is stored in the physical memory but it's not physical memory but it can convert to physical memory. So it's",
+      "reference_norm": "but it s not actually when the virtual memory is divided into many portions called the pages pages are placed in frames simply know that the virtual memory is stored in the physical memory but it s not physical memory but it can convert to physical memory so it s",
+      "prediction_raw": " but it's not absolute. When our show memory is divided into many parts it's called pages. Pages are placed in frames. It's a very non-angivational memory store in here. It is not a memory but it is not visible. But it now converges.",
+      "prediction_norm": " but it s not absolute when our show memory is divided into many parts it s called pages pages are placed in frames it s a very non angivational memory store in here it is not a memory but it is not visible but it now converges ",
+      "normalized_wer_pct": 58.0,
+      "latency_ms": 2103.09,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 25,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "the process of dividing a node it depends on various factors like index, information gain, gain ratio and so on. All these are calculated and the node which has the information gain, the split occurs from that node. And also impurity is used to create the random",
+      "reference_norm": "the process of dividing a node it depends on various factors like index information gain gain ratio and so on all these are calculated and the node which has the information gain the split occurs from that node and also impurity is used to create the random",
+      "prediction_raw": " the process of dividing a node it depends on various factors like gene index information gain gain ratio and so on. All these are calculated and the node which has the information gain the split occurs from that node and also gene impurity is used to create the random",
+      "prediction_norm": " the process of dividing a node it depends on various factors like gene index information gain gain ratio and so on all these are calculated and the node which has the information gain the split occurs from that node and also gene impurity is used to create the random",
+      "normalized_wer_pct": 4.26,
+      "latency_ms": 2035.38,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 26,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Drop table is used to drop the table like drop if exist table and followed by E table because once a table is executed and the output is came in the post E SQL, we can't use that table again. Like for an example, drop",
+      "reference_norm": "drop table is used to drop the table like drop if exist table and followed by e table because once a table is executed and the output is came in the post e sql we can t use that table again like for an example drop",
+      "prediction_raw": " drop table is used to drop the table like drop if exist table and followed by table name because once a table is executed and the output is came in the post rescue we cannot use that table again like for an example drop table",
+      "prediction_norm": " drop table is used to drop the table like drop if exist table and followed by table name because once a table is executed and the output is came in the post rescue we cannot use that table again like for an example drop table",
+      "normalized_wer_pct": 15.22,
+      "latency_ms": 1746.53,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 27,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "able to carry a one valid state to another maintaining data integrity. Isolation isolation ensures the the concurrency transitions do not interferes with each other providing a stable environment guarantees that once transition is committed it remains so even in the event of event of system failure.",
+      "reference_norm": "able to carry a one valid state to another maintaining data integrity isolation isolation ensures the the concurrency transitions do not interferes with each other providing a stable environment guarantees that once transition is committed it remains so even in the event of event of system failure ",
+      "prediction_raw": " village state to another maintaining the head integrity isolation isolation isolation ensures that the concurrency and transition sort of do not interfere with each other providing it stay stable environment that again it is that once the transition he is committed it remains so even in the event of event of system failure.",
+      "prediction_norm": " village state to another maintaining the head integrity isolation isolation isolation ensures that the concurrency and transition sort of do not interfere with each other providing it stay stable environment that again it is that once the transition he is committed it remains so even in the event of event of system failure ",
+      "normalized_wer_pct": 48.94,
+      "latency_ms": 2361.05,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 28,
+      "source_file": "valid.json",
+      "duration_sec": 12.52,
+      "reference_raw": "inble order where if the transaction violates then the transaction will be reported and go to its previous and starting state.",
+      "reference_norm": "inble order where if the transaction violates then the transaction will be reported and go to its previous and starting state ",
+      "prediction_raw": " in series order. Where if the transaction violates then the transaction will be rebooted and go to its previous and starting state.",
+      "prediction_norm": " in series order where if the transaction violates then the transaction will be rebooted and go to its previous and starting state ",
+      "normalized_wer_pct": 14.29,
+      "latency_ms": 1047.18,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 29,
+      "source_file": "valid.json",
+      "duration_sec": 7.76,
+      "reference_raw": "use use JavaScripts for many for multiple functions.",
+      "reference_norm": "use use javascripts for many for multiple functions ",
+      "prediction_raw": " Those new jobs have for many for multiple functions.",
+      "prediction_norm": " those new jobs have for many for multiple functions ",
+      "normalized_wer_pct": 50.0,
+      "latency_ms": 411.41,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 30,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "truncate is used to delete entire table with without structure deletion. But delete command is used to delete complete table. Sorry, particular",
+      "reference_norm": "truncate is used to delete entire table with without structure deletion but delete command is used to delete complete table sorry particular",
+      "prediction_raw": " Trunket is used to delete entire table without structure deletion but delete command is used for delete complete table sorry particular",
+      "prediction_norm": " trunket is used to delete entire table without structure deletion but delete command is used for delete complete table sorry particular",
+      "normalized_wer_pct": 13.64,
+      "latency_ms": 851.6,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 31,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "stored situations and some of the examples that the OS follows is that file system integrity, memory integrity, data validation and data verification, transactional integrity, error handling and recovery. And in the memory integrity",
+      "reference_norm": "stored situations and some of the examples that the os follows is that file system integrity memory integrity data validation and data verification transactional integrity error handling and recovery and in the memory integrity",
+      "prediction_raw": " storage situations and some examples that the OS follows is that file system integrity, memory integrity, data validation and data verification, transactional integrity, error handling and recovery. And in the memory integrity",
+      "prediction_norm": " storage situations and some examples that the os follows is that file system integrity memory integrity data validation and data verification transactional integrity error handling and recovery and in the memory integrity",
+      "normalized_wer_pct": 8.82,
+      "latency_ms": 1463.45,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 32,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "Bring a fox.",
+      "reference_norm": "bring a fox ",
+      "prediction_raw": " wording of function.",
+      "prediction_norm": " wording of function ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 371.77,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 33,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "just with and calculating factorials and are some alternative methods for large numbers. You can by and there are some alternative methods for large numbers.",
+      "reference_norm": "just with and calculating factorials and are some alternative methods for large numbers you can by and there are some alternative methods for large numbers ",
+      "prediction_raw": " which is by creating factorials and more awesome monitoring methods for large numbers. You can go by preview can we can create the other some more we can do that for large amounts.",
+      "prediction_norm": " which is by creating factorials and more awesome monitoring methods for large numbers you can go by preview can we can create the other some more we can do that for large amounts ",
+      "normalized_wer_pct": 84.0,
+      "latency_ms": 1315.22,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 34,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "and a system will enforce conflict resolution to maintain the consistency and isolation which means that delaying the transaction. So this time time stamp ordering is a control method.",
+      "reference_norm": "and a system will enforce conflict resolution to maintain the consistency and isolation which means that delaying the transaction so this time time stamp ordering is a control method ",
+      "prediction_raw": " and a system will enforce conflict resolution to maintain the consistency and isolation which means that delaying the transaction. So does time time stamp ordering is a control method.",
+      "prediction_norm": " and a system will enforce conflict resolution to maintain the consistency and isolation which means that delaying the transaction so does time time stamp ordering is a control method ",
+      "normalized_wer_pct": 3.45,
+      "latency_ms": 1247.61,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 35,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "In priority scheduling, the starvation occurs when two jobs have same priority or a same burst time, then the starvation occurs. And this can be solved or prevent by using the taking the importance of burst time uh and including a",
+      "reference_norm": "in priority scheduling the starvation occurs when two jobs have same priority or a same burst time then the starvation occurs and this can be solved or prevent by using the taking the importance of burst time uh and including a",
+      "prediction_raw": " In priority scheduling the starvation occurs when two jobs have same priority or a same burst time then the starvation occur and this can be solved or prohibited by using the taking the importance of burst time and including a",
+      "prediction_norm": " in priority scheduling the starvation occurs when two jobs have same priority or a same burst time then the starvation occur and this can be solved or prohibited by using the taking the importance of burst time and including a",
+      "normalized_wer_pct": 7.32,
+      "latency_ms": 1535.6,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 36,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Hello.",
+      "reference_norm": "hello ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 190.44,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 37,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "system performance the current balance is low and some issues with that particular account",
+      "reference_norm": "system performance the current balance is low and some issues with that particular account",
+      "prediction_raw": " system performance. In the current balance is low and some issues with the particular requirement.",
+      "prediction_norm": " system performance in the current balance is low and some issues with the particular requirement ",
+      "normalized_wer_pct": 21.43,
+      "latency_ms": 608.82,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 38,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Database management system implement timestamp ordering by assigning a unique timestamp to each transaction ensuring transactions are executed in the timestamp order. The system checks",
+      "reference_norm": "database management system implement timestamp ordering by assigning a unique timestamp to each transaction ensuring transactions are executed in the timestamp order the system checks",
+      "prediction_raw": " Data this management system implement timestamp ordering by sending a unit timestamp to each transition ensuring transitions are executed in the timestamp order. The system seeks",
+      "prediction_norm": " data this management system implement timestamp ordering by sending a unit timestamp to each transition ensuring transitions are executed in the timestamp order the system seeks",
+      "normalized_wer_pct": 28.0,
+      "latency_ms": 1038.39,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 39,
+      "source_file": "valid.json",
+      "duration_sec": 5.4,
+      "reference_raw": "where retail services aims to cater the everyday financial needs of the",
+      "reference_norm": "where retail services aims to cater the everyday financial needs of the",
+      "prediction_raw": " where little service aims to cap the everyday differential needs of the individual.",
+      "prediction_norm": " where little service aims to cap the everyday differential needs of the individual ",
+      "normalized_wer_pct": 41.67,
+      "latency_ms": 596.44,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 40,
+      "source_file": "valid.json",
+      "duration_sec": 14.14,
+      "reference_raw": "Uh,",
+      "reference_norm": "uh ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 249.49,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 41,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "basic basic commercial banks are like Indian commercial banks is impact in the basic base",
+      "reference_norm": "basic basic commercial banks are like indian commercial banks is impact in the basic base",
+      "prediction_raw": " basic basic commercial banks are like Indian commercial banks is impact in the basic",
+      "prediction_norm": " basic basic commercial banks are like indian commercial banks is impact in the basic",
+      "normalized_wer_pct": 6.67,
+      "latency_ms": 471.59,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 42,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "There was something going on.",
+      "reference_norm": "there was something going on ",
+      "prediction_raw": " Not as frequently as I'm doing today.",
+      "prediction_norm": " not as frequently as i m doing today ",
+      "normalized_wer_pct": 160.0,
+      "latency_ms": 334.98,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 43,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "responsiveness, user interface, IO operation, real time data processing, multiplayer games and simulations, task scheduling and background processing. threads are useful for parallel processing, improving UI responsiveness, handling IO real time data.",
+      "reference_norm": "responsiveness user interface io operation real time data processing multiplayer games and simulations task scheduling and background processing threads are useful for parallel processing improving ui responsiveness handling io real time data ",
+      "prediction_raw": " responsiveness user interface Iva operation real-time data processing multi player games and sim simulations task scheduling and background processing threats are useful for parallel processing improving UI responsiveness handling Ivo real- time data",
+      "prediction_norm": " responsiveness user interface iva operation real time data processing multi player games and sim simulations task scheduling and background processing threats are useful for parallel processing improving ui responsiveness handling ivo real time data",
+      "normalized_wer_pct": 18.75,
+      "latency_ms": 1258.99,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 44,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to be a little bit late.",
+      "reference_norm": "i m going to be a little bit late ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 133.42,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 45,
+      "source_file": "valid.json",
+      "duration_sec": 10.82,
+      "reference_raw": "A person in a university, a student in a university can have only one R ID number. So they are in an one to one relation work, relationship work in ER model.",
+      "reference_norm": "a person in a university a student in a university can have only one r id number so they are in an one to one relation work relationship work in er model ",
+      "prediction_raw": " a person in a university student in a University can have only one ID number so they are in an one to one relation work relationship work in ER model.",
+      "prediction_norm": " a person in a university student in a university can have only one id number so they are in an one to one relation work relationship work in er model ",
+      "normalized_wer_pct": 6.25,
+      "latency_ms": 1069.04,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 46,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "constraints help maintain the accuracy and integrity of the data by ensuring that data enter into a table meet specific criteria constraints can be helped at the column level.",
+      "reference_norm": "constraints help maintain the accuracy and integrity of the data by ensuring that data enter into a table meet specific criteria constraints can be helped at the column level ",
+      "prediction_raw": " constraints helped made in the accuracy and integrity of the data by ensuring the data and entering the intuitive will mean specific criteria constraints can be helpful at the column level.",
+      "prediction_norm": " constraints helped made in the accuracy and integrity of the data by ensuring the data and entering the intuitive will mean specific criteria constraints can be helpful at the column level ",
+      "normalized_wer_pct": 37.93,
+      "latency_ms": 1282.3,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 47,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "This is given so when the grant option and grant grant the grant option is nothing but which the options are given in that grant with exactly correct statement of and it it is suitable to the answer solution question to the solution.",
+      "reference_norm": "this is given so when the grant option and grant grant the grant option is nothing but which the options are given in that grant with exactly correct statement of and it it is suitable to the answer solution question to the solution ",
+      "prediction_raw": " This equipment is often the grant option and the grant. The grant option is nothing but any which the options are given in that grant within exactly cut statement. If any it is suitable to the answer so which question to the solution.",
+      "prediction_norm": " this equipment is often the grant option and the grant the grant option is nothing but any which the options are given in that grant within exactly cut statement if any it is suitable to the answer so which question to the solution ",
+      "normalized_wer_pct": 30.23,
+      "latency_ms": 1733.27,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 48,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "evaluate the effectiveness of",
+      "reference_norm": "evaluate the effectiveness of",
+      "prediction_raw": " Evaluate the effectiveness of a pardom of pardoms of padom pardy pardee han pardihan manch.",
+      "prediction_norm": " evaluate the effectiveness of a pardom of pardoms of padom pardy pardee han pardihan manch ",
+      "normalized_wer_pct": 275.0,
+      "latency_ms": 1219.95,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 49,
+      "source_file": "valid.json",
+      "duration_sec": 17.52,
+      "reference_raw": "There are many flows for long term for requirement process. We have services and",
+      "reference_norm": "there are many flows for long term for requirement process we have services and",
+      "prediction_raw": " That are my influence for to continue the planning process. They are the hours of mostly services and services.",
+      "prediction_norm": " that are my influence for to continue the planning process they are the hours of mostly services and services ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 923.73,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 50,
+      "source_file": "valid.json",
+      "duration_sec": 12.12,
+      "reference_raw": "Give a brief introduction to the tuning test in AI. Give a brief introduction to the tuning test in AI. You have been allocated ENTITY_NUMBER 65 END seconds to answer each.",
+      "reference_norm": "give a brief introduction to the tuning test in ai give a brief introduction to the tuning test in ai you have been allocated entity number 65 end seconds to answer each ",
+      "prediction_raw": " Give a brief introduction to the tuning test in AI. Give a a brief Introduction to the Tuning Testing AI. You have been allocated 65 seconds to answer each question.",
+      "prediction_norm": " give a brief introduction to the tuning test in ai give a a brief introduction to the tuning testing ai you have been allocated 65 seconds to answer each question ",
+      "normalized_wer_pct": 21.88,
+      "latency_ms": 1204.97,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 51,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The common ways to handle the missing data are that we either replace delete that particular row where the missing data is spotted or replace it by the mean of the value of that particular column mean or replace it by quantiles of the value of first quantile or second.",
+      "reference_norm": "the common ways to handle the missing data are that we either replace delete that particular row where the missing data is spotted or replace it by the mean of the value of that particular column mean or replace it by quantiles of the value of first quantile or second ",
+      "prediction_raw": " The common ways to handle the missing data is that we either replace delete that particular row where the missing is supported or replace it by the mean of the value of that particular column mean or replace by quantiles of the values of first quantiles or second",
+      "prediction_norm": " the common ways to handle the missing data is that we either replace delete that particular row where the missing is supported or replace it by the mean of the value of that particular column mean or replace by quantiles of the values of first quantiles or second",
+      "normalized_wer_pct": 12.0,
+      "latency_ms": 1722.34,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 52,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I.",
+      "reference_norm": "i ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 172.63,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 53,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Analyze the performance tradeoffs between FIFO, LRU and optimal page replacement algorithms.",
+      "reference_norm": "analyze the performance tradeoffs between fifo lru and optimal page replacement algorithms ",
+      "prediction_raw": " Analyze the performance trade-offs between FIFO, LRU and optimal phase replacement algorithms.",
+      "prediction_norm": " analyze the performance trade offs between fifo lru and optimal phase replacement algorithms ",
+      "normalized_wer_pct": 25.0,
+      "latency_ms": 674.77,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 54,
+      "source_file": "valid.json",
+      "duration_sec": 4.24,
+      "reference_raw": "because it don't do overflow.",
+      "reference_norm": "because it don t do overflow ",
+      "prediction_raw": " because it don't do overflow.",
+      "prediction_norm": " because it don t do overflow ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 304.64,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 55,
+      "source_file": "valid.json",
+      "duration_sec": 10.74,
+      "reference_raw": "Yes.",
+      "reference_norm": "yes ",
+      "prediction_raw": " Yes.",
+      "prediction_norm": " yes ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 150.63,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 56,
+      "source_file": "valid.json",
+      "duration_sec": 13.18,
+      "reference_raw": "is a group of operations act in isolation from other operations and that it makes durable stored.",
+      "reference_norm": "is a group of operations act in isolation from other operations and that it makes durable stored ",
+      "prediction_raw": " is a group of operations acts in isolation from other operations and that it makes durable E stored.",
+      "prediction_norm": " is a group of operations acts in isolation from other operations and that it makes durable e stored ",
+      "normalized_wer_pct": 11.76,
+      "latency_ms": 658.64,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 57,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "moving parts is less and maintenance is less and weight is also less compared to the four stroke and expensive is also less compared to the four stroke and coming to four stroke engine one cycle completed in every two revolution of the crank shop parts of the more moving parts in four",
+      "reference_norm": "moving parts is less and maintenance is less and weight is also less compared to the four stroke and expensive is also less compared to the four stroke and coming to four stroke engine one cycle completed in every two revolution of the crank shop parts of the more moving parts in four",
+      "prediction_raw": " The wind forest is less and the maintenance is less. And the rate is also less compared to the forest rock and the expenses also less compare to the post rock. Coming to forest rock engine one cycle completed in every good revolution of the tanks of parts of the more moving parts in forest",
+      "prediction_norm": " the wind forest is less and the maintenance is less and the rate is also less compared to the forest rock and the expenses also less compare to the post rock coming to forest rock engine one cycle completed in every good revolution of the tanks of parts of the more moving parts in forest",
+      "normalized_wer_pct": 37.74,
+      "latency_ms": 1980.0,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 58,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm not sure.",
+      "reference_norm": "i m not sure ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 269.37,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 59,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "the year number is found into one schema so that the relations can be very structured including the data system so that the year",
+      "reference_norm": "the year number is found into one schema so that the relations can be very structured including the data system so that the year",
+      "prediction_raw": " The year of the year was from the different section of the generation that the generation can be in its most capital to the different level of the number. The data that is such a sort of year is very much from the",
+      "prediction_norm": " the year of the year was from the different section of the generation that the generation can be in its most capital to the different level of the number the data that is such a sort of year is very much from the",
+      "normalized_wer_pct": 141.67,
+      "latency_ms": 1442.8,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 60,
+      "source_file": "valid.json",
+      "duration_sec": 18.64,
+      "reference_raw": "to get a premium due ENTITY_DATE E date END which is in the policy remains act even though it's not a payment and it also has a different types of features in it and other significant areas in economic times and it also have been participated through some of the time to recognize.",
+      "reference_norm": "to get a premium due entity date e date end which is in the policy remains act even though it s not a payment and it also has a different types of features in it and other significant areas in economic times and it also have been participated through some of the time to recognize ",
+      "prediction_raw": " to get a premium due date which is in the policy remains act even though it's not a payment and it also has a different types of features in it and other significant areas in economic times and it all have been participated to some of the time to recognize",
+      "prediction_norm": " to get a premium due date which is in the policy remains act even though it s not a payment and it also has a different types of features in it and other significant areas in economic times and it all have been participated to some of the time to recognize",
+      "normalized_wer_pct": 10.91,
+      "latency_ms": 1723.58,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 61,
+      "source_file": "valid.json",
+      "duration_sec": 4.66,
+      "reference_raw": "This is a rate purpose input.",
+      "reference_norm": "this is a rate purpose input ",
+      "prediction_raw": " It's easier to grab one more.",
+      "prediction_norm": " it s easier to grab one more ",
+      "normalized_wer_pct": 116.67,
+      "latency_ms": 438.77,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 62,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What does it mean? What does it mean for a transaction to be committed? The operation that finalizes the changes made by the transaction making them permanent in database is known as committed. If it is committed then the database is permanently stored.",
+      "reference_norm": "what does it mean what does it mean for a transaction to be committed the operation that finalizes the changes made by the transaction making them permanent in database is known as committed if it is committed then the database is permanently stored ",
+      "prediction_raw": " What does it mean? What does the transfer transfer mean? The operation that finalizes the changes made by the transaction making the permanent and database is known as complete. If it is committed, the fit is committed. The metadata is distributed",
+      "prediction_norm": " what does it mean what does the transfer transfer mean the operation that finalizes the changes made by the transaction making the permanent and database is known as complete if it is committed the fit is committed the metadata is distributed",
+      "normalized_wer_pct": 41.86,
+      "latency_ms": 1450.28,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 63,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Um, how do operating system typically implements security measures and protect data? Operating systems is a really very crucial part in our system. We have kernel, in operating system we have kernel. kernel means",
+      "reference_norm": "um how do operating system typically implements security measures and protect data operating systems is a really very crucial part in our system we have kernel in operating system we have kernel kernel means",
+      "prediction_raw": " How do operating system typeically implement security measures and product data? Operating systems is a really very crucial part in our system. We have kernel in operating system. You have kernel. kernel means",
+      "prediction_norm": " how do operating system typeically implement security measures and product data operating systems is a really very crucial part in our system we have kernel in operating system you have kernel kernel means",
+      "normalized_wer_pct": 14.71,
+      "latency_ms": 1250.13,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 64,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "data structure and a is used to assign the data to the data structure and these are used in C.",
+      "reference_norm": "data structure and a is used to assign the data to the data structure and these are used in c ",
+      "prediction_raw": " data structure and ML lock is used to assign the data to the data structure. And these are used in CL lock.",
+      "prediction_norm": " data structure and ml lock is used to assign the data to the data structure and these are used in cl lock ",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 887.44,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 65,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "to receive each completed action to receive each complete action maintaining data consistencies to access system. However T complaint compliancing transaction work logical unit and and execution.",
+      "reference_norm": "to receive each completed action to receive each complete action maintaining data consistencies to access system however t complaint compliancing transaction work logical unit and and execution ",
+      "prediction_raw": " to reserve each completed action to reserve. Each complete action maintaining data constances to across system. However, complaint, transitioning, transaction work, logical unit of and screen and screen is executed.",
+      "prediction_norm": " to reserve each completed action to reserve each complete action maintaining data constances to across system however complaint transitioning transaction work logical unit of and screen and screen is executed ",
+      "normalized_wer_pct": 40.74,
+      "latency_ms": 1198.56,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 66,
+      "source_file": "valid.json",
+      "duration_sec": 18.64,
+      "reference_raw": "Here are some key strategies to consider indexing. And second one reduce data volume. Third one optimize join order. Fourth one consider outer joins. Fifth one the use query hints.",
+      "reference_norm": "here are some key strategies to consider indexing and second one reduce data volume third one optimize join order fourth one consider outer joins fifth one the use query hints ",
+      "prediction_raw": " Here are some key strategies to construct indexing and they can only reduce data volume. They are an optimized join order for when construct outer joins, for when the use query ends.",
+      "prediction_norm": " here are some key strategies to construct indexing and they can only reduce data volume they are an optimized join order for when construct outer joins for when the use query ends ",
+      "normalized_wer_pct": 46.67,
+      "latency_ms": 1183.14,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 67,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Can memorization or dynamic programming be applied to optimize factorial calculation. So as per my knowledge is concerned dynamic program can be applied to optimize factorial calculation as well as the memorization programming can also be applied.",
+      "reference_norm": "can memorization or dynamic programming be applied to optimize factorial calculation so as per my knowledge is concerned dynamic program can be applied to optimize factorial calculation as well as the memorization programming can also be applied ",
+      "prediction_raw": " can nevorization or dynamic program the applied to optimal spectral calculation. So as per my knowledge is concerned the dynamic program can be applied to optimized spectral calculation as well as the memorization program can also be applied",
+      "prediction_norm": " can nevorization or dynamic program the applied to optimal spectral calculation so as per my knowledge is concerned the dynamic program can be applied to optimized spectral calculation as well as the memorization program can also be applied",
+      "normalized_wer_pct": 24.32,
+      "latency_ms": 1473.6,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 68,
+      "source_file": "valid.json",
+      "duration_sec": 11.52,
+      "reference_raw": "Client side security risk, code visibility, single inheritance model, debugging challenges, dependency on JavaScript.",
+      "reference_norm": "client side security risk code visibility single inheritance model debugging challenges dependency on javascript ",
+      "prediction_raw": " Clientside security risk code visibility single inheritance model debugging challenges dependency was JavaScript.",
+      "prediction_norm": " clientside security risk code visibility single inheritance model debugging challenges dependency was javascript ",
+      "normalized_wer_pct": 21.43,
+      "latency_ms": 688.91,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 69,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "strategies of the time stamp it indicates the it the time stamp and indicates the overall practice of the time stamp it the time stamps and increases the further process of the stamp stamp in this process time stamp works as its and furtherly it increases the",
+      "reference_norm": "strategies of the time stamp it indicates the it the time stamp and indicates the overall practice of the time stamp it the time stamps and increases the further process of the stamp stamp in this process time stamp works as its and furtherly it increases the",
+      "prediction_raw": " The time of the time of time is still eating the rice. It's a roasted and stamp and it gives the whole practice of the term. It is a roasted. It increases the further process of this time. This process time works as it's unfartily. It increase the",
+      "prediction_norm": " the time of the time of time is still eating the rice it s a roasted and stamp and it gives the whole practice of the term it is a roasted it increases the further process of this time this process time works as it s unfartily it increase the",
+      "normalized_wer_pct": 63.83,
+      "latency_ms": 2049.21,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 70,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "transaction takes place, it's all about how you transactions are rolled back. For example, you can also go with the transaction insert a row, a roll back with the deleted it. If a transaction updates a row, a roll back will release the update. Rolling back a transaction is important for the E database integrity because it allows the E database to be restored.",
+      "reference_norm": "transaction takes place it s all about how you transactions are rolled back for example you can also go with the transaction insert a row a roll back with the deleted it if a transaction updates a row a roll back will release the update rolling back a transaction is important for the e database integrity because it allows the e database to be restored ",
+      "prediction_raw": " transaction takes place it's all about how you transactions are roll backed. For example, we can also go with the transaction insert a roll back with the deleted it. If a transaction updates a rollback may be the update. Rolling back a transaction is important for the database integrity because it allows the database to be restored",
+      "prediction_norm": " transaction takes place it s all about how you transactions are roll backed for example we can also go with the transaction insert a roll back with the deleted it if a transaction updates a rollback may be the update rolling back a transaction is important for the database integrity because it allows the database to be restored",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 2109.57,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 71,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "store organize and import to store organize and manage database data in a central LOCATION END of easy access and updating.",
+      "reference_norm": "store organize and import to store organize and manage database data in a central location end of easy access and updating ",
+      "prediction_raw": " store organize and import store or use and manage chain database data is enter location of easy access and updated",
+      "prediction_norm": " store organize and import store or use and manage chain database data is enter location of easy access and updated",
+      "normalized_wer_pct": 42.86,
+      "latency_ms": 685.8,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 72,
+      "source_file": "valid.json",
+      "duration_sec": 12.12,
+      "reference_raw": "they can be altered by using time stamps or which can be also dealt by using a piece of code so that we can alter the time stamp or regular tracking of the time.",
+      "reference_norm": "they can be altered by using time stamps or which can be also dealt by using a piece of code so that we can alter the time stamp or regular tracking of the time ",
+      "prediction_raw": " They can be altered by using timestamps which can be also dealt by using a piece of code so that we can alter the timestamp or regular tracking of the time.",
+      "prediction_norm": " they can be altered by using timestamps which can be also dealt by using a piece of code so that we can alter the timestamp or regular tracking of the time ",
+      "normalized_wer_pct": 14.71,
+      "latency_ms": 1235.49,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 73,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Explain the difference between inner join and left join with examples. The basic difference between inner join left join is that inner join combines rows from two tables only",
+      "reference_norm": "explain the difference between inner join and left join with examples the basic difference between inner join left join is that inner join combines rows from two tables only",
+      "prediction_raw": " Explain the difference between inner joint and left joint with examples. The basic difference between Inner joint and Left joint is that inner joint combines rows from two tables only",
+      "prediction_norm": " explain the difference between inner joint and left joint with examples the basic difference between inner joint and left joint is that inner joint combines rows from two tables only",
+      "normalized_wer_pct": 20.69,
+      "latency_ms": 1259.62,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 74,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "alter table D command alter table D command alter the table like for example if you want to add a column in any particular table so we can use this alter table D command to alter the table so that we cannot we can't edit",
+      "reference_norm": "alter table d command alter table d command alter the table like for example if you want to add a column in any particular table so we can use this alter table d command to alter the table so that we cannot we can t edit",
+      "prediction_raw": " So we can use this order table to order the table so that we cannot contribute",
+      "prediction_norm": " so we can use this order table to order the table so that we cannot contribute",
+      "normalized_wer_pct": 71.74,
+      "latency_ms": 704.47,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 75,
+      "source_file": "valid.json",
+      "duration_sec": 16.2,
+      "reference_raw": "State Bank of India was established on 1957 July 1st and when before that State Bank of India is called as Imperial Bank which is the combination of four main banks in India.",
+      "reference_norm": "state bank of india was established on 1957 july 1st and when before that state bank of india is called as imperial bank which is the combination of four main banks in india ",
+      "prediction_raw": " State Bank of India was established on 1957 July 1st and before that State Bank is called as Imperial Bank which is the combination of four main banks in India.",
+      "prediction_norm": " state bank of india was established on 1957 july 1st and before that state bank is called as imperial bank which is the combination of four main banks in india ",
+      "normalized_wer_pct": 9.09,
+      "latency_ms": 1167.01,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 76,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Uh a distributed time stack proto work it works as a it works as it ensures consistency and ordering of events in distributed system. Uh there are few key components.",
+      "reference_norm": "uh a distributed time stack proto work it works as a it works as it ensures consistency and ordering of events in distributed system uh there are few key components ",
+      "prediction_raw": " It distributed times that protocol work. It works as it works as, it ensures consistency and ordering of events in distributed system. Their FUKE components",
+      "prediction_norm": " it distributed times that protocol work it works as it works as it ensures consistency and ordering of events in distributed system their fuke components",
+      "normalized_wer_pct": 36.67,
+      "latency_ms": 1202.55,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 77,
+      "source_file": "valid.json",
+      "duration_sec": 10.88,
+      "reference_raw": "I'm not sure.",
+      "reference_norm": "i m not sure ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 259.08,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 78,
+      "source_file": "valid.json",
+      "duration_sec": 8.44,
+      "reference_raw": "Thank you.",
+      "reference_norm": "thank you ",
+      "prediction_raw": " It's a big thing.",
+      "prediction_norm": " it s a big thing ",
+      "normalized_wer_pct": 250.0,
+      "latency_ms": 257.63,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 79,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "learning learning is a method in which data is into the model so that we can be learning by the method",
+      "reference_norm": "learning learning is a method in which data is into the model so that we can be learning by the method",
+      "prediction_raw": " In that field learning is an understanding which data is added into the model so that we can be learning by doing it in the training",
+      "prediction_norm": " in that field learning is an understanding which data is added into the model so that we can be learning by doing it in the training",
+      "normalized_wer_pct": 52.38,
+      "latency_ms": 896.97,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 80,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "A timestamp based protocol can always ensure serializability. The serializability of a timestamp based protocol works like this. If there are multiple transactions that are to be concurrently executed, the E time stamps will help the",
+      "reference_norm": "a timestamp based protocol can always ensure serializability the serializability of a timestamp based protocol works like this if there are multiple transactions that are to be concurrently executed the e time stamps will help the",
+      "prediction_raw": " A timestamp based protocol can always ensure serializability. The serializ ability of a timestamp based protocols works like this. If there are multiple transactions that are to be concurrently executed, the timestamps will help the",
+      "prediction_norm": " a timestamp based protocol can always ensure serializability the serializ ability of a timestamp based protocols works like this if there are multiple transactions that are to be concurrently executed the timestamps will help the",
+      "normalized_wer_pct": 16.67,
+      "latency_ms": 1367.5,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 81,
+      "source_file": "valid.json",
+      "duration_sec": 3.12,
+      "reference_raw": "first. The scheduling helps to pull in",
+      "reference_norm": "first the scheduling helps to pull in",
+      "prediction_raw": " first the she doing helps to glue the",
+      "prediction_norm": " first the she doing helps to glue the",
+      "normalized_wer_pct": 57.14,
+      "latency_ms": 335.94,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 82,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Just a little bit more.",
+      "reference_norm": "just a little bit more ",
+      "prediction_raw": " Let me see where I can use it.",
+      "prediction_norm": " let me see where i can use it ",
+      "normalized_wer_pct": 160.0,
+      "latency_ms": 365.57,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 83,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Okay.",
+      "reference_norm": "okay ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 208.5,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 84,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "different key says this is distribution karna hai effect performance or metric such as such as such as inserting times and it may changes the load load clustering with buckets additional switching as a function may necessitate reducing hash table to ensure all the existence and entries are correctly positioned based on the new hash hash values potential lead",
+      "reference_norm": "different key says this is distribution karna hai effect performance or metric such as such as such as inserting times and it may changes the load load clustering with buckets additional switching as a function may necessitate reducing hash table to ensure all the existence and entries are correctly positioned based on the new hash hash values potential lead",
+      "prediction_raw": " This is a distribution to make an effort performance and metrics such as such as inserting types and a domain changes the load load goes across link which is buckets additional switching as function may may necessitate reducing as a table to ensure all the existence and entities are directly positioned based around the new hash value support and generally",
+      "prediction_norm": " this is a distribution to make an effort performance and metrics such as such as inserting types and a domain changes the load load goes across link which is buckets additional switching as function may may necessitate reducing as a table to ensure all the existence and entities are directly positioned based around the new hash value support and generally",
+      "normalized_wer_pct": 52.54,
+      "latency_ms": 2337.72,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 85,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Buffering is a technique used to temporarily store data in memory while it is being transferred between output devices in the system and main memory process. process it can enhance the performance of the input output devices in several ways, smoothing data flow, reducing latency, efficient resource utilization, improved throughput, handling",
+      "reference_norm": "buffering is a technique used to temporarily store data in memory while it is being transferred between output devices in the system and main memory process process it can enhance the performance of the input output devices in several ways smoothing data flow reducing latency efficient resource utilization improved throughput handling",
+      "prediction_raw": " buffering is a technique used to convert the store their time memory the bulk while these but we transfer between output and device in the system and in memory of the houses. The class it enhance the performance of the input output device in some ways smoothing that of low reducing latency efficiently so so you can improve the load works and in the",
+      "prediction_norm": " buffering is a technique used to convert the store their time memory the bulk while these but we transfer between output and device in the system and in memory of the houses the class it enhance the performance of the input output device in some ways smoothing that of low reducing latency efficiently so so you can improve the load works and in the",
+      "normalized_wer_pct": 70.59,
+      "latency_ms": 2394.79,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 86,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 198.73,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 87,
+      "source_file": "valid.json",
+      "duration_sec": 12.52,
+      "reference_raw": "reducing contention and the risk of deadlocks they also simplify transaction management as they don't require complex looking locking mechanisms or time out.",
+      "reference_norm": "reducing contention and the risk of deadlocks they also simplify transaction management as they don t require complex looking locking mechanisms or time out ",
+      "prediction_raw": " reducing contention and the risk of deadlocks they are also simple for transaction management as they don't require complex looking locking mechanisms or time-out",
+      "prediction_norm": " reducing contention and the risk of deadlocks they are also simple for transaction management as they don t require complex looking locking mechanisms or time out",
+      "normalized_wer_pct": 12.5,
+      "latency_ms": 931.68,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 88,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "No.",
+      "reference_norm": "no ",
+      "prediction_raw": " .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 115.88,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 89,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The document object model usually it provides a structural tree structure of the HTML document or the XML document where it defines the HTML document in the form of the root tags and the content. Coming to the virtual DOM, it is faster than the DOM.",
+      "reference_norm": "the document object model usually it provides a structural tree structure of the html document or the xml document where it defines the html document in the form of the root tags and the content coming to the virtual dom it is faster than the dom ",
+      "prediction_raw": " The document object model usually provides a structural tree structure of the HTML document or the XML document where it defines the HTML documents in the form of the row tags and the content. Comment to the virtual DOM it is faster than near a DOM.",
+      "prediction_norm": " the document object model usually provides a structural tree structure of the html document or the xml document where it defines the html documents in the form of the row tags and the content comment to the virtual dom it is faster than near a dom ",
+      "normalized_wer_pct": 13.04,
+      "latency_ms": 1725.27,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 90,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "efficiently in the environment. Uh so when it comes to the native object, uh is an object that is defined by the JavaScript language and specify itself. Uh these are the part of the core languages and do not depend on the execution in the environment.",
+      "reference_norm": "efficiently in the environment uh so when it comes to the native object uh is an object that is defined by the javascript language and specify itself uh these are the part of the core languages and do not depend on the execution in the environment ",
+      "prediction_raw": " efficiently in the environment. So when it comes to the e-t orbit or is an object that is defined by the Thomas Kipan language and specify itself. These are the part of the co-analysis and do not depend on the exclusion and the environment",
+      "prediction_norm": " efficiently in the environment so when it comes to the e t orbit or is an object that is defined by the thomas kipan language and specify itself these are the part of the co analysis and do not depend on the exclusion and the environment",
+      "normalized_wer_pct": 26.09,
+      "latency_ms": 1786.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 91,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 115.08,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 92,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "the role of the transaction look aside buffer E TLB the role of the transaction look aside word E TLB the role of the transaction while E TLB is nothing but the the",
+      "reference_norm": "the role of the transaction look aside buffer e tlb the role of the transaction look aside word e tlb the role of the transaction while e tlb is nothing but the the",
+      "prediction_raw": " The role of the transition, low quiet buffer TLB, the role of transaction work work TLB. The role the transaction work well TLB is nothing but the the",
+      "prediction_norm": " the role of the transition low quiet buffer tlb the role of transaction work work tlb the role the transaction work well tlb is nothing but the the",
+      "normalized_wer_pct": 36.36,
+      "latency_ms": 1103.29,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 93,
+      "source_file": "valid.json",
+      "duration_sec": 15.86,
+      "reference_raw": "associated with parameters and how did they actually distance typical operations associated with monitors and entry procedures monitors are entry procedures to allow process permanent access to share resources.",
+      "reference_norm": "associated with parameters and how did they actually distance typical operations associated with monitors and entry procedures monitors are entry procedures to allow process permanent access to share resources ",
+      "prediction_raw": " associated with monitors and how would the virtual distance. Diapical operations associated with monitor value, integrated messages monitors are inter-place meters in a lot of source block, but also access to shared resources.",
+      "prediction_norm": " associated with monitors and how would the virtual distance diapical operations associated with monitor value integrated messages monitors are inter place meters in a lot of source block but also access to shared resources ",
+      "normalized_wer_pct": 72.41,
+      "latency_ms": 1416.97,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 94,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "primarily setting of the rate like when which RBI lends money to the when RBI lends money to the commercial bank there are this some key policies the banks needs to follow like interest rate if interest rate",
+      "reference_norm": "primarily setting of the rate like when which rbi lends money to the when rbi lends money to the commercial bank there are this some key policies the banks needs to follow like interest rate if interest rate",
+      "prediction_raw": " primary lease heading of the generator like a which RBI lends money to the come up an RBI and then money to be commercial bank there are some key policies there the banks needs to follow like interest rate if interest rate",
+      "prediction_norm": " primary lease heading of the generator like a which rbi lends money to the come up an rbi and then money to be commercial bank there are some key policies there the banks needs to follow like interest rate if interest rate",
+      "normalized_wer_pct": 34.21,
+      "latency_ms": 1583.65,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 95,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "three stages in the building model three stages come in the still",
+      "reference_norm": "three stages in the building model three stages come in the still",
+      "prediction_raw": " three stages building more of these stages coming till",
+      "prediction_norm": " three stages building more of these stages coming till",
+      "normalized_wer_pct": 75.0,
+      "latency_ms": 329.72,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 96,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "database is managed. How the database is linked.",
+      "reference_norm": "database is managed how the database is linked ",
+      "prediction_raw": " database is managed. How the database is",
+      "prediction_norm": " database is managed how the database is",
+      "normalized_wer_pct": 12.5,
+      "latency_ms": 327.0,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 97,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "happens in the scenario and why. Detension and violation means read and write stamps occurs, time stamp ordering rules occurs, conflict realization via abortion occurs, restarting the transaction occurs, handling frequent conflicts occurs. Why it is important is ensure",
+      "reference_norm": "happens in the scenario and why detension and violation means read and write stamps occurs time stamp ordering rules occurs conflict realization via abortion occurs restarting the transaction occurs handling frequent conflicts occurs why it is important is ensure",
+      "prediction_raw": " happens in the scenario and why. Intention and violation means read and write times occurs, timestamp ordering rules occurs, conflict realization, idea of abortion occurs, restarting the transaction occurs, handling frequent conflicts occurs, why it is important is ensuring",
+      "prediction_norm": " happens in the scenario and why intention and violation means read and write times occurs timestamp ordering rules occurs conflict realization idea of abortion occurs restarting the transaction occurs handling frequent conflicts occurs why it is important is ensuring",
+      "normalized_wer_pct": 17.95,
+      "latency_ms": 1521.89,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 98,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What is the meaning of banking sector reforms and why they are important for commercial banks?",
+      "reference_norm": "what is the meaning of banking sector reforms and why they are important for commercial banks ",
+      "prediction_raw": " What is the meaning of banking sector reforms and why they are important for commercial banks?",
+      "prediction_norm": " what is the meaning of banking sector reforms and why they are important for commercial banks ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 600.31,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 99,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Linkless. Um, Aries linkless. Aries. And",
+      "reference_norm": "linkless um aries linkless aries and",
+      "prediction_raw": " linked lists are linked lists and",
+      "prediction_norm": " linked lists are linked lists and",
+      "normalized_wer_pct": 83.33,
+      "latency_ms": 283.86,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 100,
+      "source_file": "valid.json",
+      "duration_sec": 14.6,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 135.53,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 101,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "foreign key. So having two more attributes are called multi valued attribute.",
+      "reference_norm": "foreign key so having two more attributes are called multi valued attribute ",
+      "prediction_raw": " foreign case so having two more attributes are called multivalued attribute.",
+      "prediction_norm": " foreign case so having two more attributes are called multivalued attribute ",
+      "normalized_wer_pct": 25.0,
+      "latency_ms": 511.82,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 102,
+      "source_file": "valid.json",
+      "duration_sec": 14.16,
+      "reference_raw": "the significance of the the significance of the grand option in a grand statement which can be rotated in the grand option and grand statement of the significance",
+      "reference_norm": "the significance of the the significance of the grand option in a grand statement which can be rotated in the grand option and grand statement of the significance",
+      "prediction_raw": " The significance of the significance of with grand option in a grand statement is can be rotated in the grand option and grand statement of the significant.",
+      "prediction_norm": " the significance of the significance of with grand option in a grand statement is can be rotated in the grand option and grand statement of the significant ",
+      "normalized_wer_pct": 14.29,
+      "latency_ms": 941.45,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 103,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The entity relationship model plays a significant role in normalization which is the process of organizing of a database to reduce redundancy and improve data integrity normalization involves structuring data into tables in such a way that anomalies are minimized and each piece of",
+      "reference_norm": "the entity relationship model plays a significant role in normalization which is the process of organizing of a database to reduce redundancy and improve data integrity normalization involves structuring data into tables in such a way that anomalies are minimized and each piece of",
+      "prediction_raw": " The entity relationship model plays here significant role in normalization which is the process of organizing of a database to reduce redundancy and improve data integrity normalization involves structuring data into tables in such a way that anomalies are minimized and each piece of",
+      "prediction_norm": " the entity relationship model plays here significant role in normalization which is the process of organizing of a database to reduce redundancy and improve data integrity normalization involves structuring data into tables in such a way that anomalies are minimized and each piece of",
+      "normalized_wer_pct": 2.27,
+      "latency_ms": 1581.68,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 104,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "scale data architecture we we would use like event distribution system like select a share key type thing that evenly distributes data across all the",
+      "reference_norm": "scale data architecture we we would use like event distribution system like select a share key type thing that evenly distributes data across all the",
+      "prediction_raw": " scale level data architecture. We use like even distribution system like select a share key type thing that even distribute data across all the",
+      "prediction_norm": " scale level data architecture we use like even distribution system like select a share key type thing that even distribute data across all the",
+      "normalized_wer_pct": 24.0,
+      "latency_ms": 899.92,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 105,
+      "source_file": "valid.json",
+      "duration_sec": 4.78,
+      "reference_raw": "Uh, we can use small amount of numbers.",
+      "reference_norm": "uh we can use small amount of numbers ",
+      "prediction_raw": " The canoes can be a lot of memories.",
+      "prediction_norm": " the canoes can be a lot of memories ",
+      "normalized_wer_pct": 75.0,
+      "latency_ms": 424.52,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 106,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm not sure.",
+      "reference_norm": "i m not sure ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 137.61,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 107,
+      "source_file": "valid.json",
+      "duration_sec": 7.82,
+      "reference_raw": "non-standard motorist coverage, health insurance exclusions, pre-existing conditions, self-inflicted injuries, war or terrorism.",
+      "reference_norm": "non standard motorist coverage health insurance exclusions pre existing conditions self inflicted injuries war or terrorism ",
+      "prediction_raw": " ancient modernized coverage and health insurance solutions, existing conditions and self-employed indigenous prioritization.",
+      "prediction_norm": " ancient modernized coverage and health insurance solutions existing conditions and self employed indigenous prioritization ",
+      "normalized_wer_pct": 75.0,
+      "latency_ms": 637.4,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 108,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "in the SQL applications.",
+      "reference_norm": "in the sql applications ",
+      "prediction_raw": " in the SQL applications.",
+      "prediction_norm": " in the sql applications ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 257.58,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 109,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "If you are in active state, we can use timestamp ordering or locking two phase locking, anything.",
+      "reference_norm": "if you are in active state we can use timestamp ordering or locking two phase locking anything ",
+      "prediction_raw": " If we are an active state, we can use timestamp ordering or locking two phase locking anything. We can we can used that will two phase lock first it locks all the",
+      "prediction_norm": " if we are an active state we can use timestamp ordering or locking two phase locking anything we can we can used that will two phase lock first it locks all the",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 1158.01,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 110,
+      "source_file": "valid.json",
+      "duration_sec": 2.44,
+      "reference_raw": "the accuracy of the model.",
+      "reference_norm": "the accuracy of the model ",
+      "prediction_raw": " the accuracy of the model.",
+      "prediction_norm": " the accuracy of the model ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 286.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 111,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Hello.",
+      "reference_norm": "hello ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 197.09,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 112,
+      "source_file": "valid.json",
+      "duration_sec": 16.96,
+      "reference_raw": "card six algorithm has functioning is determinant six past competition pre imaging resistance second pre image resistance collision resistance uniform distribution large effort output size.",
+      "reference_norm": "card six algorithm has functioning is determinant six past competition pre imaging resistance second pre image resistance collision resistance uniform distribution large effort output size ",
+      "prediction_raw": " characteristics of a good and as functioning is deterministic first computation pre-imaging resistance second pre-image resistance collision resistance uniform distribution a large effort output size",
+      "prediction_norm": " characteristics of a good and as functioning is deterministic first computation pre imaging resistance second pre image resistance collision resistance uniform distribution a large effort output size",
+      "normalized_wer_pct": 44.0,
+      "latency_ms": 1051.63,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 113,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "But I think it's easier to do it that way. What are you doing?",
+      "reference_norm": "but i think it s easier to do it that way what are you doing ",
+      "prediction_raw": " We're telling you it's gonna be a little bit more.",
+      "prediction_norm": " we re telling you it s gonna be a little bit more ",
+      "normalized_wer_pct": 93.33,
+      "latency_ms": 459.27,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 114,
+      "source_file": "valid.json",
+      "duration_sec": 8.84,
+      "reference_raw": "close that goal is to identify the work most effective approaches to optimize overall system performance during input output.",
+      "reference_norm": "close that goal is to identify the work most effective approaches to optimize overall system performance during input output ",
+      "prediction_raw": " clothes that goal is to identify the work most effective purchase to optimize overall system performance during input.",
+      "prediction_norm": " clothes that goal is to identify the work most effective purchase to optimize overall system performance during input ",
+      "normalized_wer_pct": 15.79,
+      "latency_ms": 678.59,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 115,
+      "source_file": "valid.json",
+      "duration_sec": 11.64,
+      "reference_raw": "to do the different modules for development in cloud computing.",
+      "reference_norm": "to do the different modules for development in cloud computing ",
+      "prediction_raw": " We do the different models work. The development in cloud computing.",
+      "prediction_norm": " we do the different models work the development in cloud computing ",
+      "normalized_wer_pct": 40.0,
+      "latency_ms": 501.0,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 116,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Recovery techniques address the issue of data integrally by restoring data from a backup in case of data loss. Here are some ways recovery techniques can help with data integrity, backup, data backup.",
+      "reference_norm": "recovery techniques address the issue of data integrally by restoring data from a backup in case of data loss here are some ways recovery techniques can help with data integrity backup data backup ",
+      "prediction_raw": " Recovery techniques address the issue of data integrally by restoring data from a backup in case of data loss. Here as obvious recovery techniques can help with data integrity, backup, data",
+      "prediction_norm": " recovery techniques address the issue of data integrally by restoring data from a backup in case of data loss here as obvious recovery techniques can help with data integrity backup data",
+      "normalized_wer_pct": 12.12,
+      "latency_ms": 1496.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 117,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Here multivalue attribute in ER model is characteristics like ER model multivalue attribute can have the multiple values for a single entity and it can hold only one value multivalue attribute",
+      "reference_norm": "here multivalue attribute in er model is characteristics like er model multivalue attribute can have the multiple values for a single entity and it can hold only one value multivalue attribute",
+      "prediction_raw": " Here multi-valued attribute in an ER model is characteristics like ER model multi-value attribute can have the multiple values for a single entity and it can hold only one value multi- valued attribute.",
+      "prediction_norm": " here multi valued attribute in an er model is characteristics like er model multi value attribute can have the multiple values for a single entity and it can hold only one value multi valued attribute ",
+      "normalized_wer_pct": 22.58,
+      "latency_ms": 1485.5,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 118,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "describe how this semaphore algorithm works and show the right describe how it's done.",
+      "reference_norm": "describe how this semaphore algorithm works and show the right describe how it s done ",
+      "prediction_raw": " This is it.",
+      "prediction_norm": " this is it ",
+      "normalized_wer_pct": 86.67,
+      "latency_ms": 218.74,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 119,
+      "source_file": "valid.json",
+      "duration_sec": 14.06,
+      "reference_raw": "the PM steps towards financial inclusion. They can employ more and more people.",
+      "reference_norm": "the pm steps towards financial inclusion they can employ more and more people ",
+      "prediction_raw": " The internet is closed. The pandemic is closed and the pandemic has been closed. It's closed and it's closed.",
+      "prediction_norm": " the internet is closed the pandemic is closed and the pandemic has been closed it s closed and it s closed ",
+      "normalized_wer_pct": 146.15,
+      "latency_ms": 953.83,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 120,
+      "source_file": "valid.json",
+      "duration_sec": 4.76,
+      "reference_raw": "somebody else which they give loans to farmers and further.",
+      "reference_norm": "somebody else which they give loans to farmers and further ",
+      "prediction_raw": " some reserves which they give loans to farmers and farmers.",
+      "prediction_norm": " some reserves which they give loans to farmers and farmers ",
+      "normalized_wer_pct": 30.0,
+      "latency_ms": 481.84,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 121,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I got it.",
+      "reference_norm": "i got it ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 205.58,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 122,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 144.49,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 123,
+      "source_file": "valid.json",
+      "duration_sec": 3.92,
+      "reference_raw": "Okay.",
+      "reference_norm": "okay ",
+      "prediction_raw": " The meeting will show us.",
+      "prediction_norm": " the meeting will show us ",
+      "normalized_wer_pct": 500.0,
+      "latency_ms": 300.11,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 124,
+      "source_file": "valid.json",
+      "duration_sec": 5.28,
+      "reference_raw": "Hello.",
+      "reference_norm": "hello ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 230.97,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 125,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "different models for deployment and program such as",
+      "reference_norm": "different models for deployment and program such as",
+      "prediction_raw": " different orders so",
+      "prediction_norm": " different orders so",
+      "normalized_wer_pct": 87.5,
+      "latency_ms": 240.26,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 126,
+      "source_file": "valid.json",
+      "duration_sec": 6.4,
+      "reference_raw": "commit. After second step, E resource two receives the request from E resources one, it prepares",
+      "reference_norm": "commit after second step e resource two receives the request from e resources one it prepares",
+      "prediction_raw": " commit. After second step resource to receive the request from resources one it prepares",
+      "prediction_norm": " commit after second step resource to receive the request from resources one it prepares",
+      "normalized_wer_pct": 25.0,
+      "latency_ms": 655.96,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 127,
+      "source_file": "valid.json",
+      "duration_sec": 10.18,
+      "reference_raw": "Anyo lilik.",
+      "reference_norm": "anyo lilik ",
+      "prediction_raw": " I'm going to make a",
+      "prediction_norm": " i m going to make a",
+      "normalized_wer_pct": 300.0,
+      "latency_ms": 316.87,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 128,
+      "source_file": "valid.json",
+      "duration_sec": 14.5,
+      "reference_raw": "What is what's thinking?",
+      "reference_norm": "what is what s thinking ",
+      "prediction_raw": " Thank you.",
+      "prediction_norm": " thank you ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 203.56,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 129,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "and we can model it and from that it is using basically on the pile foundation the pile foundation is basically on the weak soil so that we are developed with seven piles of radius of the 750 mm and by using on above it it has appear. So we can develop develop",
+      "reference_norm": "and we can model it and from that it is using basically on the pile foundation the pile foundation is basically on the weak soil so that we are developed with seven piles of radius of the 750 mm and by using on above it it has appear so we can develop develop",
+      "prediction_raw": " and we can model is and from that it is using basically on the pile foundation the pile Foundation is basically on week soil so that we are developed with the 7 piles of radius of the 750 mm and by using on above it it has appear so we can develop the develop",
+      "prediction_norm": " and we can model is and from that it is using basically on the pile foundation the pile foundation is basically on week soil so that we are developed with the 7 piles of radius of the 750 mm and by using on above it it has appear so we can develop the develop",
+      "normalized_wer_pct": 11.32,
+      "latency_ms": 2142.01,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 130,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "thing that is used in a database management system. For example, there are few indexing techniques, hash indexing and its role in database optimization is to sorting and some of the some of the algorithms.",
+      "reference_norm": "thing that is used in a database management system for example there are few indexing techniques hash indexing and its role in database optimization is to sorting and some of the some of the algorithms ",
+      "prediction_raw": " thing that is used in the database management system. For example, there are few indexing techniques, hash indexing, and its role in database optimization is to sorting and some of the some of these algorithms.",
+      "prediction_norm": " thing that is used in the database management system for example there are few indexing techniques hash indexing and its role in database optimization is to sorting and some of the some of these algorithms ",
+      "normalized_wer_pct": 5.71,
+      "latency_ms": 1529.79,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 131,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "concurrently retrieving the data and it plays a it plays a major role in the in the procedural functionality of multi threading. Deadlock detection algorithms function. Deadlock is a process where where the execution of one process depends on",
+      "reference_norm": "concurrently retrieving the data and it plays a it plays a major role in the in the procedural functionality of multi threading deadlock detection algorithms function deadlock is a process where where the execution of one process depends on",
+      "prediction_raw": " concurrently concurrently retrieving the data and it plays a place a major role in the in the procedural functionality of Monday 3D. Dedlocked detection algorithms function. A clock is a process where where the execution of one process depends on",
+      "prediction_norm": " concurrently concurrently retrieving the data and it plays a place a major role in the in the procedural functionality of monday 3d dedlocked detection algorithms function a clock is a process where where the execution of one process depends on",
+      "normalized_wer_pct": 20.51,
+      "latency_ms": 1381.67,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 132,
+      "source_file": "valid.json",
+      "duration_sec": 10.6,
+      "reference_raw": "that's like banks. These offer services like loans, investments, leasing, and insurance. One example of NBFC would be",
+      "reference_norm": "that s like banks these offer services like loans investments leasing and insurance one example of nbfc would be",
+      "prediction_raw": " it's like banks. These offer services like loans, investments, leasing and insurance. One example of NBFC would be",
+      "prediction_norm": " it s like banks these offer services like loans investments leasing and insurance one example of nbfc would be",
+      "normalized_wer_pct": 5.26,
+      "latency_ms": 805.7,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 133,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "that that can be created that is necessary for the web page that we are going to be created whereas the flex box will only helpful to create only one or multiple multiple boxes multiple boxes which does not help to reuse CSS can CSS grid can be help to re",
+      "reference_norm": "that that can be created that is necessary for the web page that we are going to be created whereas the flex box will only helpful to create only one or multiple multiple boxes multiple boxes which does not help to reuse css can css grid can be help to re",
+      "prediction_raw": " that can be created that is necessary for the space that we are going to be created by rasterfricks box will only help to create only one or multiple three boxes and multiple boxes which would help to the CSS can be have to the",
+      "prediction_norm": " that can be created that is necessary for the space that we are going to be created by rasterfricks box will only help to create only one or multiple three boxes and multiple boxes which would help to the css can be have to the",
+      "normalized_wer_pct": 33.33,
+      "latency_ms": 1663.37,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 134,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "example table non cluster definition structure key characteristics performance storage update use cases example summary of the differences physical data pointer only table multiple faster it takes places within the",
+      "reference_norm": "example table non cluster definition structure key characteristics performance storage update use cases example summary of the differences physical data pointer only table multiple faster it takes places within the",
+      "prediction_raw": " example is a table number non-master definition structure. He characteristics performance storage update uses cases example summary of the differences physical data pointer only per table one to hold a hostel. It takes places between the",
+      "prediction_norm": " example is a table number non master definition structure he characteristics performance storage update uses cases example summary of the differences physical data pointer only per table one to hold a hostel it takes places between the",
+      "normalized_wer_pct": 43.33,
+      "latency_ms": 1560.82,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 135,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "testing testing application server it is used to testing the application server software tools",
+      "reference_norm": "testing testing application server it is used to testing the application server software tools",
+      "prediction_raw": " Testing the applications of software tools were",
+      "prediction_norm": " testing the applications of software tools were",
+      "normalized_wer_pct": 78.57,
+      "latency_ms": 293.93,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 136,
+      "source_file": "valid.json",
+      "duration_sec": 10.48,
+      "reference_raw": "IP stands for internet protocol which is set of the rules governing the format of the data sent over the internet or local network. It helps to routing the data to",
+      "reference_norm": "ip stands for internet protocol which is set of the rules governing the format of the data sent over the internet or local network it helps to routing the data to",
+      "prediction_raw": " IP stands for Internet Protocol which is set of the rules governing the format of the data center or the Internet or local network. It helps to routing the data to",
+      "prediction_norm": " ip stands for internet protocol which is set of the rules governing the format of the data center or the internet or local network it helps to routing the data to",
+      "normalized_wer_pct": 6.45,
+      "latency_ms": 1196.48,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 137,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "ENTITY_DATABASE_NAME SQL END. The purpose of having ENTITY_DATABASE_NAME SQL END uh like uh if you are using an inner join or a natural join, then you will use having uh same as where clause, but where clause is used only in select statement. But having is used in the inner join or a particular in a natural join.",
+      "reference_norm": "entity database name sql end the purpose of having entity database name sql end uh like uh if you are using an inner join or a natural join then you will use having uh same as where clause but where clause is used only in select statement but having is used in the inner join or a particular in a natural join ",
+      "prediction_raw": " the purpose of having SQL like if you are using an inner join or a natural join then you will use having same as where clause but where clause is used only in select statement but having is used in the inner join particular in a natural joint.",
+      "prediction_norm": " the purpose of having sql like if you are using an inner join or a natural join then you will use having same as where clause but where clause is used only in select statement but having is used in the inner join particular in a natural joint ",
+      "normalized_wer_pct": 24.19,
+      "latency_ms": 1808.53,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 138,
+      "source_file": "valid.json",
+      "duration_sec": 10.08,
+      "reference_raw": "ENTITY_ORGANIZATION OSI END is important for networking and ENTITY_ORGANIZATION OSI END consist of application layer, physical layer and",
+      "reference_norm": "entity organization osi end is important for networking and entity organization osi end consist of application layer physical layer and",
+      "prediction_raw": " OSI is important for networking and OSI consists of application layer, physical layer and",
+      "prediction_norm": " osi is important for networking and osi consists of application layer physical layer and",
+      "normalized_wer_pct": 35.0,
+      "latency_ms": 749.59,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 139,
+      "source_file": "valid.json",
+      "duration_sec": 19.04,
+      "reference_raw": "short elements hai to the number of buckets are a higher load factor can be leads to increased collision and longer time if the bucket size is too smaller frequency collision may occur degradable the efficiency of the operation whereas whereas a larger bucket size can result in wasted space and increased memory.",
+      "reference_norm": "short elements hai to the number of buckets are a higher load factor can be leads to increased collision and longer time if the bucket size is too smaller frequency collision may occur degradable the efficiency of the operation whereas whereas a larger bucket size can result in wasted space and increased memory ",
+      "prediction_raw": " So the number of advocates they hire a lot of actors can be used to increase the collision and the longer the delay means time. So if the bucket size is too small, a frequency collision may occur at a degree degree to the efficiency of the operation whereas the whereas the an exposure larger bucket size can be the innovation space and the increase memory.",
+      "prediction_norm": " so the number of advocates they hire a lot of actors can be used to increase the collision and the longer the delay means time so if the bucket size is too small a frequency collision may occur at a degree degree to the efficiency of the operation whereas the whereas the an exposure larger bucket size can be the innovation space and the increase memory ",
+      "normalized_wer_pct": 64.15,
+      "latency_ms": 2541.3,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 140,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "DML in D command select means it will select the tables which is in previous T code. It will create table and insert it.",
+      "reference_norm": "dml in d command select means it will select the tables which is in previous t code it will create table and insert it ",
+      "prediction_raw": " DML in command select means it will select the tables which is in previous store. It will create table and insert",
+      "prediction_norm": " dml in command select means it will select the tables which is in previous store it will create table and insert",
+      "normalized_wer_pct": 16.67,
+      "latency_ms": 972.16,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 141,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "So two type of polymorphism are there. So polymorphism is nothing but many type many forms. So in that one is static which is overloading. Overloading is used in inheritance concepts where we have to extend some of the",
+      "reference_norm": "so two type of polymorphism are there so polymorphism is nothing but many type many forms so in that one is static which is overloading overloading is used in inheritance concepts where we have to extend some of the",
+      "prediction_raw": " So two type of polymer fism are there. So polymer f prism is nothing but many type many forms. So in that one is a static which is overloading. Overloading is used in inheritance concepts where we have to extend some of the",
+      "prediction_norm": " so two type of polymer fism are there so polymer f prism is nothing but many type many forms so in that one is a static which is overloading overloading is used in inheritance concepts where we have to extend some of the",
+      "normalized_wer_pct": 15.38,
+      "latency_ms": 2159.34,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 142,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "and the syntax is also very easy and here we are having interpreter and the compilation does not takes place and when we write the code when there is an error immediately we are having the code will not be executed it will",
+      "reference_norm": "and the syntax is also very easy and here we are having interpreter and the compilation does not takes place and when we write the code when there is an error immediately we are having the code will not be executed it will",
+      "prediction_raw": " and the syntax is also very easy and here we are having the interpreter and the configuration does not express and when we write the code when there is an app there immediately we are have the code will not be executed it will",
+      "prediction_norm": " and the syntax is also very easy and here we are having the interpreter and the configuration does not express and when we write the code when there is an app there immediately we are have the code will not be executed it will",
+      "normalized_wer_pct": 16.28,
+      "latency_ms": 1724.98,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 143,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The classes in JavaScript is useful to create the write the code in the step by step and to compile the",
+      "reference_norm": "the classes in javascript is useful to create the write the code in the step by step and to compile the",
+      "prediction_raw": " The process in JavaScript is useful to create a rate of volume separated and to compile",
+      "prediction_norm": " the process in javascript is useful to create a rate of volume separated and to compile",
+      "normalized_wer_pct": 52.38,
+      "latency_ms": 564.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 144,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "scheduling algorithm is used to balance multiple CPU bound and IO bounds. Processing.",
+      "reference_norm": "scheduling algorithm is used to balance multiple cpu bound and io bounds processing ",
+      "prediction_raw": " He said during algorithm he is used to banks multiple CPU born in Iwo bonds process.",
+      "prediction_norm": " he said during algorithm he is used to banks multiple cpu born in iwo bonds process ",
+      "normalized_wer_pct": 76.92,
+      "latency_ms": 782.3,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 145,
+      "source_file": "valid.json",
+      "duration_sec": 8.32,
+      "reference_raw": "type of triggers or these triggers can also be deleted by applying some another data type functions.",
+      "reference_norm": "type of triggers or these triggers can also be deleted by applying some another data type functions ",
+      "prediction_raw": " type of triggers or these triggers can also be deleted by applying some other data type functions.",
+      "prediction_norm": " type of triggers or these triggers can also be deleted by applying some other data type functions ",
+      "normalized_wer_pct": 5.88,
+      "latency_ms": 822.84,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 146,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "for the term of the policy and paying out claims when the insurance event subjects to the terms policy. Responsibilities underwriting policy managing risk pools, determining premium rates, processing claims and ben",
+      "reference_norm": "for the term of the policy and paying out claims when the insurance event subjects to the terms policy responsibilities underwriting policy managing risk pools determining premium rates processing claims and ben",
+      "prediction_raw": " for the term of the policy and pay out claims when the insurance event subjects to the terms policy. Responsement is under writing policy and as in risk pools determining premium rates processing claims and then",
+      "prediction_norm": " for the term of the policy and pay out claims when the insurance event subjects to the terms policy responsement is under writing policy and as in risk pools determining premium rates processing claims and then",
+      "normalized_wer_pct": 28.12,
+      "latency_ms": 1750.32,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 147,
+      "source_file": "valid.json",
+      "duration_sec": 10.88,
+      "reference_raw": "very useful the points are very useful to clarify the doubts.",
+      "reference_norm": "very useful the points are very useful to clarify the doubts ",
+      "prediction_raw": " very useful in the points already used to clarify the goals.",
+      "prediction_norm": " very useful in the points already used to clarify the goals ",
+      "normalized_wer_pct": 45.45,
+      "latency_ms": 668.24,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 148,
+      "source_file": "valid.json",
+      "duration_sec": 12.18,
+      "reference_raw": "ring rule. If a transaction violates the time stamp rule, the transaction is aborted or restarted.",
+      "reference_norm": "ring rule if a transaction violates the time stamp rule the transaction is aborted or restarted ",
+      "prediction_raw": " ring rule. If a transaction violates the time stamp rule, the transaction is aborted or restarted.",
+      "prediction_norm": " ring rule if a transaction violates the time stamp rule the transaction is aborted or restarted ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 840.44,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 149,
+      "source_file": "valid.json",
+      "duration_sec": 14.56,
+      "reference_raw": "managing the process that are taking place in the current RAM. They use them to short the number of process that are taking in the RAM and help helps to manage the process and allot the space properly.",
+      "reference_norm": "managing the process that are taking place in the current ram they use them to short the number of process that are taking in the ram and help helps to manage the process and allot the space properly ",
+      "prediction_raw": " imagine the process that are taking place in the current trial. They use them to shorten number of process that is taking in the RAM and it is to manage the process and allow the space properly.",
+      "prediction_norm": " imagine the process that are taking place in the current trial they use them to shorten number of process that is taking in the ram and it is to manage the process and allow the space properly ",
+      "normalized_wer_pct": 21.05,
+      "latency_ms": 1553.37,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 150,
+      "source_file": "valid.json",
+      "duration_sec": 8.44,
+      "reference_raw": "the performance of an efficiency of an M operating system because it perform less task and with more binary equations.",
+      "reference_norm": "the performance of an efficiency of an m operating system because it perform less task and with more binary equations ",
+      "prediction_raw": " performance of an efficiency of an operating system because it performs less tasks and with more binary equations.",
+      "prediction_norm": " performance of an efficiency of an operating system because it performs less tasks and with more binary equations ",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 866.94,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 151,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "ENTITY_QUESTION How END can SQL injection attacks bypass access controls and what measures can prevent this? SQL can nowadays data is raw and data is dirty. So to clean the dirty data, we have to",
+      "reference_norm": "entity question how end can sql injection attacks bypass access controls and what measures can prevent this sql can nowadays data is raw and data is dirty so to clean the dirty data we have to",
+      "prediction_raw": " How can SQL connection attacks bypass access controls and what measures can prevent this? SQL can nowadays data is raw and data is dirty. So to clean the dirty data we have to",
+      "prediction_norm": " how can sql connection attacks bypass access controls and what measures can prevent this sql can nowadays data is raw and data is dirty so to clean the dirty data we have to",
+      "normalized_wer_pct": 11.11,
+      "latency_ms": 1295.58,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 152,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "the mechanisms user weight die and weight weight schemes and music content",
+      "reference_norm": "the mechanisms user weight die and weight weight schemes and music content",
+      "prediction_raw": " The mechanisms we use are weight high and wound weight weight schemes and how to use it can",
+      "prediction_norm": " the mechanisms we use are weight high and wound weight weight schemes and how to use it can",
+      "normalized_wer_pct": 83.33,
+      "latency_ms": 819.93,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 153,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I was scheduling algorithms like FC.",
+      "reference_norm": "i was scheduling algorithms like fc ",
+      "prediction_raw": " I was scheduling algorithms like Fc",
+      "prediction_norm": " i was scheduling algorithms like fc",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 311.51,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 154,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm not sure.",
+      "reference_norm": "i m not sure ",
+      "prediction_raw": " .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 114.03,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 155,
+      "source_file": "valid.json",
+      "duration_sec": 1.98,
+      "reference_raw": "I'm going to go.",
+      "reference_norm": "i m going to go ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 192.75,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 156,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "ways can the aborted state influence system performance. The aborted state in transaction management indicates that a transaction could not complete successfully and had had to be rolled back often due to conflicts, deadlocks or validation.",
+      "reference_norm": "ways can the aborted state influence system performance the aborted state in transaction management indicates that a transaction could not complete successfully and had had to be rolled back often due to conflicts deadlocks or validation ",
+      "prediction_raw": " waste can the about its state influence system performance. The about its data management in the data management indicates that the transaction could not complete successfully and had to be rolled back. Up and due to context that drugs or validation",
+      "prediction_norm": " waste can the about its state influence system performance the about its data management in the data management indicates that the transaction could not complete successfully and had to be rolled back up and due to context that drugs or validation",
+      "normalized_wer_pct": 44.44,
+      "latency_ms": 1366.96,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 157,
+      "source_file": "valid.json",
+      "duration_sec": 17.0,
+      "reference_raw": "in the run in the run method in the run method create a thread create a thread object create a thread object and pass an interface of your runble implementation it to its con",
+      "reference_norm": "in the run in the run method in the run method create a thread create a thread object create a thread object and pass an interface of your runble implementation it to its con",
+      "prediction_raw": " in the run in the Run method in the RUN method create a thread create a Thread object create a threads object and pass an interface of your runable implementation it to its console",
+      "prediction_norm": " in the run in the run method in the run method create a thread create a thread object create a threads object and pass an interface of your runable implementation it to its console",
+      "normalized_wer_pct": 8.82,
+      "latency_ms": 1130.39,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 158,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Explain the concept of inverted page table and the advantages.",
+      "reference_norm": "explain the concept of inverted page table and the advantages ",
+      "prediction_raw": " Explain the concept of inverted page table in their advantages.",
+      "prediction_norm": " explain the concept of inverted page table in their advantages ",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 422.31,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 159,
+      "source_file": "valid.json",
+      "duration_sec": 18.64,
+      "reference_raw": "the N company the employee is directly depending on the N company that is called as the relation between the N company and the employee. There although there are many employees in the N company that particular employee is defined as to be one to one relationship with the N company. Each employee in the N company is defined to be one to one relationship.",
+      "reference_norm": "the n company the employee is directly depending on the n company that is called as the relation between the n company and the employee there although there are many employees in the n company that particular employee is defined as to be one to one relationship with the n company each employee in the n company is defined to be one to one relationship ",
+      "prediction_raw": " The company the employee is directly depending on the company that is called as the relation between the company and the employee. There although there are many employees in the company, that particular employee is defined as to be one to one relationship with the company. Each employee in the employee he is defined to be 1 to 1 relationship.",
+      "prediction_norm": " the company the employee is directly depending on the company that is called as the relation between the company and the employee there although there are many employees in the company that particular employee is defined as to be one to one relationship with the company each employee in the employee he is defined to be 1 to 1 relationship ",
+      "normalized_wer_pct": 13.85,
+      "latency_ms": 2480.01,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 160,
+      "source_file": "valid.json",
+      "duration_sec": 9.993,
+      "reference_raw": "the object near nearer to us or far away from us. By using the set index we can achieve that.",
+      "reference_norm": "the object near nearer to us or far away from us by using the set index we can achieve that ",
+      "prediction_raw": " the object near near to us for away from us using the certain text we cannot use.",
+      "prediction_norm": " the object near near to us for away from us using the certain text we cannot use ",
+      "normalized_wer_pct": 45.0,
+      "latency_ms": 724.71,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 161,
+      "source_file": "valid.json",
+      "duration_sec": 5.7,
+      "reference_raw": "And the two strokes are used for the lighter vehicles and the four stroke are used for the heavy duty vehicles.",
+      "reference_norm": "and the two strokes are used for the lighter vehicles and the four stroke are used for the heavy duty vehicles ",
+      "prediction_raw": " and the two strokes are used for the lighter vehicles and the first rock are used per the evity vehicles.",
+      "prediction_norm": " and the two strokes are used for the lighter vehicles and the first rock are used per the evity vehicles ",
+      "normalized_wer_pct": 23.81,
+      "latency_ms": 768.55,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 162,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "are using stored producers are stored performance stored producers are pre compiled meaning that meaning they are optimized security they provide additional additional layer of security to our data maintainability encapsulation logging is stored stored simplifies the maintenance as change",
+      "reference_norm": "are using stored producers are stored performance stored producers are pre compiled meaning that meaning they are optimized security they provide additional additional layer of security to our data maintainability encapsulation logging is stored stored simplifies the maintenance as change",
+      "prediction_raw": " are used external producers are a store for performance. Store producers are pre compiled meaning that meaning they are optimized security that they provide additional layer of the security to our data maintainability and capture is stored. Solar one means it maintains a change.",
+      "prediction_norm": " are used external producers are a store for performance store producers are pre compiled meaning that meaning they are optimized security that they provide additional layer of the security to our data maintainability and capture is stored solar one means it maintains a change ",
+      "normalized_wer_pct": 42.5,
+      "latency_ms": 1710.53,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 163,
+      "source_file": "valid.json",
+      "duration_sec": 10.08,
+      "reference_raw": "Uh",
+      "reference_norm": "uh",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 186.89,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 164,
+      "source_file": "valid.json",
+      "duration_sec": 4.36,
+      "reference_raw": "further instructions about the real time applications.",
+      "reference_norm": "further instructions about the real time applications ",
+      "prediction_raw": " further instructions about the real-time applications.",
+      "prediction_norm": " further instructions about the real time applications ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 378.14,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 165,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "I'm going to go ahead and get started.",
+      "reference_norm": "i m going to go ahead and get started ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 119.48,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 166,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "for completion and before starting the data isolation it must be it must the transaction must be parallelly done without any concurrency durability after after doing some some concurrent",
+      "reference_norm": "for completion and before starting the data isolation it must be it must the transaction must be parallelly done without any concurrency durability after after doing some some concurrent",
+      "prediction_raw": " completion and before starting the data isolation it must be the transaction must be paralleled down without any concurrency durability after after doing some some concurrent",
+      "prediction_norm": " completion and before starting the data isolation it must be the transaction must be paralleled down without any concurrency durability after after doing some some concurrent",
+      "normalized_wer_pct": 17.24,
+      "latency_ms": 906.6,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 167,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "by ENTITY_ORGANIZATION Indian commercial banks END in global financial system. ENTITY_ORGANIZATION Indian commercial banks END are navigating a complex regulatory landscape both domestically and internationally.",
+      "reference_norm": "by entity organization indian commercial banks end in global financial system entity organization indian commercial banks end are navigating a complex regulatory landscape both domestically and internationally ",
+      "prediction_raw": " by Indian commercial banks in global financial system. Indian commercial bank are navigating a complex regulatory landscape both domestically and internationally here.",
+      "prediction_norm": " by indian commercial banks in global financial system indian commercial bank are navigating a complex regulatory landscape both domestically and internationally here ",
+      "normalized_wer_pct": 29.63,
+      "latency_ms": 801.99,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 168,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "CSS selector alignment etc.",
+      "reference_norm": "css selector alignment etc ",
+      "prediction_raw": " See assist assist. See assist. So they went on except",
+      "prediction_norm": " see assist assist see assist so they went on except",
+      "normalized_wer_pct": 250.0,
+      "latency_ms": 626.01,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 169,
+      "source_file": "valid.json",
+      "duration_sec": 10.08,
+      "reference_raw": "So the role of buffering in managing input and output ENTITY_DEVICE_NAME devices END is it it manages how taking the input from one ENTITY_DEVICE_NAME device END to another ENTITY_DEVICE_NAME device END and sending it to and see.",
+      "reference_norm": "so the role of buffering in managing input and output entity device name devices end is it it manages how taking the input from one entity device name device end to another entity device name device end and sending it to and see ",
+      "prediction_raw": " So the role of buffering in managing input and output device sit it manages how taking the input from one device to another device and sending it to and sending",
+      "prediction_norm": " so the role of buffering in managing input and output device sit it manages how taking the input from one device to another device and sending it to and sending",
+      "normalized_wer_pct": 34.88,
+      "latency_ms": 1224.56,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 170,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "database the efficiency of queries and we have using some primary keys and candidate keys in primary key is the most important index in a table and is used to unique to identify each row. And foreign key. Foreign keys are used to establish relation between tables and",
+      "reference_norm": "database the efficiency of queries and we have using some primary keys and candidate keys in primary key is the most important index in a table and is used to unique to identify each row and foreign key foreign keys are used to establish relation between tables and",
+      "prediction_raw": " database the efficiency of various and we house using some primary keys and candidate case in primary case the most important index in the table and is used to unit identifier each row and foreign key. Foreign keys are used to establish relation between tables and",
+      "prediction_norm": " database the efficiency of various and we house using some primary keys and candidate case in primary case the most important index in the table and is used to unit identifier each row and foreign key foreign keys are used to establish relation between tables and",
+      "normalized_wer_pct": 18.75,
+      "latency_ms": 1579.62,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 171,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "an operating system utilizes paging to provide memory isolation and protection and the role of page table in this process. Uh paging is a memory management scheme that allows",
+      "reference_norm": "an operating system utilizes paging to provide memory isolation and protection and the role of page table in this process uh paging is a memory management scheme that allows",
+      "prediction_raw": " operating system utilizes paging to provide memory isolation and protection and the role of page stable in this process. Paging is a memory management scheme that has",
+      "prediction_norm": " operating system utilizes paging to provide memory isolation and protection and the role of page stable in this process paging is a memory management scheme that has",
+      "normalized_wer_pct": 13.79,
+      "latency_ms": 975.78,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 172,
+      "source_file": "valid.json",
+      "duration_sec": 5.16,
+      "reference_raw": "Mobile banking also integrates various payment services such as peer to peer transfers.",
+      "reference_norm": "mobile banking also integrates various payment services such as peer to peer transfers ",
+      "prediction_raw": " Mobile banking also integrates various payment services such as peer-to-peer transfers.",
+      "prediction_norm": " mobile banking also integrates various payment services such as peer to peer transfers ",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 573.15,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 173,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The memory management implications of using pointers and references. The pointers are able to address the values. the references are used to access the values by using these addresses. pointers when we declare a pointer",
+      "reference_norm": "the memory management implications of using pointers and references the pointers are able to address the values the references are used to access the values by using these addresses pointers when we declare a pointer",
+      "prediction_raw": " The memory management implications of using pointers and references. The pointers are able to address the values and references are used to access the values by using these addresses. The pointer is automatically",
+      "prediction_norm": " the memory management implications of using pointers and references the pointers are able to address the values and references are used to access the values by using these addresses the pointer is automatically",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 1155.66,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 174,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The use of transaction logs aids in preserving database integrity by ensuring that the transactions on a database follow acid principles. It records all databases modifications and the transactions which allow the database to be restored to a consistent state in the even",
+      "reference_norm": "the use of transaction logs aids in preserving database integrity by ensuring that the transactions on a database follow acid principles it records all databases modifications and the transactions which allow the database to be restored to a consistent state in the even",
+      "prediction_raw": " The use of transaction logs aids in preserving database integrity by ensuring that the transaction on a database follow asset principles. It records all databases modifications and the transactions which allow the database to be restored to a consistent state in the",
+      "prediction_norm": " the use of transaction logs aids in preserving database integrity by ensuring that the transaction on a database follow asset principles it records all databases modifications and the transactions which allow the database to be restored to a consistent state in the",
+      "normalized_wer_pct": 6.98,
+      "latency_ms": 1444.07,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 175,
+      "source_file": "valid.json",
+      "duration_sec": 10.14,
+      "reference_raw": "as we can write that tree structure and in pre-order, post order and and in order.",
+      "reference_norm": "as we can write that tree structure and in pre order post order and and in order ",
+      "prediction_raw": " As we can write the tree structure and in preorder postorder and in order.",
+      "prediction_norm": " as we can write the tree structure and in preorder postorder and in order ",
+      "normalized_wer_pct": 35.29,
+      "latency_ms": 719.24,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 176,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Indexing. Indexing is an",
+      "reference_norm": "indexing indexing is an",
+      "prediction_raw": " indexing indexing is an",
+      "prediction_norm": " indexing indexing is an",
+      "normalized_wer_pct": 0.0,
+      "latency_ms": 238.86,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 177,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "assets which are which are which doesn't um these are these are actually loans and not actually loans or advances for which the borrower has stopped making interest and principle.",
+      "reference_norm": "assets which are which are which doesn t um these are these are actually loans and not actually loans or advances for which the borrower has stopped making interest and principle ",
+      "prediction_raw": " assets which are which are we doesn't these are these are actually loans and not actually loans or advances for which the borrower has stopped making interest and principal.",
+      "prediction_norm": " assets which are which are we doesn t these are these are actually loans and not actually loans or advances for which the borrower has stopped making interest and principal ",
+      "normalized_wer_pct": 9.68,
+      "latency_ms": 965.54,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 178,
+      "source_file": "valid.json",
+      "duration_sec": 10.08,
+      "reference_raw": "Performance of implications using correlated sub queries usually take a lot of time and improve the query performance as compared to all other applications over here.",
+      "reference_norm": "performance of implications using correlated sub queries usually take a lot of time and improve the query performance as compared to all other applications over here ",
+      "prediction_raw": " Performance of implications is in correlated sub-coarages usually take a lot of time and improve the quality performance as compared to all of the applications over here.",
+      "prediction_norm": " performance of implications is in correlated sub coarages usually take a lot of time and improve the quality performance as compared to all of the applications over here ",
+      "normalized_wer_pct": 23.08,
+      "latency_ms": 1068.99,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 179,
+      "source_file": "valid.json",
+      "duration_sec": 6.86,
+      "reference_raw": "Hello.",
+      "reference_norm": "hello ",
+      "prediction_raw": " You",
+      "prediction_norm": " you",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 134.25,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 180,
+      "source_file": "valid.json",
+      "duration_sec": 6.4,
+      "reference_raw": "Mm.",
+      "reference_norm": "mm ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 188.77,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 181,
+      "source_file": "valid.json",
+      "duration_sec": 11.9,
+      "reference_raw": "Sure.",
+      "reference_norm": "sure ",
+      "prediction_raw": " . . .",
+      "prediction_norm": " ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 200.84,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 182,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "The concept of primary key in database system. The concept of a primary key in database system is nothing but when a primary key of database design.",
+      "reference_norm": "the concept of primary key in database system the concept of a primary key in database system is nothing but when a primary key of database design ",
+      "prediction_raw": " The concept of primary key database system. The concept for primary key in database system is nothing but when a primary key of database design.",
+      "prediction_norm": " the concept of primary key database system the concept for primary key in database system is nothing but when a primary key of database design ",
+      "normalized_wer_pct": 11.11,
+      "latency_ms": 898.82,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 183,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "which itself provides feedback in the form of rewards or penalties based on the agent's actions. And here Q function is also used with estimates the expected cumulative reward of taking a specific action in a given state and following a certain policy.",
+      "reference_norm": "which itself provides feedback in the form of rewards or penalties based on the agent s actions and here q function is also used with estimates the expected cumulative reward of taking a specific action in a given state and following a certain policy ",
+      "prediction_raw": " which itself provides feedback in the form of rewards or penalties based on the agent actions. And here Q function is also used with estimates the expected cumulative reward of taken specific action in a given state and following a certain",
+      "prediction_norm": " which itself provides feedback in the form of rewards or penalties based on the agent actions and here q function is also used with estimates the expected cumulative reward of taken specific action in a given state and following a certain",
+      "normalized_wer_pct": 9.09,
+      "latency_ms": 1542.87,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 184,
+      "source_file": "valid.json",
+      "duration_sec": 10.74,
+      "reference_raw": "something is going to pass through this because of the in the middle. I don't know if I can use this.",
+      "reference_norm": "something is going to pass through this because of the in the middle i don t know if i can use this ",
+      "prediction_raw": " Thank you.",
+      "prediction_norm": " thank you ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 293.89,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 185,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "often provide auto backup auto automated backup features. some DBMS provides also after point in time review replication and high high capability data data reduce geo geo distribution storage snapshots and restores destroy disaster recovery and as a service automated scaling and performance.",
+      "reference_norm": "often provide auto backup auto automated backup features some dbms provides also after point in time review replication and high high capability data data reduce geo geo distribution storage snapshots and restores destroy disaster recovery and as a service automated scaling and performance ",
+      "prediction_raw": " of the provider auto auto automated backup features some DBMS provides also of the point in time review replication under high I have updated data reduce geo geo distribution storage snapshots and restore service time disaster recovery and as is service automated scaling and performance",
+      "prediction_norm": " of the provider auto auto automated backup features some dbms provides also of the point in time review replication under high i have updated data reduce geo geo distribution storage snapshots and restore service time disaster recovery and as is service automated scaling and performance",
+      "normalized_wer_pct": 32.56,
+      "latency_ms": 1444.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 186,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "role in process synchronization. I don't know the answer.",
+      "reference_norm": "role in process synchronization i don t know the answer ",
+      "prediction_raw": " Roland process synchronization. I don't know the answer.",
+      "prediction_norm": " roland process synchronization i don t know the answer ",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 404.69,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 187,
+      "source_file": "valid.json",
+      "duration_sec": 10.02,
+      "reference_raw": "A E database can handle inconsistencies during transactions like roll back and lagging like this technique states are used to",
+      "reference_norm": "a e database can handle inconsistencies during transactions like roll back and lagging like this technique states are used to",
+      "prediction_raw": " The database can handle inconsistencies during conversations like rollback and lagging like this technique states are user too.",
+      "prediction_norm": " the database can handle inconsistencies during conversations like rollback and lagging like this technique states are user too ",
+      "normalized_wer_pct": 35.0,
+      "latency_ms": 711.7,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 188,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "buffering in managing input output devices data transfers buffering occurs when when more data management is done or else if if limit increases buffer overflow or buffer underflow",
+      "reference_norm": "buffering in managing input output devices data transfers buffering occurs when when more data management is done or else if if limit increases buffer overflow or buffer underflow",
+      "prediction_raw": " Buffering in managing input output devices data transfers. Buffering occurs when the management is done or else if the limit increases buffer overflow or buffer underflow.",
+      "prediction_norm": " buffering in managing input output devices data transfers buffering occurs when the management is done or else if the limit increases buffer overflow or buffer underflow ",
+      "normalized_wer_pct": 14.29,
+      "latency_ms": 1065.93,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 189,
+      "source_file": "valid.json",
+      "duration_sec": 15.7,
+      "reference_raw": "standing wave in a series of crest of thought that appear at different locations along a different locations along a transmission line is called standing wave.",
+      "reference_norm": "standing wave in a series of crest of thought that appear at different locations along a different locations along a transmission line is called standing wave ",
+      "prediction_raw": " standing view in a series of a list of thought that appear in different locations along a different locations, along a transmission line is called standing view.",
+      "prediction_norm": " standing view in a series of a list of thought that appear in different locations along a different locations along a transmission line is called standing view ",
+      "normalized_wer_pct": 19.23,
+      "latency_ms": 1243.81,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 190,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What is mutual exclusion important in lock data? Mutual exclusion is very important in lock data because it is the main characteristics of the deadlock deadlock. Mutual exclusion cannot be avoided even in the deadlock prevention also deadlock avoidance also they. Mutual exclusion can be occurred as usual. So we cannot able to",
+      "reference_norm": "what is mutual exclusion important in lock data mutual exclusion is very important in lock data because it is the main characteristics of the deadlock deadlock mutual exclusion cannot be avoided even in the deadlock prevention also deadlock avoidance also they mutual exclusion can be occurred as usual so we cannot able to",
+      "prediction_raw": " What is mutual exclusion important in lock data. Mutual exclusion is very important in locker data because it is the main characteristics of the dead lock dead lock. Mutual inclusion cannot be avoided even in the deadlock prevention also deadlock avoid and also the mutual exclusion can be added as usual. So we cannot able to",
+      "prediction_norm": " what is mutual exclusion important in lock data mutual exclusion is very important in locker data because it is the main characteristics of the dead lock dead lock mutual inclusion cannot be avoided even in the deadlock prevention also deadlock avoid and also the mutual exclusion can be added as usual so we cannot able to",
+      "normalized_wer_pct": 18.87,
+      "latency_ms": 2337.58,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 191,
+      "source_file": "valid.json",
+      "duration_sec": 2.32,
+      "reference_raw": "So the data is not available.",
+      "reference_norm": "so the data is not available ",
+      "prediction_raw": " I hope it has not ever been.",
+      "prediction_norm": " i hope it has not ever been ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 519.43,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 192,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "metal splitting. Hi, very good afternoon. Okay. I'm not wearing class. Okay, let me start.",
+      "reference_norm": "metal splitting hi very good afternoon okay i m not wearing class okay let me start ",
+      "prediction_raw": " Hi very good afternoon. Okay. I'm wearing class. Okay, here's a second.",
+      "prediction_norm": " hi very good afternoon okay i m wearing class okay here s a second ",
+      "normalized_wer_pct": 43.75,
+      "latency_ms": 657.89,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 193,
+      "source_file": "valid.json",
+      "duration_sec": 5.28,
+      "reference_raw": "uh isolations from the process of being determined uh many",
+      "reference_norm": "uh isolations from the process of being determined uh many",
+      "prediction_raw": " isolations from the process of being determined many",
+      "prediction_norm": " isolations from the process of being determined many",
+      "normalized_wer_pct": 20.0,
+      "latency_ms": 384.8,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 194,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "of operations target customer base and regular requirement universal banking wide range of E services large customer base extension branch network high capacity required focus on profitability small finance banks are",
+      "reference_norm": "of operations target customer base and regular requirement universal banking wide range of e services large customer base extension branch network high capacity required focus on profitability small finance banks are",
+      "prediction_raw": " of operations target customer base and regular requirement universal banking wide range of services large customer base extension branch branch network high capacity required focus on profit ability small finance banks are",
+      "prediction_norm": " of operations target customer base and regular requirement universal banking wide range of services large customer base extension branch branch network high capacity required focus on profit ability small finance banks are",
+      "normalized_wer_pct": 12.9,
+      "latency_ms": 1123.0,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 195,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "What is the main purpose of using lock screen multiple threads access the shared data structure. Uh the purpose of lock screen main multiple threads access shared data structures when the multiple threads are accessed there is a kernel it can take the so many multiple threads it has three",
+      "reference_norm": "what is the main purpose of using lock screen multiple threads access the shared data structure uh the purpose of lock screen main multiple threads access shared data structures when the multiple threads are accessed there is a kernel it can take the so many multiple threads it has three",
+      "prediction_raw": " What is the main purpose of using log-frame multiple rays? Actually shade a structure. The purpose of log-scene and multiple rays are actually shade data structures. In the multiple rays and access it there is a kernel. It can take us how many multiple rays it has three",
+      "prediction_norm": " what is the main purpose of using log frame multiple rays actually shade a structure the purpose of log scene and multiple rays are actually shade data structures in the multiple rays and access it there is a kernel it can take us how many multiple rays it has three",
+      "normalized_wer_pct": 46.0,
+      "latency_ms": 1956.05,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 196,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "Excuse me.",
+      "reference_norm": "excuse me ",
+      "prediction_raw": " Yeah.",
+      "prediction_norm": " yeah ",
+      "normalized_wer_pct": 100.0,
+      "latency_ms": 137.31,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 197,
+      "source_file": "valid.json",
+      "duration_sec": 18.64,
+      "reference_raw": "assessments, restructuring loans, selling bad loans to asset configuration reconstruction companies like ARSs and using legal recovery mechanisms.",
+      "reference_norm": "assessments restructuring loans selling bad loans to asset configuration reconstruction companies like arss and using legal recovery mechanisms ",
+      "prediction_raw": " assessments, restructuring loans, selling bad loans to asset configuration, reconstruction companies like ARS and using legal recovery mechanisms.",
+      "prediction_norm": " assessments restructuring loans selling bad loans to asset configuration reconstruction companies like ars and using legal recovery mechanisms ",
+      "normalized_wer_pct": 5.56,
+      "latency_ms": 770.2,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 198,
+      "source_file": "valid.json",
+      "duration_sec": 10.08,
+      "reference_raw": "JavaScript is used for functionality and I'm not comfortable for developer JavaScript.",
+      "reference_norm": "javascript is used for functionality and i m not comfortable for developer javascript ",
+      "prediction_raw": " The last place you will find functionality and not comfortable for developer.",
+      "prediction_norm": " the last place you will find functionality and not comfortable for developer ",
+      "normalized_wer_pct": 69.23,
+      "latency_ms": 484.03,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 199,
+      "source_file": "valid.json",
+      "duration_sec": 20.0,
+      "reference_raw": "power engineering with electric engineering. Sir power engineering is we can say it's like a power",
+      "reference_norm": "power engineering with electric engineering sir power engineering is we can say it s like a power",
+      "prediction_raw": " engineering with electric engineering. So this power engineering is we can say it's like a power",
+      "prediction_norm": " engineering with electric engineering so this power engineering is we can say it s like a power",
+      "normalized_wer_pct": 17.65,
+      "latency_ms": 617.88,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    },
+    {
+      "index": 200,
+      "source_file": "valid.json",
+      "duration_sec": 1.42,
+      "reference_raw": "communication in the little list.",
+      "reference_norm": "communication in the little list ",
+      "prediction_raw": " communication and web application.",
+      "prediction_norm": " communication and web application ",
+      "normalized_wer_pct": 80.0,
+      "latency_ms": 261.76,
+      "repetition_flag": {
+        "is_failure": false,
+        "reason": "none"
+      }
+    }
+  ]
+}

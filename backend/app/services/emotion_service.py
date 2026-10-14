@@ -17,6 +17,9 @@ class EmotionService:
         Sends raw image bytes to the isolated Emotion inference service.
         Returns a dict with emotion and confidence.
         """
+        if not image_bytes:
+            return {"emotion": None, "confidence": None}
+
         try:
             # We can send the raw image bytes as they are
             files = {"file": ("image.jpg", image_bytes, "image/jpeg")}

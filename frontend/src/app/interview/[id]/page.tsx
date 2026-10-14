@@ -9,7 +9,15 @@ const BACKEND = "http://localhost:8000";
 
 type Message = { role: "ai" | "user"; text: string };
 
-type SessionContext = { role: string; difficulty: string; duration: number; resumeText: string };
+type SessionContext = {
+    role: string;
+    difficulty: string;
+    duration: number;
+    resumeText: string;
+    candidateName?: string;
+    education?: string;
+    location?: string;
+};
 
 
 export default function InterviewProctorPage({ params }: { params: Promise<{ id: string }> }) {
@@ -33,6 +41,7 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     const [context, setContext] = useState<SessionContext | null>(null);
     const [aiLoading, setAiLoading] = useState(true);
     const [aiError, setAiError] = useState("");
+    const [candidateName, setCandidateName] = useState<string>("");
     const [userInput, setUserInput] = useState("");
     const [provisionalText, setProvisionalText] = useState("");
     const recordingIdRef = useRef<number>(0);
@@ -61,22 +70,29 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
         if (!existing) return next.trim();
         if (!next) return existing;
         
-        const w1 = existing.trim().split(/\s+/);
-        const w2 = next.trim().split(/\s+/);
+        const cleanExisting = existing.trim();
+        const cleanNext = next.trim();
+        if (cleanExisting.toLowerCase() === cleanNext.toLowerCase()) return cleanExisting;
+        if (cleanExisting.toLowerCase().endsWith(cleanNext.toLowerCase())) return cleanExisting;
+
+        const w1 = cleanExisting.split(/\s+/);
+        const w2 = cleanNext.split(/\s+/);
         
         let overlap = 0;
-        for (let i = 1; i <= Math.min(w1.length, w2.length, 4); i++) {
-            const endW1 = w1.slice(-i).join(" ").toLowerCase().replace(/[^a-z]/g, '');
-            const startW2 = w2.slice(0, i).join(" ").toLowerCase().replace(/[^a-z]/g, '');
+        const maxCheck = Math.min(w1.length, w2.length, 8);
+        for (let i = 1; i <= maxCheck; i++) {
+            const endW1 = w1.slice(-i).join(" ").toLowerCase().replace(/[^a-z0-9]/g, '');
+            const startW2 = w2.slice(0, i).join(" ").toLowerCase().replace(/[^a-z0-9]/g, '');
             if (endW1 === startW2 && endW1.length > 0) {
                 overlap = i;
             }
         }
         
         if (overlap > 0) {
-            return existing.trim() + " " + w2.slice(overlap).join(" ");
+            const added = w2.slice(overlap).join(" ");
+            return added ? `${cleanExisting} ${added}` : cleanExisting;
         }
-        return existing.trim() + " " + next.trim();
+        return `${cleanExisting} ${cleanNext}`;
     };
 
 
@@ -234,7 +250,7 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     };
 
     const flushAudioChunks = (sr?: number) => {
-        if (!isWavRecording || recordingIdRef.current === 0) return;
+        if (recordingIdRef.current === 0) return;
         const chunks = audioChunksRef.current;
         if (chunks.length === 0) return;
         
@@ -259,6 +275,12 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
     };
 
     const startWavRecording = useCallback(async () => {
+        // Prevent duplicate microphone recording sessions
+        if (isWavRecording || isTranscribing || recordingIdRef.current !== 0) {
+            console.warn("[MicDiag] Recording or transcription already active, ignoring duplicate start request.");
+            return;
+        }
+
         // Step 1: Ensure active, live audio track exists in streamRef.current
         let audioTrack = streamRef.current?.getAudioTracks().find(t => t.readyState === 'live');
         if (!audioTrack) {
@@ -297,7 +319,6 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             uploadQueueRef.current = [];
             isUploadingRef.current = false;
             setProvisionalText("");
-            setUserInput(""); // Fresh input for new speech answer
             
             // Step 2: Initialize Web Audio pipeline
             const ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
@@ -340,8 +361,11 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             scriptProcessorRef.current = processor;
             
             setIsWavRecording(true);
-            
-            if (chunkIntervalRef.current) clearInterval(chunkIntervalRef.current);
+
+            // Step 3: Start continuous 3-second live chunk processing timer
+            if (chunkIntervalRef.current) {
+                clearInterval(chunkIntervalRef.current);
+            }
             chunkIntervalRef.current = setInterval(() => {
                 flushAudioChunks();
             }, 3000);
@@ -350,20 +374,28 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             console.error("[MicDiag] startWavRecording error:", err);
             setAiError("Failed to start audio recording.");
         }
-    }, []);
+    }, [isWavRecording, isTranscribing]);
 
     const stopWavRecordingAndTranscribe = useCallback(async () => {
         const activeRecId = recordingIdRef.current;
         console.log(`[MicDiag] stopWavRecordingAndTranscribe called. activeRecId=${activeRecId}`);
         setIsWavRecording(false);
         
-        // 1. Clear streaming interval immediately
+        // 1. Clear live chunk timer
         if (chunkIntervalRef.current) {
             clearInterval(chunkIntervalRef.current);
             chunkIntervalRef.current = null;
         }
+
+        // 2. Wait 150ms so trailing audio buffer is captured and not clipped
+        await new Promise(r => setTimeout(r, 150));
         
-        // 2. Disconnect processor and audio context
+        // 3. Flush any remaining trailing live chunk if present
+        if (audioChunksRef.current.length > 0) {
+            flushAudioChunks();
+        }
+
+        // 4. Disconnect processor and audio context
         const actualSampleRate = audioContextRef.current?.sampleRate || 16000;
         if (scriptProcessorRef.current) {
             scriptProcessorRef.current.disconnect();
@@ -373,28 +405,23 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             audioContextRef.current.close().catch(() => {});
             audioContextRef.current = null;
         }
+
+        // 5. Allow up to 1.5s for any in-flight chunk upload to finish safely
+        const drainStart = Date.now();
+        while (isUploadingRef.current && Date.now() - drainStart < 1500) {
+            await new Promise(r => setTimeout(r, 100));
+        }
         
-        // 3. Mark recording session closed and immediately abort any in-flight chunk upload
+        // 6. Mark recording session closed
         recordingIdRef.current = 0;
         uploadQueueRef.current = [];
         if (activeChunkAbortRef.current) {
-            console.log("[MicDiag] Aborting in-flight chunk upload on stop.");
             activeChunkAbortRef.current.abort();
             activeChunkAbortRef.current = null;
         }
+        isUploadingRef.current = false;
         
-        // 4. Wait for upload flag to clear (aborted fetch settles in <50ms)
-        if (isUploadingRef.current) {
-            console.log(`[MicDiag] Waiting for in-flight chunk upload to finish...`);
-            const drainStart = Date.now();
-            while (isUploadingRef.current && Date.now() - drainStart < 5000) {
-                await new Promise(r => setTimeout(r, 50));
-            }
-            console.log(`[MicDiag] Chunk drain complete in ${Date.now() - drainStart}ms. isUploading=${isUploadingRef.current}`);
-            isUploadingRef.current = false;
-        }
-        
-        // 5. Finalize complete recording — one single high-quality upload
+        // 7. Finalize complete recording — one single high-quality upload of the entire multi-minute session
         const chunks = allAudioChunksRef.current;
         const totalSamples = chunks.reduce((acc, c) => acc + c.length, 0);
         const totalDuration = totalSamples / actualSampleRate;
@@ -432,14 +459,50 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             const rms = fullSamples.length > 0 ? Math.sqrt(sumSq / fullSamples.length) : 0;
             console.log(`[MicDiag] Audio stats: rms=${rms.toFixed(4)}, peak=${peak.toFixed(4)}`);
             
-            const wavBlob = encodeWAV(fullSamples, actualSampleRate);
+            // Only normalize if genuine speech is detected (peak >= 0.05, rms >= 0.008)
+            // Never boost background noise or silence up to speech levels
+            if (peak >= 0.05 && peak < 0.9 && rms >= 0.008) {
+                const gain = Math.min(0.9 / peak, 5.0); // Cap gain at 5x to prevent noise amplification
+                for (let i = 0; i < fullSamples.length; i++) {
+                    fullSamples[i] *= gain;
+                }
+                console.log(`[MicDiag] Audio normalized with gain ${gain.toFixed(2)} to peak ${(peak * gain).toFixed(2)}`);
+            }
+
+            // 100ms silence padding at start and end for clean acoustic boundaries
+            const padLen = Math.round(actualSampleRate * 0.1);
+            const paddedSamples = new Float32Array(fullSamples.length + padLen * 2);
+            paddedSamples.set(fullSamples, padLen);
+
+            const wavBlob = encodeWAV(paddedSamples, actualSampleRate);
             console.log(`[MicDiag] Final WAV: ${wavBlob.size} bytes, ${wavBlob.type}`);
             
             const formData = new FormData();
             formData.append("audio", wavBlob, "full_recording.wav");
             
+            // Send verified structured candidate context (never guess or invent from arbitrary text)
+            const parts: string[] = [];
+            const verifiedName = candidateName || context?.candidateName;
+            if (verifiedName) {
+                parts.push(`Candidate: ${verifiedName}`);
+            }
+            if (context?.role) {
+                parts.push(`Role: ${context.role}`);
+            }
+            if (context?.education) {
+                parts.push(`Education: ${context.education}`);
+            }
+            if (context?.location) {
+                parts.push(`Location: ${context.location}`);
+            }
+            const candidateCtx = parts.join(". ");
+            if (candidateCtx) {
+                formData.append("context", candidateCtx);
+            }
+            
+            // 120s timeout accommodates multi-minute audio transcription
             const finalAbort = new AbortController();
-            const finalTimer = setTimeout(() => finalAbort.abort(), 45000);
+            const finalTimer = setTimeout(() => finalAbort.abort(), 120000);
             
             let res: Response;
             const t0 = performance.now();
@@ -463,34 +526,68 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                 const finalTranscript = data.text.trim();
                 const charCount = finalTranscript.length;
                 console.log(`[MicDiag] Final transcript: ${charCount} chars`);
-                setProvisionalText("");
-                setUserInput(finalTranscript);
-                if (!finalTranscript) {
-                    console.warn(`[MicDiag] Whisper returned empty string — no speech detected in audio.`);
-                }
+                // Fall back to accumulated provisional text if final pass returned empty
+                setProvisionalText(prevProvisional => {
+                    const chosenText = finalTranscript || prevProvisional.trim();
+                    if (chosenText) {
+                        setUserInput(prev => {
+                            const existing = prev.trim();
+                            const recognized = chosenText.trim();
+                            if (!recognized) return prev;
+                            if (!existing) return recognized;
+                            return `${existing}\n${recognized}`;
+                        });
+                    } else {
+                        console.warn(`[MicDiag] Whisper returned empty string — no speech detected in audio.`);
+                    }
+                    return "";
+                });
             } else {
                 const code = data?.code || data?.detail || `HTTP ${res.status}`;
-                console.warn(`[MicDiag] Transcription non-OK: ${code}`, data);
-                setProvisionalText("");
-                if (res.status !== 200) {
-                    setAiError(`Transcription failed (${code}). Please try again.`);
-                }
+                console.warn(`[MicDiag] Final transcription non-OK: ${code}, falling back to provisional text.`);
+                // Safely salvage live provisional transcript on error
+                setProvisionalText(prevProvisional => {
+                    const fallback = prevProvisional.trim();
+                    if (fallback) {
+                        setUserInput(prev => {
+                            const existing = prev.trim();
+                            if (!existing) return fallback;
+                            return `${existing}\n${fallback}`;
+                        });
+                    } else if (res.status !== 200) {
+                        setAiError(`Transcription failed (${code}). Please try again.`);
+                    }
+                    return "";
+                });
             }
         } catch (err: any) {
             if (err?.name === 'AbortError') {
-                console.error(`[MicDiag] Final transcription timed out after 45s.`);
-                setAiError("Transcription timed out. The Whisper service may be busy — please try again.");
+                console.error(`[MicDiag] Final transcription timed out after 120s.`);
             } else {
                 console.error(`[MicDiag] Final transcription error:`, err);
-                setAiError("Transcription failed due to a network error. Please try again.");
             }
-            setProvisionalText("");
+            // Salvage live provisional transcript even if final request timed out or threw network error
+            setProvisionalText(prevProvisional => {
+                const fallback = prevProvisional.trim();
+                if (fallback) {
+                    setUserInput(prev => {
+                        const existing = prev.trim();
+                        if (!existing) return fallback;
+                        return `${existing}\n${fallback}`;
+                    });
+                } else {
+                    setAiError(err?.name === 'AbortError'
+                        ? "Transcription timed out. The Whisper service may be busy — please try again."
+                        : "Transcription failed due to a network error. Please try again.");
+                }
+                return "";
+            });
         } finally {
             setIsTranscribing(false);
             allAudioChunksRef.current = [];
             audioChunksRef.current = [];
         }
-    }, []);
+    }, [candidateName, context]);
 
     const forceStopWavRecording = useCallback(() => {
         setIsWavRecording(false);
@@ -524,6 +621,19 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
             const raw = safeSessionStorage.getItem("interviewContext");
             const ctx: SessionContext = raw ? JSON.parse(raw) : { role: "Software Engineer", difficulty: "Medium", duration: 30, resumeText: "" };
             setContext(ctx);
+            if (ctx.candidateName) {
+                setCandidateName(ctx.candidateName);
+            }
+            // Prefer verified name from authenticated Supabase profile
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                const authName = user?.user_metadata?.full_name || user?.user_metadata?.name;
+                if (authName && typeof authName === "string" && authName.trim()) {
+                    setCandidateName(authName.trim());
+                }
+            } catch {
+                // Guest / unauthenticated session
+            }
             setTimeLeft(ctx.duration * 60);
             setSessionId(_id);
             const res = await fetch(`${BACKEND}/api/interview/generate-question`, {
@@ -976,54 +1086,52 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                         }
                         
                         // WARNING LOGIC
-                        if (!data.error) {
-                            console.log(`[Diagnostic] face_count: ${data.face_count}, face_present: ${data.face_present}, looking_at_camera: ${data.looking_at_camera}, gaze_pitch: ${data.gaze_pitch}, gaze_yaw: ${data.gaze_yaw}, consecutiveNoEyeContact: ${consecutiveNoEyeContact.current}, activeWarning: ${activeWarning}`);
-                            
-                            if (data.face_count && data.face_count > 1) {
-                                setActiveWarning("⚠️ Only one person should be in the frame.");
-                                if (!multipleFaceViolationCounted.current) {
+                        console.log(`[Diagnostic] face_count: ${data.face_count}, face_present: ${data.face_present}, looking_at_camera: ${data.looking_at_camera}, gaze_pitch: ${data.gaze_pitch}, gaze_yaw: ${data.gaze_yaw}, consecutiveNoEyeContact: ${consecutiveNoEyeContact.current}, activeWarning: ${activeWarning}`);
+                        
+                        if (data.face_count && data.face_count > 1) {
+                            setActiveWarning("⚠️ Only one person should be in the frame.");
+                            if (!multipleFaceViolationCounted.current) {
+                                faceDetectionViolationsRef.current++;
+                                multipleFaceViolationCounted.current = true;
+                            }
+                            consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
+                            consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                        } else if (data.face_present === false) {
+                            consecutiveNoFace.current += 1;
+                            if (consecutiveNoFace.current >= 2) {
+                                setActiveWarning("⚠️ Please stay in the camera frame.");
+                                if (!noFaceViolationCounted.current) {
                                     faceDetectionViolationsRef.current++;
-                                    multipleFaceViolationCounted.current = true;
+                                    noFaceViolationCounted.current = true;
                                 }
-                                consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
-                                consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
-                            } else if (data.face_present === false) {
-                                consecutiveNoFace.current += 1;
-                                if (consecutiveNoFace.current >= 2) {
-                                    setActiveWarning("⚠️ Please stay in the camera frame.");
-                                    if (!noFaceViolationCounted.current) {
-                                        faceDetectionViolationsRef.current++;
-                                        noFaceViolationCounted.current = true;
+                            }
+                            multipleFaceViolationCounted.current = false;
+                            consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                        } else if (data.face_present === true) {
+                            // Face is present and exactly 1 face
+                            consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
+                            multipleFaceViolationCounted.current = false;
+                            
+                            if (data.looking_at_camera === false) {
+                                consecutiveNoEyeContact.current += 1;
+                                if (consecutiveNoEyeContact.current >= 2) {
+                                    setActiveWarning("⚠️ Please look at the camera.");
+                                    if (!eyeContactViolationCounted.current) {
+                                        eyeContactViolationsRef.current++;
+                                        eyeContactViolationCounted.current = true;
                                     }
-                                }
-                                multipleFaceViolationCounted.current = false;
-                                consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
-                            } else if (data.face_present === true) {
-                                // Face is present and exactly 1 face
-                                consecutiveNoFace.current = 0; noFaceViolationCounted.current = false;
-                                multipleFaceViolationCounted.current = false;
-                                
-                                if (data.looking_at_camera === false) {
-                                    consecutiveNoEyeContact.current += 1;
-                                    if (consecutiveNoEyeContact.current >= 2) {
-                                        setActiveWarning("⚠️ Please look at the camera.");
-                                        if (!eyeContactViolationCounted.current) {
-                                            eyeContactViolationsRef.current++;
-                                            eyeContactViolationCounted.current = true;
-                                        }
-                                    } else {
-                                        setActiveWarning(null);
-                                    }
-                                } else if (data.looking_at_camera === true) {
-                                    consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
-                                    setActiveWarning(null);
                                 } else {
-                                    // looking_at_camera is null - keep existing eye contact warning, clear others
-                                    setActiveWarning(prev => {
-                                        if (prev && (prev.includes("camera frame") || prev.includes("Only one person"))) return null;
-                                        return prev;
-                                    });
+                                    setActiveWarning(null);
                                 }
+                            } else if (data.looking_at_camera === true) {
+                                consecutiveNoEyeContact.current = 0; eyeContactViolationCounted.current = false;
+                                setActiveWarning(null);
+                            } else {
+                                // looking_at_camera is null - keep existing eye contact warning, clear others
+                                setActiveWarning(prev => {
+                                    if (prev && (prev.includes("camera frame") || prev.includes("Only one person"))) return null;
+                                    return prev;
+                                });
                             }
                         }
                     }
@@ -1389,7 +1497,7 @@ export default function InterviewProctorPage({ params }: { params: Promise<{ id:
                         </div>
                         <div className="flex gap-3">
                             <textarea
-                                value={isWavRecording && provisionalText ? (userInput ? userInput + " " : "") + provisionalText : userInput}
+                                value={isWavRecording && provisionalText ? (userInput.trim() ? userInput.trim() + "\n" + provisionalText : provisionalText) : userInput}
                                 onChange={e => setUserInput(e.target.value)}
                                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmitAnswer(); } }}
                                 placeholder={aiLoading ? "Waiting for AI question..." : isTranscribing ? "Transcribing complete recording with Local Whisper... Please wait." : isWavRecording ? "🎙️ Recording... speak your answer, click ⏹️ Stop when done." : "Type your answer here or click 🎙️ to speak… (Enter to send)"}

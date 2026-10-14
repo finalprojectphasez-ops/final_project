@@ -1,0 +1,151 @@
+clip_index,repetition,audio_duration_seconds,inference_latency_ms,complete_latency_ms,rtf_inference,rtf_complete,reference,prediction
+0,1,1.536,293.79,307.89,0.1913,0.2004,Do you want me to?,Do you want me to?
+0,2,1.536,303.34,316.03,0.1975,0.2057,Do you want me to?,Do you want me to?
+0,3,1.536,296.0,310.81,0.1927,0.2024,Do you want me to?,Do you want me to?
+1,1,2.04,156.89,169.45,0.0769,0.0831,six,Six.
+1,2,2.04,147.82,161.38,0.0725,0.0791,six,Six.
+1,3,2.04,154.64,164.81,0.0758,0.0808,six,Six.
+2,1,2.34,222.97,235.68,0.0953,0.1007,First record issue.,First record issue.
+2,2,2.34,208.69,220.79,0.0892,0.0944,First record issue.,First record issue.
+2,3,2.34,210.16,224.13,0.0898,0.0958,First record issue.,First record issue.
+3,1,2.496,390.56,404.49,0.1565,0.1621,He wanted to tell him about Fatima.,He wanted to tell him about Fatima.
+3,2,2.496,362.25,376.52,0.1451,0.1509,He wanted to tell him about Fatima.,He wanted to tell him about Fatima.
+3,3,2.496,394.51,409.3,0.1581,0.164,He wanted to tell him about Fatima.,He wanted to tell him about Fatima.
+4,1,2.712,353.17,366.86,0.1302,0.1353,I don't like seals anyhow.,I don't like seals anyhow.
+4,2,2.712,374.87,387.94,0.1382,0.143,I don't like seals anyhow.,I don't like seals anyhow.
+4,3,2.712,414.17,435.45,0.1527,0.1606,I don't like seals anyhow.,I don't like seals anyhow.
+5,1,2.904,388.39,400.98,0.1337,0.1381,He quickly pulled his hands away.,He quickly pulled her hands away.
+5,2,2.904,329.78,343.8,0.1136,0.1184,He quickly pulled his hands away.,He quickly pulled her hands away.
+5,3,2.904,315.48,329.17,0.1086,0.1134,He quickly pulled his hands away.,He quickly pulled her hands away.
+6,1,3.096,301.28,315.92,0.0973,0.102,It is from Berehove.,It is from Berryhoe.
+6,2,3.096,305.33,318.37,0.0986,0.1028,It is from Berehove.,It is from Berryhoe.
+6,3,3.096,316.49,330.21,0.1022,0.1067,It is from Berehove.,It is from Berryhoe.
+7,1,3.24,384.13,397.23,0.1186,0.1226,The lawyer signed the licence in ink.,The lawyers sent the license in ink.
+7,2,3.24,364.88,379.02,0.1126,0.117,The lawyer signed the licence in ink.,The lawyers sent the license in ink.
+7,3,3.24,378.14,390.99,0.1167,0.1207,The lawyer signed the licence in ink.,The lawyers sent the license in ink.
+8,1,3.456,377.57,390.86,0.1092,0.1131,Pray come and see my lodging.,Pray come and see my lodging.
+8,2,3.456,371.42,385.46,0.1075,0.1115,Pray come and see my lodging.,Pray come and see my lodging.
+8,3,3.456,369.16,383.1,0.1068,0.1108,Pray come and see my lodging.,Pray come and see my lodging.
+9,1,3.708,338.58,351.23,0.0913,0.0947,"For God, and the Fatherland!",Forgot and the further land.
+9,2,3.708,344.68,358.48,0.093,0.0967,"For God, and the Fatherland!",Forgot and the further land.
+9,3,3.708,343.94,357.01,0.0928,0.0963,"For God, and the Fatherland!",Forgot and the further land.
+10,1,3.816,312.62,325.99,0.0819,0.0854,"One, in particular is noteworthy.",One in particular is noteworthy.
+10,2,3.816,300.38,313.71,0.0787,0.0822,"One, in particular is noteworthy.",One in particular is noteworthy.
+10,3,3.816,314.29,328.74,0.0824,0.0861,"One, in particular is noteworthy.",One in particular is noteworthy.
+11,1,3.984,394.34,408.06,0.099,0.1024,Michael Jordan played basketball for fifteen seasons.,Michael Jordan played basketball for 15 seasons.
+11,2,3.984,378.5,390.92,0.095,0.0981,Michael Jordan played basketball for fifteen seasons.,Michael Jordan played basketball for 15 seasons.
+11,3,3.984,372.99,386.13,0.0936,0.0969,Michael Jordan played basketball for fifteen seasons.,Michael Jordan played basketball for 15 seasons.
+12,1,4.08,485.41,499.76,0.119,0.1225,Goleta Point is a nearby extension into the channel.,Gholeta Point is a nearby extension into the channel.
+12,2,4.08,489.08,502.57,0.1199,0.1232,Goleta Point is a nearby extension into the channel.,Gholeta Point is a nearby extension into the channel.
+12,3,4.08,499.02,515.92,0.1223,0.1265,Goleta Point is a nearby extension into the channel.,Gholeta Point is a nearby extension into the channel.
+13,1,4.176,479.69,494.26,0.1149,0.1184,The boy noticed that the man's clothing was strange.,The boy noticed that the man's clothing was strange.
+13,2,4.176,582.28,596.58,0.1394,0.1429,The boy noticed that the man's clothing was strange.,The boy noticed that the man's clothing was strange.
+13,3,4.176,455.05,468.87,0.109,0.1123,The boy noticed that the man's clothing was strange.,The boy noticed that the man's clothing was strange.
+14,1,4.248,356.14,372.43,0.0838,0.0877,"He worked chiefly in stone, wood and bronze.",He worked chiefly in Stone Wood and Prince.
+14,2,4.248,367.35,382.05,0.0865,0.0899,"He worked chiefly in stone, wood and bronze.",He worked chiefly in Stone Wood and Prince.
+14,3,4.248,366.42,381.74,0.0863,0.0899,"He worked chiefly in stone, wood and bronze.",He worked chiefly in Stone Wood and Prince.
+15,1,4.344,677.49,693.2,0.156,0.1596,"At the time of its building, one of the most modern of its kind.","At the time of its building, one of the most modern of its sky."
+15,2,4.344,648.99,665.97,0.1494,0.1533,"At the time of its building, one of the most modern of its kind.","At the time of its building, one of the most modern of its sky."
+15,3,4.344,660.46,676.27,0.152,0.1557,"At the time of its building, one of the most modern of its kind.","At the time of its building, one of the most modern of its sky."
+16,1,4.416,461.67,477.85,0.1045,0.1082,Later developers began to use the term for smaller buildings.,Later developers began to use the term for smaller buildings.
+16,2,4.416,469.24,483.73,0.1063,0.1095,Later developers began to use the term for smaller buildings.,Later developers began to use the term for smaller buildings.
+16,3,4.416,609.07,624.31,0.1379,0.1414,Later developers began to use the term for smaller buildings.,Later developers began to use the term for smaller buildings.
+17,1,4.536,531.31,546.11,0.1171,0.1204,Macquarie University takes up a large part of the suburb.,Macaree University takes up a large part of the suburb.
+17,2,4.536,581.44,598.81,0.1282,0.132,Macquarie University takes up a large part of the suburb.,Macaree University takes up a large part of the suburb.
+17,3,4.536,643.26,658.75,0.1418,0.1452,Macquarie University takes up a large part of the suburb.,Macaree University takes up a large part of the suburb.
+18,1,4.704,443.36,459.01,0.0943,0.0976,What are the identifying features of a herring gull?,What are the identifying features of a herring gull?
+18,2,4.704,417.18,430.19,0.0887,0.0915,What are the identifying features of a herring gull?,What are the identifying features of a herring gull?
+18,3,4.704,426.09,440.69,0.0906,0.0937,What are the identifying features of a herring gull?,What are the identifying features of a herring gull?
+19,1,4.824,511.92,527.97,0.1061,0.1094,"The message is delivered, curiously, by a speaking bird.","The message is delivered, judously, by a speaking thought."
+19,2,4.824,506.84,523.13,0.1051,0.1084,"The message is delivered, curiously, by a speaking bird.","The message is delivered, judously, by a speaking thought."
+19,3,4.824,514.98,529.57,0.1068,0.1098,"The message is delivered, curiously, by a speaking bird.","The message is delivered, judously, by a speaking thought."
+20,1,4.92,653.44,669.43,0.1328,0.1361,"Moman recorded the first demo cut on the song ""Always on My Mind"".","Moment recorded the first time of cut on the song, always on my mind."
+20,2,4.92,640.32,656.17,0.1301,0.1334,"Moman recorded the first demo cut on the song ""Always on My Mind"".","Moment recorded the first time of cut on the song, always on my mind."
+20,3,4.92,692.16,708.11,0.1407,0.1439,"Moman recorded the first demo cut on the song ""Always on My Mind"".","Moment recorded the first time of cut on the song, always on my mind."
+21,1,5.016,497.64,512.38,0.0992,0.1021,"Fort Lytton Military Museum, Brisbane.","Fort Lighton, Military Museum, Brisbane."
+21,2,5.016,350.48,363.86,0.0699,0.0725,"Fort Lytton Military Museum, Brisbane.","Fort Lighton, Military Museum, Brisbane."
+21,3,5.016,379.8,393.3,0.0757,0.0784,"Fort Lytton Military Museum, Brisbane.","Fort Lighton, Military Museum, Brisbane."
+22,1,5.064,538.29,555.4,0.1063,0.1097,"Coming home, a party of tourists passed us, singing and playing music.","Coming home, a party of tourists passed us singing and playing music."
+22,2,5.064,557.35,572.99,0.1101,0.1131,"Coming home, a party of tourists passed us, singing and playing music.","Coming home, a party of tourists passed us singing and playing music."
+22,3,5.064,541.9,558.2,0.107,0.1102,"Coming home, a party of tourists passed us, singing and playing music.","Coming home, a party of tourists passed us singing and playing music."
+23,1,5.16,643.42,658.9,0.1247,0.1277,The hash sign is sometimes known as the number sign or the pound sign,Hash sign is sometimes known as the numbers sign or the pound sign.
+23,2,5.16,597.69,615.2,0.1158,0.1192,The hash sign is sometimes known as the number sign or the pound sign,Hash sign is sometimes known as the numbers sign or the pound sign.
+23,3,5.16,591.3,608.12,0.1146,0.1179,The hash sign is sometimes known as the number sign or the pound sign,Hash sign is sometimes known as the numbers sign or the pound sign.
+24,1,5.256,419.73,436.46,0.0799,0.083,"After this failure, Hunter moved to southern California.",After this failure Hunter moved to Southern California.
+24,2,5.256,402.75,416.92,0.0766,0.0793,"After this failure, Hunter moved to southern California.",After this failure Hunter moved to Southern California.
+24,3,5.256,419.01,434.25,0.0797,0.0826,"After this failure, Hunter moved to southern California.",After this failure Hunter moved to Southern California.
+25,1,5.328,578.59,594.41,0.1086,0.1116,He is a member of the Queen's Privy Council for Canada.,He is a member of the Queen's Privy Council for Canada.
+25,2,5.328,607.37,623.38,0.114,0.117,He is a member of the Queen's Privy Council for Canada.,He is a member of the Queen's Privy Council for Canada.
+25,3,5.328,674.79,690.0,0.1267,0.1295,He is a member of the Queen's Privy Council for Canada.,He is a member of the Queen's Privy Council for Canada.
+26,1,5.4,349.48,363.98,0.0647,0.0674,Cushing was started as a railroad town.,Cushing was started as railroad town.
+26,2,5.4,364.06,376.82,0.0674,0.0698,Cushing was started as a railroad town.,Cushing was started as railroad town.
+26,3,5.4,339.73,354.47,0.0629,0.0656,Cushing was started as a railroad town.,Cushing was started as railroad town.
+27,1,5.508,514.91,528.81,0.0935,0.096,Thomas lived most of his life in London and Godalming.,Thomas lived most of his life in London and Goldelming.
+27,2,5.508,495.33,511.04,0.0899,0.0928,Thomas lived most of his life in London and Godalming.,Thomas lived most of his life in London and Goldelming.
+27,3,5.508,525.6,540.62,0.0954,0.0982,Thomas lived most of his life in London and Godalming.,Thomas lived most of his life in London and Goldelming.
+28,1,5.616,426.39,440.51,0.0759,0.0784,"At any rate, Comrade Outwood loves us.","At any rate, comrade outward loves us."
+28,2,5.616,434.03,448.64,0.0773,0.0799,"At any rate, Comrade Outwood loves us.","At any rate, comrade outward loves us."
+28,3,5.616,483.98,497.23,0.0862,0.0885,"At any rate, Comrade Outwood loves us.","At any rate, comrade outward loves us."
+29,1,5.784,676.48,692.85,0.117,0.1198,This is the reason for the remarkable degree of similarity between the two styles.,This is the reason for the remarkable degree of similarity between the two styles.
+29,2,5.784,806.57,824.91,0.1394,0.1426,This is the reason for the remarkable degree of similarity between the two styles.,This is the reason for the remarkable degree of similarity between the two styles.
+29,3,5.784,597.75,614.4,0.1033,0.1062,This is the reason for the remarkable degree of similarity between the two styles.,This is the reason for the remarkable degree of similarity between the two styles.
+30,1,5.88,604.39,620.96,0.1028,0.1056,"There are also a few varieties with yellow, gold or blue-teal leaves.","There are also few varieties with yellow, golden, or blue titties."
+30,2,5.88,626.61,642.7,0.1066,0.1093,"There are also a few varieties with yellow, gold or blue-teal leaves.","There are also few varieties with yellow, golden, or blue titties."
+30,3,5.88,700.82,718.01,0.1192,0.1221,"There are also a few varieties with yellow, gold or blue-teal leaves.","There are also few varieties with yellow, golden, or blue titties."
+31,1,6.0,662.59,680.93,0.1104,0.1135,The acceptance of statehood for Hawaii was not without its share of controversy.,The acceptance of stay-towal for Hawaii was not without its share of controversy.
+31,2,6.0,685.13,701.28,0.1142,0.1169,The acceptance of statehood for Hawaii was not without its share of controversy.,The acceptance of stay-towal for Hawaii was not without its share of controversy.
+31,3,6.0,683.63,699.67,0.1139,0.1166,The acceptance of statehood for Hawaii was not without its share of controversy.,The acceptance of stay-towal for Hawaii was not without its share of controversy.
+32,1,6.228,404.16,419.23,0.0649,0.0673,Sir Thomas Dutton married Anne Touchet.,Sir Thomas Dutton married Annie Touche.
+32,2,6.228,390.31,404.52,0.0627,0.065,Sir Thomas Dutton married Anne Touchet.,Sir Thomas Dutton married Annie Touche.
+32,3,6.228,416.34,430.05,0.0668,0.0691,Sir Thomas Dutton married Anne Touchet.,Sir Thomas Dutton married Annie Touche.
+33,1,6.336,615.79,632.11,0.0972,0.0998,He turned the rusty key in the lock; the rabbits below could hear it.,"He turned the rusty key in the lock, the rabbits below could hear it."
+33,2,6.336,644.73,660.83,0.1018,0.1043,He turned the rusty key in the lock; the rabbits below could hear it.,"He turned the rusty key in the lock, the rabbits below could hear it."
+33,3,6.336,633.26,648.38,0.0999,0.1023,He turned the rusty key in the lock; the rabbits below could hear it.,"He turned the rusty key in the lock, the rabbits below could hear it."
+34,1,6.552,510.45,525.33,0.0779,0.0802,However the reaction pathway is effectively reversed.,"However, the reaction part is effectively reversed."
+34,2,6.552,364.24,378.45,0.0556,0.0578,However the reaction pathway is effectively reversed.,"However, the reaction part is effectively reversed."
+34,3,6.552,374.5,387.87,0.0572,0.0592,However the reaction pathway is effectively reversed.,"However, the reaction part is effectively reversed."
+35,1,6.66,629.19,644.53,0.0945,0.0968,"It was known by the name Mayfield Cave, after the landowner, Stanley Mayfield.",It was known by the name Mayfield Cave after the landowners Stanley Mayfield.
+35,2,6.66,622.01,638.04,0.0934,0.0958,"It was known by the name Mayfield Cave, after the landowner, Stanley Mayfield.",It was known by the name Mayfield Cave after the landowners Stanley Mayfield.
+35,3,6.66,629.5,645.2,0.0945,0.0969,"It was known by the name Mayfield Cave, after the landowner, Stanley Mayfield.",It was known by the name Mayfield Cave after the landowners Stanley Mayfield.
+36,1,6.732,483.89,499.14,0.0719,0.0741,It is a historical pilgrimage site for Jains in India.,It is a historical pilgrimage site for James in India.
+36,2,6.732,594.63,608.31,0.0883,0.0904,It is a historical pilgrimage site for Jains in India.,It is a historical pilgrimage site for James in India.
+36,3,6.732,534.68,553.18,0.0794,0.0822,It is a historical pilgrimage site for Jains in India.,It is a historical pilgrimage site for James in India.
+37,1,6.84,669.5,686.28,0.0979,0.1003,Thus some Cherokee adopted the practice of chattel slavery.,There's some Cherokee adopterty practice of chattel slavery.
+37,2,6.84,760.23,776.69,0.1111,0.1136,Thus some Cherokee adopted the practice of chattel slavery.,There's some Cherokee adopterty practice of chattel slavery.
+37,3,6.84,859.67,877.38,0.1257,0.1283,Thus some Cherokee adopted the practice of chattel slavery.,There's some Cherokee adopterty practice of chattel slavery.
+38,1,6.96,960.95,982.2,0.1381,0.1411,Sandoval's chambers were in the Bruce R. Thompson Courthouse and Federal Building in Reno.,Sectables chambers wherein the crews are from shut-portals and people will be in the remote.
+38,2,6.96,1095.72,1114.1,0.1574,0.1601,Sandoval's chambers were in the Bruce R. Thompson Courthouse and Federal Building in Reno.,Sectables chambers wherein the crews are from shut-portals and people will be in the remote.
+38,3,6.96,1271.53,1295.59,0.1827,0.1861,Sandoval's chambers were in the Bruce R. Thompson Courthouse and Federal Building in Reno.,Sectables chambers wherein the crews are from shut-portals and people will be in the remote.
+39,1,7.104,1058.57,1076.84,0.149,0.1516,The Woodmere station provides Long Island Rail Road service on the Far Rockaway Branch.,The Wubt-Mayer station provides long island railroad service on the far Rockaway Ranch.
+39,2,7.104,1087.22,1109.16,0.153,0.1561,The Woodmere station provides Long Island Rail Road service on the Far Rockaway Branch.,The Wubt-Mayer station provides long island railroad service on the far Rockaway Ranch.
+39,3,7.104,918.16,939.16,0.1292,0.1322,The Woodmere station provides Long Island Rail Road service on the Far Rockaway Branch.,The Wubt-Mayer station provides long island railroad service on the far Rockaway Ranch.
+40,1,7.224,969.63,989.3,0.1342,0.1369,"There are direct trains from Mangalore to Mumbai, Thane, Chennai, Goa and Trivandrum.","There are direct trains from Anglo to Muitani, Chennai, Gova and Toronto."
+40,2,7.224,772.76,792.29,0.107,0.1097,"There are direct trains from Mangalore to Mumbai, Thane, Chennai, Goa and Trivandrum.","There are direct trains from Anglo to Muitani, Chennai, Gova and Toronto."
+40,3,7.224,775.16,792.38,0.1073,0.1097,"There are direct trains from Mangalore to Mumbai, Thane, Chennai, Goa and Trivandrum.","There are direct trains from Anglo to Muitani, Chennai, Gova and Toronto."
+41,1,7.38,756.7,774.65,0.1025,0.105,"Assuming that every monotone sequence has a limit, the line becomes a complete space.","Assuming that every monotone sequence has a limit, the line becomes a complete space."
+41,2,7.38,765.32,782.09,0.1037,0.106,"Assuming that every monotone sequence has a limit, the line becomes a complete space.","Assuming that every monotone sequence has a limit, the line becomes a complete space."
+41,3,7.38,725.91,744.02,0.0984,0.1008,"Assuming that every monotone sequence has a limit, the line becomes a complete space.","Assuming that every monotone sequence has a limit, the line becomes a complete space."
+42,1,7.596,581.14,597.2,0.0765,0.0786,This procedure is carried out for green teas and yellow teas.,His procedure is carried out for the cream piece and yellow piece.
+42,2,7.596,470.14,484.18,0.0619,0.0637,This procedure is carried out for green teas and yellow teas.,His procedure is carried out for the cream piece and yellow piece.
+42,3,7.596,488.01,501.85,0.0642,0.0661,This procedure is carried out for green teas and yellow teas.,His procedure is carried out for the cream piece and yellow piece.
+43,1,7.776,545.61,559.18,0.0702,0.0719,"Three of the four estates accepted it, but the Nobles rejected it.","Three of the four states subtered it, but the nobles rejected it."
+43,2,7.776,555.58,570.85,0.0714,0.0734,"Three of the four estates accepted it, but the Nobles rejected it.","Three of the four states subtered it, but the nobles rejected it."
+43,3,7.776,533.3,547.74,0.0686,0.0704,"Three of the four estates accepted it, but the Nobles rejected it.","Three of the four states subtered it, but the nobles rejected it."
+44,1,8.028,482.96,497.31,0.0602,0.0619,Arthur Norden and Felix Pinner were responsible for the business section.,Artur Northern and Felix Pinner were responsible for the business section.
+44,2,8.028,554.98,569.08,0.0691,0.0709,Arthur Norden and Felix Pinner were responsible for the business section.,Artur Northern and Felix Pinner were responsible for the business section.
+44,3,8.028,547.61,563.84,0.0682,0.0702,Arthur Norden and Felix Pinner were responsible for the business section.,Artur Northern and Felix Pinner were responsible for the business section.
+45,1,8.388,591.13,604.56,0.0705,0.0721,"Five years later, also in Ottawa, Boyce incorporated the Lone Scouts of America.","Five years later also, in Otawa, Boise incorporated the lone scouts of America."
+45,2,8.388,581.51,595.63,0.0693,0.071,"Five years later, also in Ottawa, Boyce incorporated the Lone Scouts of America.","Five years later also, in Otawa, Boise incorporated the lone scouts of America."
+45,3,8.388,580.01,593.22,0.0691,0.0707,"Five years later, also in Ottawa, Boyce incorporated the Lone Scouts of America.","Five years later also, in Otawa, Boise incorporated the lone scouts of America."
+46,1,8.568,578.4,592.39,0.0675,0.0691,"The shop folks were taking down their shutters, and people were opening their bedroom windows.",The show folks were taking down their shutters and people were opening their bedroom windows.
+46,2,8.568,578.66,592.42,0.0675,0.0691,"The shop folks were taking down their shutters, and people were opening their bedroom windows.",The show folks were taking down their shutters and people were opening their bedroom windows.
+46,3,8.568,679.94,693.6,0.0794,0.081,"The shop folks were taking down their shutters, and people were opening their bedroom windows.",The show folks were taking down their shutters and people were opening their bedroom windows.
+47,1,8.82,660.07,674.21,0.0748,0.0764,"He was survived by his second wife, the former Evelyn Castiglioni.","He was survived by his second wife, the former, Evelyn Castigloni."
+47,2,8.82,603.68,628.1,0.0684,0.0712,"He was survived by his second wife, the former Evelyn Castiglioni.","He was survived by his second wife, the former, Evelyn Castigloni."
+47,3,8.82,625.06,677.96,0.0709,0.0769,"He was survived by his second wife, the former Evelyn Castiglioni.","He was survived by his second wife, the former, Evelyn Castigloni."
+48,1,9.756,645.73,661.51,0.0662,0.0678,"Rehoboths crew had to be taken off, and ""Castor"" sank her with gunfire.",Rehope both grew hard to be taken off and Kastr sang her with gunfire.
+48,2,9.756,667.3,682.15,0.0684,0.0699,"Rehoboths crew had to be taken off, and ""Castor"" sank her with gunfire.",Rehope both grew hard to be taken off and Kastr sang her with gunfire.
+48,3,9.756,683.06,697.02,0.07,0.0714,"Rehoboths crew had to be taken off, and ""Castor"" sank her with gunfire.",Rehope both grew hard to be taken off and Kastr sang her with gunfire.
+49,1,10.512,651.25,665.8,0.062,0.0633,The continuum of hearing ability tends to be broken down into fine gradations.,The continuum of hearing-abraded trend could be broken down into fine graduations.
+49,2,10.512,756.38,771.82,0.072,0.0734,The continuum of hearing ability tends to be broken down into fine gradations.,The continuum of hearing-abraded trend could be broken down into fine graduations.
+49,3,10.512,594.28,608.6,0.0565,0.0579,The continuum of hearing ability tends to be broken down into fine gradations.,The continuum of hearing-abraded trend could be broken down into fine graduations.

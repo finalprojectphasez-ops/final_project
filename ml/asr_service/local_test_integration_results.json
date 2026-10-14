@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-10-14T20:50:40",
+  "model_tested": "whisper_tech_interviews_lora/phase1_10k/checkpoint-375",
+  "decoding_setting": "no_repeat_ngram_size=3",
+  "all_tests_passed": true,
+  "test_details": {
+    "health_check": {
+      "status": "PASS",
+      "data": {
+        "status": "ready",
+        "model": "Whisper Base + Technical Interviews LoRA (checkpoint-375, no_repeat_ngram_size=3)",
+        "is_experimental": true,
+        "lora_path": "D:\\project phase 2\\final_project-1\\ml\\asr_service\\..\\asr_model\\whisper_tech_interviews_lora\\phase1_10k\\checkpoint-375",
+        "no_repeat_ngram_size": 3,
+        "device": "cuda",
+        "vram_reserved_mb": 171.966464
+      }
+    },
+    "direct_transcribe_real": {
+      "status": "PASS",
+      "text": "It might be in this writer's top 10.",
+      "latency_ms": 2840.6,
+      "vram_mb": 151.066624
+    },
+    "backend_proxy_real": {
+      "status": "PASS",
+      "text": "It might be in this writer's top 10.",
+      "latency_ms": 1219.5
+    },
+    "context_transcription": {
+      "status": "PASS",
+      "text": "Hello, I am a frontend developer with experience in React, JavaScript, HTML and CSS.",
+      "latency_ms": 3585.1
+    },
+    "chunked_accumulation": {
+      "status": "PASS",
+      "num_chunks": 4,
+      "final_accumulated_text": "Hello, I am a frontend developer with experience. in React, JavaScript, HTML. and CSS. .",
+      "repetition_failure": false,
+      "avg_chunk_latency_ms": 1219.8,
+      "chunks": [
+        {
+          "chunk": 0,
+          "duration_s": 3.0,
+          "raw_whisper": "Hello, I am a frontend developer with experience.",
+          "accumulated_after": "Hello, I am a frontend developer with experience.",
+          "latency_ms": 1580.2
+        },
+        {
+          "chunk": 1,
+          "duration_s": 3.0,
+          "raw_whisper": "experience in React, JavaScript, HTML.",
+          "accumulated_after": "Hello, I am a frontend developer with experience. in React, JavaScript, HTML.",
+          "latency_ms": 1577.9
+        },
+        {
+          "chunk": 2,
+          "duration_s": 3.0,
+          "raw_whisper": "HTML, and CSS.",
+          "accumulated_after": "Hello, I am a frontend developer with experience. in React, JavaScript, HTML. and CSS.",
+          "latency_ms": 1024.6
+        },
+        {
+          "chunk": 3,
+          "duration_s": 0.92,
+          "raw_whisper": ".",
+          "accumulated_after": "Hello, I am a frontend developer with experience. in React, JavaScript, HTML. and CSS. .",
+          "latency_ms": 696.3
+        }
+      ]
+    },
+    "empty_audio": "PASS",
+    "malformed_audio": "PASS",
+    "webm_rejection": "PASS",
+    "silence_handling": "PASS",
+    "benchmark": {
+      "status": "PASS",
+      "audio_duration_s": 5.33,
+      "mean_latency_ms": 1352.4,
+      "median_latency_ms": 1339.0,
+      "rtf": 0.2538,
+      "runs_ms": [
+        1489.9,
+        1260.6,
+        1480.0,
+        1339.0,
+        1192.8
+      ]
+    }
+  }
+}

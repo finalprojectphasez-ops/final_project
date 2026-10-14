@@ -1,0 +1,96 @@
+{
+  "system_hardware": {
+    "operating_system": "Windows-11-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "system_ram_gb": 15.71,
+    "gpu_model": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "gpu_vram_gb": 4.0,
+    "cuda_available": true,
+    "cuda_driver_version": "12.1"
+  },
+  "python_environments": {
+    "asr_venv": {
+      "path": "ml/asr_venv/Scripts/python.exe",
+      "frameworks": {
+        "torch": "2.5.1+cu121",
+        "transformers": "4.46.3",
+        "peft": "0.13.2",
+        "bitsandbytes": "0.44.1",
+        "datasets": "3.1.0",
+        "evaluate": "0.4.3",
+        "jiwer": "installed"
+      }
+    },
+    "ml_venv": {
+      "path": "ml_venv/Scripts/python.exe",
+      "frameworks": {
+        "tensorflow": "2.16.1",
+        "keras": "3.x",
+        "scikit-learn": "1.4.1.post1",
+        "numpy": "1.26.4",
+        "matplotlib": "3.8.3",
+        "pandas": "2.2.1"
+      }
+    },
+    "gaze_venv": {
+      "path": "backend/gaze_venv/Scripts/python.exe",
+      "role": "Production microservice on Port 8001"
+    },
+    "emotion_venv": {
+      "path": "backend/emotion_venv/Scripts/python.exe",
+      "role": "Production microservice on Port 8002"
+    }
+  },
+  "checkpoint_sha256_hashes": {
+    "whisper_20k_lora_checkpoint_1200": {
+      "file": "ml/asr_model/whisper_indian_accent_lora_20k/checkpoint-1200/adapter_model.safetensors",
+      "sha256": "d9ef4a03596117c2d80fd406360989fe8baf8d798cc6dd5d51b50369bf8047c8"
+    },
+    "whisper_40k_lora_checkpoint_500": {
+      "file": "ml/asr_model/whisper_indian_accent_40k_experiment/checkpoint-500/adapter_model.safetensors",
+      "sha256": "d89cd2682226c730f654401556f2cf83a69b9ac7a9338a9267752596b72cc4d0"
+    },
+    "emotion_model_v1_legacy": {
+      "file": "backend/ml_models/emotion_model.keras",
+      "sha256": "4e767bf3f84106b6011322e0b2b1ab88c29d8e7b051622a35c392f0d34151284"
+    },
+    "emotion_model_v2_mobilenet": {
+      "file": "backend/ml_models/emotion_model_v2.keras",
+      "sha256": "d4d2b32e436ef8fd82041429fd7175300964e597d0c76f11a398ac730c29cf7f"
+    },
+    "gaze_model": {
+      "file": "backend/ml_models/gaze_model.keras",
+      "sha256": "13cfa5cb92ff2e8854f6d658aa43be13d413985540bdeb9e7f97b7d01884878c"
+    }
+  },
+  "dataset_manifests": {
+    "common_voice_indian_accent": {
+      "source": "ishands/commonvoice-indian_accent",
+      "total_dataset_rows": 110088,
+      "train_speakers": 1964,
+      "val_speakers": 245,
+      "test_speakers": 245,
+      "held_out_test_clips": 500,
+      "held_out_test_unique_speakers": 103,
+      "speaker_overlap_train": 0,
+      "speaker_overlap_val": 0
+    },
+    "fer_2013": {
+      "total_samples": 35887,
+      "train_samples": 28709,
+      "test_samples": 7178,
+      "test_partition": "Combined PublicTest (3,589) + PrivateTest (3,589)",
+      "overlap_with_training": 0
+    },
+    "mpiigaze": {
+      "total_valid_samples": 107056,
+      "train_participants": ["p00", "p01", "p02", "p03", "p04", "p05", "p06", "p07", "p08", "p09", "p10"],
+      "train_samples": 103254,
+      "val_participants": ["p11", "p12"],
+      "val_samples": 2300,
+      "test_participants": ["p13", "p14"],
+      "test_samples": 1502,
+      "participant_overlap": 0
+    }
+  }
+}

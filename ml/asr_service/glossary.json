@@ -1,0 +1,43 @@
+{
+  "places_and_institutions": [
+    "Bengaluru",
+    "Chennai",
+    "Coimbatore",
+    "Hyderabad",
+    "Kochi",
+    "Kanyakumari",
+    "Madurai",
+    "Mumbai",
+    "Nagercoil",
+    "Nellore",
+    "Pune",
+    "Delhi",
+    "Mahabalipuram",
+    "Mamallapuram",
+    "Kuchikade",
+    "Anna University",
+    "IIT Madras",
+    "NIT Trichy",
+    "PSG College of Technology"
+  ],
+  "technical_corrections": {
+    "jevoscript": "JavaScript"
+  },
+  "place_corrections": {
+    "combatore": "Coimbatore",
+    "nagercoyle": "Nagercoil",
+    "mamalabaram": "Mamallapuram",
+    "mahabali": "Mahabalipuram"
+  },
+  "candidate_name_variants": {
+    "Nishanth": [
+      "nichonth",
+      "nichon",
+      "nichonst",
+      "michand"
+    ],
+    "Arvind": [
+      "arwind"
+    ]
+  }
+}

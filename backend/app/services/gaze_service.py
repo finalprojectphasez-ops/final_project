@@ -66,6 +66,7 @@ class GazeService:
             "looking_at_camera": None,
             "gaze_pitch": None,
             "gaze_yaw": None,
+            "face_crop_bytes": None,
             "error": None
         }
 
@@ -99,11 +100,29 @@ class GazeService:
                 logger.warning(f"Multiple faces detected: {response['face_count']}")
                 return response
             
-            # 3. Locate the right eye region
-            RIGHT_EYE_INDICES = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246]
-            
             landmarks = results.multi_face_landmarks[0].landmark
             h_img, w_img, _ = img_rgb.shape
+
+            # Crop detected face with 15% margin for emotion recognition
+            face_pts_x = [int(lm.x * w_img) for lm in landmarks]
+            face_pts_y = [int(lm.y * h_img) for lm in landmarks]
+            f_xmin, f_xmax = min(face_pts_x), max(face_pts_x)
+            f_ymin, f_ymax = min(face_pts_y), max(face_pts_y)
+            margin_fx = int((f_xmax - f_xmin) * 0.15)
+            margin_fy = int((f_ymax - f_ymin) * 0.15)
+            f_xmin = max(0, f_xmin - margin_fx)
+            f_xmax = min(w_img, f_xmax + margin_fx)
+            f_ymin = max(0, f_ymin - margin_fy)
+            f_ymax = min(h_img, f_ymax + margin_fy)
+            if f_xmax > f_xmin and f_ymax > f_ymin:
+                face_crop = img_rgb[f_ymin:f_ymax, f_xmin:f_xmax]
+                face_crop_bgr = cv2.cvtColor(face_crop, cv2.COLOR_RGB2BGR)
+                success_face, enc_face = cv2.imencode('.jpg', face_crop_bgr)
+                if success_face:
+                    response["face_crop_bytes"] = enc_face.tobytes()
+
+            # 3. Locate the right eye region
+            RIGHT_EYE_INDICES = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246]
             
             pts = []
             for idx in RIGHT_EYE_INDICES:

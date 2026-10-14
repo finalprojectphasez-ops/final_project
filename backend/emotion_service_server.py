@@ -28,6 +28,10 @@ async def startup_event():
     except Exception as e:
         logger.error(f"[Emotion Service] Failed to load model: {e}")
 
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "emotion", "model_loaded": emotion_model is not None}
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     if emotion_model is None:

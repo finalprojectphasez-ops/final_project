@@ -1,0 +1,104 @@
+{
+  "dataset": "ishands/commonvoice-indian_accent",
+  "split": "held-out-test",
+  "total_clips": 500,
+  "total_unique_speakers": 103,
+  "speaker_overlap_train": 0,
+  "speaker_overlap_val": 0,
+  "normalization_rules": "transformers.models.whisper.english_normalizer.BasicTextNormalizer (lowercase, punctuation stripped, numbers expanded, whitespace collapsed)",
+  "models": {
+    "base_whisper": {
+      "name": "openai/whisper-base.en (Zero-Shot Base)",
+      "adapter": null,
+      "precision": "8-bit int quantized (BitsAndBytes)",
+      "total_time_seconds": 226.88,
+      "avg_ms_per_sample": 453.77,
+      "metrics_raw": {
+        "wer": 0.2715,
+        "wer_pct": 27.15,
+        "cer_pct": 11.36,
+        "substitutions": 1046,
+        "deletions": 69,
+        "insertions": 153,
+        "hits": 3556,
+        "reference_words": 4671
+      },
+      "metrics_normalized": {
+        "wer": 0.2013,
+        "wer_pct": 20.13,
+        "cer_pct": 9.41,
+        "substitutions": 741,
+        "deletions": 63,
+        "insertions": 152,
+        "hits": 3945,
+        "reference_words": 4749
+      }
+    },
+    "whisper_20k_lora": {
+      "name": "whisper_indian_accent_lora_20k (checkpoint-1200)",
+      "adapter_path": "D:\\project phase 2\\final_project-1\\ml\\asr_model\\whisper_indian_accent_lora_20k\\checkpoint-1200",
+      "precision": "8-bit base + LoRA adapter",
+      "total_time_seconds": 299.93,
+      "avg_ms_per_sample": 599.86,
+      "metrics_raw": {
+        "wer": 0.228,
+        "wer_pct": 22.8,
+        "cer_pct": 9.42,
+        "substitutions": 886,
+        "deletions": 63,
+        "insertions": 116,
+        "hits": 3722,
+        "reference_words": 4671
+      },
+      "metrics_normalized": {
+        "wer": 0.1733,
+        "wer_pct": 17.33,
+        "cer_pct": 7.93,
+        "substitutions": 638,
+        "deletions": 65,
+        "insertions": 120,
+        "hits": 4046,
+        "reference_words": 4749
+      }
+    },
+    "whisper_40k_lora": {
+      "name": "whisper_indian_accent_40k_experiment (checkpoint-500)",
+      "adapter_path": "D:\\project phase 2\\final_project-1\\ml\\asr_model\\whisper_indian_accent_40k_experiment",
+      "precision": "8-bit base + LoRA adapter",
+      "total_time_seconds": 311.75,
+      "avg_ms_per_sample": 623.51,
+      "metrics_raw": {
+        "wer": 0.2244,
+        "wer_pct": 22.44,
+        "cer_pct": 9.32,
+        "substitutions": 874,
+        "deletions": 58,
+        "insertions": 116,
+        "hits": 3739,
+        "reference_words": 4671
+      },
+      "metrics_normalized": {
+        "wer": 0.1704,
+        "wer_pct": 17.04,
+        "cer_pct": 7.87,
+        "substitutions": 631,
+        "deletions": 65,
+        "insertions": 113,
+        "hits": 4053,
+        "reference_words": 4749
+      }
+    }
+  },
+  "comparisons": {
+    "20k_vs_base": {
+      "raw_wer_delta_pp": -4.35,
+      "norm_wer_delta_pp": -2.8,
+      "norm_cer_delta_pp": -1.48
+    },
+    "40k_vs_20k": {
+      "raw_wer_delta_pp": -0.36,
+      "norm_wer_delta_pp": -0.29,
+      "norm_cer_delta_pp": -0.06
+    }
+  }
+}

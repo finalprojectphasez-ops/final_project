@@ -1,0 +1,74 @@
+{
+  "experiment_status": "PENDING LABELED DATA",
+  "ground_truth_dataset_found": false,
+  "active_implementation": {
+    "method": "Heuristic angular thresholding on predicted pitch/yaw",
+    "source_file": "ml/eye_contact/calibrate_eye_contact.py",
+    "threshold_file": "ml/eye_contact/eye_contact_thresholds.json",
+    "configured_thresholds": {
+      "center_pitch": -0.15278427302837372,
+      "center_yaw": -0.07262041419744492,
+      "pitch_threshold": 0.05999999999999999,
+      "yaw_threshold": 0.07499999999999998
+    },
+    "scientific_limitation": "The current platform evaluates 'eye contact' purely via geometric thresholding (|pitch - center_pitch| <= 0.06 rad and |yaw - center_yaw| <= 0.075 rad). Because no human-labeled ground truth exists in the repository, any self-evaluated F1 or accuracy based on model thresholds would be circular and scientifically invalid."
+  },
+  "standardized_protocol": {
+    "protocol_name": "PreMock AI Standardized Eye-Contact Validation Protocol",
+    "version": "1.0-CONSENTED",
+    "objective": "Establish an empirical, independent benchmark for binary camera-directed gaze classification (eye contact vs. non-eye contact).",
+    "participant_requirements": {
+      "target_cohort": "10-20 diverse participants with varied skin tones, eye shapes, and eyewear (glasses, contact lenses, none)",
+      "subject_isolation": "Strict participant-level disjoint splits: 60% Calibration cohort (threshold tuning), 40% Evaluation cohort (zero-tuning held-out test)",
+      "informed_consent": "Full IRB/Ethics-compliant participant consent for video recording and research publication."
+    },
+    "fixation_conditions": [
+      {
+        "condition_id": "COND_01_CAMERA_DIRECT",
+        "label": 1,
+        "description": "Fixation directly on laptop webcam lens (true eye-contact).",
+        "duration_seconds": 10,
+        "trials_per_subject": 3
+      },
+      {
+        "condition_id": "COND_02_SCREEN_CENTER",
+        "label": 0,
+        "description": "Reading text in center of screen (subtle downward gaze, ~10-15\u00b0 below camera).",
+        "duration_seconds": 10,
+        "trials_per_subject": 3
+      },
+      {
+        "condition_id": "COND_03_SCREEN_PERIPHERY",
+        "label": 0,
+        "description": "Fixation on top-left, top-right, bottom-left, bottom-right corners of display.",
+        "duration_seconds": 10,
+        "trials_per_subject": 4
+      },
+      {
+        "condition_id": "COND_04_OFF_SCREEN_AVOIDANCE",
+        "label": 0,
+        "description": "Looking away toward interviewer, room entrance, or downward note-taking.",
+        "duration_seconds": 10,
+        "trials_per_subject": 4
+      }
+    ],
+    "recording_environment": {
+      "distance_cm": "50 cm to 70 cm typical laptop working distance",
+      "resolutions": "720p and 1080p at 30 fps",
+      "lighting_variations": [
+        "Natural daylight",
+        "Overhead LED fluorescent",
+        "Low-light evening (screen glare only)"
+      ]
+    },
+    "evaluation_metrics_when_data_available": [
+      "Accuracy",
+      "Precision (Camera Gaze)",
+      "Recall / Sensitivity (Camera Gaze)",
+      "Specificity (Screen/Aversion Gaze)",
+      "F1-Score (Binary)",
+      "Confusion Matrix (2x2)",
+      "ROC-AUC across continuous threshold sweeps"
+    ]
+  }
+}

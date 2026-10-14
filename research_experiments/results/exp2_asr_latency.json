@@ -1,0 +1,51 @@
+{
+  "hardware": {
+    "device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "vram_gb": 4.0,
+    "precision": "8-bit int quantized (BitsAndBytes) + FP16 input features",
+    "batch_size": 1
+  },
+  "benchmark_design": {
+    "total_clips": 50,
+    "warmup_runs": 5,
+    "repetitions_per_clip": 3,
+    "total_measurements": 150,
+    "cuda_synchronized": true
+  },
+  "audio_durations": {
+    "min_seconds": 1.54,
+    "max_seconds": 10.51,
+    "mean_seconds": 5.46,
+    "median_seconds": 5.29
+  },
+  "inference_only_latency_ms": {
+    "mean": 527.09,
+    "median": 514.94,
+    "p95": 835.77,
+    "min": 147.82,
+    "max": 1271.53,
+    "std": 187.85
+  },
+  "complete_processing_latency_ms": {
+    "mean": 542.6,
+    "median": 529.19,
+    "p95": 853.77,
+    "min": 161.38,
+    "max": 1295.59,
+    "std": 189.59
+  },
+  "real_time_factor_complete": {
+    "mean": 0.105,
+    "median": 0.1022,
+    "p95": 0.1599,
+    "is_faster_than_realtime": true,
+    "realtime_speedup_ratio": 9.53
+  },
+  "scientific_assessment_of_claimed_823ms": {
+    "claimed_metric": "823.89 ms",
+    "measured_mean_complete_ms": 542.6,
+    "measured_mean_inf_ms": 527.09,
+    "measured_mean_rtf": 0.105,
+    "assessment": "The 823.89 ms metric is an average per-utterance latency on Common Voice clips (which average ~5.46 seconds in duration). With a complete processing mean latency of 542.6 ms and an RTF of 0.105, the model operates at ~9.5x real-time speed. However, latency scales with audio length and decoding length; describing 823.89 ms as a fixed universal latency without reporting underlying audio durations and Real-Time Factor is incomplete."
+  }
+}

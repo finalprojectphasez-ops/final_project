@@ -1,0 +1,72 @@
+{
+  "dataset": "MPIIGaze",
+  "model_file": "gaze_model.keras",
+  "coordinate_convention": "MPIIGaze spherical: pitch = asin(-gy), yaw = atan2(-gx, -gz)",
+  "metric_definitions": {
+    "pitch_mae": "mean(|pred_pitch - true_pitch|)",
+    "yaw_mae": "mean(|pred_yaw - true_yaw|)",
+    "mean_pitch_yaw_mae": "0.5 * (pitch_mae + yaw_mae)",
+    "3d_angular_error": "arccos(clip(v_true . v_pred, -1.0, 1.0)) where v are normalized 3D gaze unit vectors"
+  },
+  "validation_partition": {
+    "partition": "validation",
+    "participants": [
+      "p11",
+      "p12"
+    ],
+    "sample_count": 2300,
+    "mse_loss": 0.015655040740966797,
+    "pitch_mae_rad": 0.09702883660793304,
+    "pitch_mae_deg": 5.559342828699022,
+    "yaw_mae_rad": 0.10369446873664856,
+    "yaw_mae_deg": 5.941255417461224,
+    "mean_pitch_yaw_mae_rad": 0.1003616526722908,
+    "mean_pitch_yaw_mae_deg": 5.750299123080123,
+    "3d_vector_angular_error_rad": {
+      "mean": 0.15615053474903107,
+      "median": 0.1464923620223999,
+      "p95": 0.30220766365528096
+    },
+    "3d_vector_angular_error_deg": {
+      "mean": 8.946767807006836,
+      "median": 8.393393516540527,
+      "p95": 17.315222358703608
+    },
+    "inference_latency_seconds": 0.668,
+    "avg_latency_ms_per_sample": 0.29
+  },
+  "test_partition": {
+    "partition": "test",
+    "participants": [
+      "p13",
+      "p14"
+    ],
+    "sample_count": 1502,
+    "mse_loss": 0.02289039082825184,
+    "pitch_mae_rad": 0.1289600282907486,
+    "pitch_mae_deg": 7.38886534694759,
+    "yaw_mae_rad": 0.11353874206542969,
+    "yaw_mae_deg": 6.505290731573584,
+    "mean_pitch_yaw_mae_rad": 0.12124938517808914,
+    "mean_pitch_yaw_mae_deg": 6.947078039260587,
+    "3d_vector_angular_error_rad": {
+      "mean": 0.18781879544258118,
+      "median": 0.17853590846061707,
+      "p95": 0.3584583789110184
+    },
+    "3d_vector_angular_error_deg": {
+      "mean": 10.761223793029785,
+      "median": 10.229353904724121,
+      "p95": 20.538150215148928
+    },
+    "inference_latency_seconds": 0.328,
+    "avg_latency_ms_per_sample": 0.218
+  },
+  "discrepancy_analysis": {
+    "reported_claim": "0.100 radians MAE",
+    "validation_mae_actual": 0.1003616526722908,
+    "test_mae_actual": 0.12124938517808914,
+    "test_3d_angular_error_mean_deg": 10.761223793029785,
+    "findings": "The previously claimed 0.100 rad error corresponds to the VALIDATION set MAE (0.0984 rad ~ 5.64\u00b0), which was evaluated on participants p11/p12. On the completely independent TEST participants (p13/p14), the actual mean pitch/yaw MAE is 0.1212 rad (6.95\u00b0), and the true 3D gaze-vector angular error is 10.76\u00b0."
+  }
+}

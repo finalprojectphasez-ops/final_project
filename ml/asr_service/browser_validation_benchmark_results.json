@@ -1,0 +1,111 @@
+{
+  "asr_health": {
+    "status": "ready",
+    "model": "Whisper Base + Technical Interviews LoRA (checkpoint-375, no_repeat_ngram_size=3)",
+    "is_experimental": true,
+    "lora_path": "D:\\project phase 2\\final_project-1\\ml\\asr_service\\..\\asr_model\\whisper_tech_interviews_lora\\phase1_10k\\checkpoint-375",
+    "no_repeat_ngram_size": 3,
+    "device": "cuda",
+    "vram_reserved_mb": 171.966464
+  },
+  "load_test": {
+    "mean_idle_asr_ms": 2088.9,
+    "mean_under_load_asr_ms": 1357.0,
+    "overhead_pct": -35.0,
+    "gaze_success": 18,
+    "emotion_success": 11,
+    "asr_success": 5
+  },
+  "technical_accuracy": {
+    "representative_samples": [
+      {
+        "sample_index": 3,
+        "duration_sec": 14.56,
+        "latency_ms": 402.32,
+        "normalized_wer_pct": 62.5,
+        "normalized_cer_pct": 61.5,
+        "terms_in_ref": [
+          "memory hierarchy",
+          "page replacement",
+          "algorithm",
+          "memory"
+        ],
+        "terms_matched": [
+          "memory hierarchy",
+          "algorithm",
+          "memory"
+        ],
+        "repetition_loop": false
+      },
+      {
+        "sample_index": 4,
+        "duration_sec": 13.54,
+        "latency_ms": 815.42,
+        "normalized_wer_pct": 23.8,
+        "normalized_cer_pct": 13.8,
+        "terms_in_ref": [
+          "routing"
+        ],
+        "terms_matched": [
+          "routing"
+        ],
+        "repetition_loop": false
+      },
+      {
+        "sample_index": 6,
+        "duration_sec": 20.0,
+        "latency_ms": 1402.97,
+        "normalized_wer_pct": 30.6,
+        "normalized_cer_pct": 25.1,
+        "terms_in_ref": [
+          "data"
+        ],
+        "terms_matched": [
+          "data"
+        ],
+        "repetition_loop": false
+      },
+      {
+        "sample_index": 7,
+        "duration_sec": 20.0,
+        "latency_ms": 807.24,
+        "normalized_wer_pct": 25.0,
+        "normalized_cer_pct": 13.8,
+        "terms_in_ref": [
+          "dynamic programming"
+        ],
+        "terms_matched": [
+          "dynamic programming"
+        ],
+        "repetition_loop": false
+      },
+      {
+        "sample_index": 9,
+        "duration_sec": 12.92,
+        "latency_ms": 1051.83,
+        "normalized_wer_pct": 39.3,
+        "normalized_cer_pct": 24.8,
+        "terms_in_ref": [
+          "system",
+          "data"
+        ],
+        "terms_matched": [
+          "system"
+        ],
+        "repetition_loop": false
+      }
+    ],
+    "corpus_normalized_wer_pct": 32.76,
+    "corpus_normalized_cer_pct": 19.92,
+    "corpus_tech_term_recall_pct": 77.35,
+    "corpus_repetition_failures": 0
+  },
+  "pipeline": {
+    "chunk_count": 4,
+    "mean_chunk_latency_ms": 1241.5,
+    "accumulated_text": "Hello, I am a frontend developer with experience. in React, JavaScript, HTML. and CSS. .",
+    "final_transcript": "Hello, I am a frontend developer with experience in React, JavaScript, HTML and CSS.",
+    "final_transcription_latency_ms": 1949.5,
+    "backend_evaluation_status": "SUCCESS"
+  }
+}

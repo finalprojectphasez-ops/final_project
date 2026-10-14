@@ -3,8 +3,10 @@ from app.services.emotion_service import emotion_service
 from app.services.gaze_service import gaze_service
 from pydantic import BaseModel
 from typing import Dict, Optional
+import asyncio
 
 router = APIRouter()
+_gaze_lock = asyncio.Lock()
 
 class EmotionResponse(BaseModel):
     # Original emotion fields
@@ -33,11 +35,16 @@ async def predict_emotion(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         
-        # 1. Emotion Prediction
-        emotion_result = emotion_service.predict_emotion(contents)
-        
-        # 2. Gaze Prediction
-        gaze_result = gaze_service.analyze_gaze(contents)
+        # 1. Run Gaze & Face detection first
+        async with _gaze_lock:
+            gaze_result = await asyncio.to_thread(gaze_service.analyze_gaze, contents)
+
+        # 2. Extract cropped face for Emotion prediction
+        face_crop_bytes = gaze_result.pop("face_crop_bytes", None)
+        if gaze_result.get("face_present") and face_crop_bytes:
+            emotion_result = await asyncio.to_thread(emotion_service.predict_emotion, face_crop_bytes)
+        else:
+            emotion_result = {"emotion": None, "confidence": None}
         
         response = EmotionResponse()
         

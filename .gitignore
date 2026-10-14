@@ -78,3 +78,4 @@ ml/eye_contact/dataset/processed/
 ml/emotion/dataset/processed/
 ml/asr_training/processed_data_pilot/
 ml/asr_training/processed_data_pilot_fixed/
+scratch/

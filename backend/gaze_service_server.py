@@ -28,6 +28,10 @@ async def startup_event():
     except Exception as e:
         logger.error(f"[Gaze Service] Failed to load model: {e}")
 
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "gaze", "model_loaded": gaze_model is not None}
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     if gaze_model is None:
