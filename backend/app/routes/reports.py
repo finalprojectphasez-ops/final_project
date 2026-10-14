@@ -15,21 +15,53 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
 def _ensure_rubric_assessment(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Ensures 100-mark rubric assessment exists on report payload."""
-    if not payload.get("rubric_assessment") and payload.get("question_feedback"):
+    """Ensures 100-mark rubric assessment exists on report payload with accurate topic grouping."""
+    existing_rubric = payload.get("rubric_assessment")
+    # If already fully evaluated with follow-up reflection, return early
+    if existing_rubric and existing_rubric.get("criteria", {}).get("followup_reflection", {}).get("is_assessed"):
+        return payload
+
+    session_id = payload.get("backend_session_id") or payload.get("id")
+    from app.services.session_manager import session_manager
+    session = session_manager.get_session(session_id) if session_id else None
+
+    turns = []
+    if session and session.get("history"):
+        for h in session["history"]:
+            turns.append({
+                "turn_index": h.get("turn_index", len(turns) + 1),
+                "question": h.get("question", ""),
+                "answer": h.get("candidate_answer", ""),
+                "phase": h.get("phase", "intro" if h.get("turn_index") == 1 else "technical"),
+                "is_followup": (h.get("kind") in ("follow_up", "clarify")),
+                "audio_present": True
+            })
+    elif payload.get("question_feedback"):
+        for idx, qf in enumerate(payload.get("question_feedback", [])):
+            q_text = qf.get("question", "")
+            q_lower = q_text.lower()
+            is_fu = (
+                bool(qf.get("is_followup"))
+                or qf.get("kind") in ("follow_up", "clarify")
+                or q_lower.startswith("in your response")
+                or q_lower.startswith("no problem")
+                or q_lower.startswith("you mentioned")
+                or q_lower.startswith("could you elaborate")
+                or q_lower.startswith("building on")
+                or bool(qf.get("follow_up_needed"))
+            )
+            turns.append({
+                "turn_index": idx + 1,
+                "question": q_text,
+                "answer": qf.get("answer", ""),
+                "phase": qf.get("phase", "intro" if idx == 0 else "technical"),
+                "is_followup": is_fu,
+                "audio_present": True
+            })
+
+    if turns:
         try:
             from app.rubric.evaluator import rubric_evaluator
-            turns = [
-                {
-                    "turn_index": idx + 1,
-                    "question": qf.get("question", ""),
-                    "answer": qf.get("answer", ""),
-                    "phase": qf.get("phase", "technical"),
-                    "is_followup": bool(qf.get("follow_up_needed")),
-                    "audio_present": True
-                }
-                for idx, qf in enumerate(payload.get("question_feedback", []))
-            ]
             coaching_obs = {
                 "facial_expressions": {
                     "neutral": payload.get("neutral_expr"),
@@ -43,11 +75,12 @@ def _ensure_rubric_assessment(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "eye_contact_percent": payload.get("eye_contact"),
                 "face_present_percent": payload.get("face_present")
             }
+            spoken_delivery = rubric_evaluator.estimate_spoken_delivery_rating(turns)
             rubric_res = rubric_evaluator.evaluate_interview_session(
                 turns=turns,
                 job_role=payload.get("role", "Software Engineer"),
                 difficulty=payload.get("difficulty", "Medium"),
-                spoken_delivery_rating=None,
+                spoken_delivery_rating=spoken_delivery,
                 coaching_observations=coaching_obs
             )
             payload["rubric_assessment"] = rubric_res
@@ -56,6 +89,7 @@ def _ensure_rubric_assessment(payload: Dict[str, Any]) -> Dict[str, Any]:
             payload["provisional_normalized_100"] = rubric_res["provisional_normalized_100"]
             payload["assessment_status"] = rubric_res["assessment_status"]
             payload["coverage_percent"] = rubric_res["coverage_percent"]
+            payload["overall_score"] = rubric_res["total_score_100"] or rubric_res["provisional_normalized_100"] or payload.get("overall_score")
         except Exception as e:
             logger.warning(f"Could not compute rubric assessment for report: {e}")
     return payload

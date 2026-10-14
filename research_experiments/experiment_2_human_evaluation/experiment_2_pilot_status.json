@@ -1,0 +1,32 @@
+{
+  "experiment": "EXPERIMENT 2 \u2014 Automated scoring versus human reviewers",
+  "status": "PENDING HUMAN INPUT",
+  "sample_size": 35,
+  "protocol": "Double-blind independent evaluation of 35 pilot responses using interview_practice_100_v1",
+  "reviewer_1_template": "review_scoring_template_reviewer1.csv",
+  "reviewer_2_template": "review_scoring_template_reviewer2.csv",
+  "reviewer_1_status": "Blank template prepared (Awaiting human ratings)",
+  "reviewer_2_status": "Blank template prepared (Awaiting human ratings)",
+  "blinded_packet": "automated_scores_blinded_reference.json",
+  "eligible_criteria_evaluated": [
+    "technical_knowledge",
+    "problem_solving",
+    "practical_application",
+    "relevance_completeness",
+    "communication_clarity",
+    "followup_reflection"
+  ],
+  "statistical_methods_prepared": [
+    "Quadratic weighted Cohen's Kappa per criterion (Human 1 vs Human 2)",
+    "Quadratic weighted Cohen's Kappa per criterion (Automated vs Human 1)",
+    "Quadratic weighted Cohen's Kappa per criterion (Automated vs Human 2)",
+    "Total-score Mean Absolute Error (MAE) against Human Mean Score"
+  ],
+  "formula_calibration_validation": {
+    "kappa_perfect_agreement": 1.0,
+    "kappa_adjacent_agreement": 0.9412,
+    "kappa_inverse_disagreement": -1.0,
+    "mae_calibration": 3.0,
+    "calibration_passed": true
+  }
+}

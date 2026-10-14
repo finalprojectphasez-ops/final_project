@@ -77,16 +77,17 @@ class SessionManager:
         job_description: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Creates a new interview session.
+        Creates a new interview session with phased flow:
+        intro → general → technical → closing.
         Selected role and difficulty remain strictly authoritative.
-        Builds topic plan and generates the first main question.
+        Starts with the intro phase and generates the self-introduction question.
         Timer starts now at launch.
         """
         canonical_role_key, taxonomy = normalize_role(role)
         norm_diff = normalize_difficulty(difficulty)
         duration_val = duration_minutes if duration_minutes in (15, 30, 45) else 30
 
-        # Topic plan
+        # Build phased topic plan (intro + general + technical + closing)
         topic_plan = local_interview_model.build_topic_plan(
             role=role,
             difficulty=norm_diff,
@@ -97,14 +98,10 @@ class SessionManager:
         now_ts = time.time()
         deadline_ts = now_ts + (duration_val * 60)
 
-        # Generate first question
-        first_topic = topic_plan[0]["topic"] if topic_plan else "Role Fundamentals"
-        first_q = local_interview_model.generate_main_question(
+        # Generate first question — always the self-introduction
+        first_q = local_interview_model.generate_intro_question(
             role=role,
-            difficulty=norm_diff,
-            required_topic=first_topic,
-            resume_profile=resume_profile,
-            history=[]
+            resume_profile=resume_profile
         )
 
         session_data = {
@@ -119,6 +116,7 @@ class SessionManager:
             "session_version": 1,
             "current_turn": 1,
             "current_topic_index": 0,
+            "current_phase": "intro",  # Phase state machine
             "followups_used": 0,
             "max_followups_per_topic": 2,
             "topic_plan": topic_plan,
@@ -237,6 +235,64 @@ class SessionManager:
             resume_profile=resume_profile
         )
 
+        # Session Deduplication Safety Guard
+        all_previous_questions = [h.get("question") for h in session.get("history", []) if h.get("question")]
+        if current_q.question and current_q.question not in all_previous_questions:
+            all_previous_questions.append(current_q.question)
+
+        if next_q_internal and next_q_internal.question:
+            if local_interview_model._is_near_duplicate(next_q_internal.question, all_previous_questions, threshold=0.55):
+                logger.warning(
+                    "Session %s duplicate question intercepted ('%s'). Applying fallback deduplication.",
+                    session_id, next_q_internal.question
+                )
+                if action == "next_topic" and remaining_topics:
+                    replaced = False
+                    for alt_t in remaining_topics[1:]:
+                        cand_q = local_interview_model.generate_question_for_plan_item(
+                            alt_t,
+                            role=session["role"],
+                            difficulty=session["difficulty"],
+                            resume_profile=resume_profile,
+                            history=all_previous_questions
+                        )
+                        if not local_interview_model._is_near_duplicate(cand_q.question, all_previous_questions, threshold=0.55):
+                            next_q_internal = cand_q
+                            session["current_topic_index"] += 1
+                            replaced = True
+                            break
+                    if not replaced:
+                        _, taxonomy = normalize_role(session["role"])
+                        for tax_t in taxonomy.get("topics", []):
+                            cand_q = local_interview_model.generate_main_question(
+                                role=session["role"],
+                                difficulty=session["difficulty"],
+                                required_topic=tax_t["topic"],
+                                resume_profile=resume_profile,
+                                history=all_previous_questions
+                            )
+                            if not local_interview_model._is_near_duplicate(cand_q.question, all_previous_questions, threshold=0.55):
+                                next_q_internal = cand_q
+                                replaced = True
+                                break
+                    if not replaced:
+                        action = "end"
+                        next_q_internal = None
+                elif action in ("follow_up", "clarify"):
+                    if remaining_topics:
+                        next_t = remaining_topics[0]
+                        action = "next_topic"
+                        next_q_internal = local_interview_model.generate_question_for_plan_item(
+                            next_t,
+                            role=session["role"],
+                            difficulty=session["difficulty"],
+                            resume_profile=resume_profile,
+                            history=all_previous_questions
+                        )
+                    else:
+                        action = "end"
+                        next_q_internal = None
+
         # Candidate answer evaluation against private expected points
         words = len(clean_ans.split())
         is_non_answer = any(kw in clean_ans.lower() for kw in ["don't know", "dont know", "no idea", "skip", "not sure"])
@@ -289,6 +345,8 @@ class SessionManager:
             session["current_topic_index"] += 1
             session["followups_used"] = 0  # CRITICAL INVARIANT: Resets to 0 only on new main topic!
             session["current_question"] = next_q_internal.model_dump() if next_q_internal else None
+            if session["current_topic_index"] < len(topic_plan):
+                session["current_phase"] = topic_plan[session["current_topic_index"]].get("phase", "technical")
         elif action in ("follow_up", "clarify"):
             session["followups_used"] += 1
             session["current_question"] = next_q_internal.model_dump() if next_q_internal else None

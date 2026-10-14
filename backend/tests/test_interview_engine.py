@@ -85,8 +85,8 @@ def test_2_resume_personalization_preserves_authoritative_role():
     # The selected role and difficulty MUST remain strictly authoritative
     assert data["role"] == "Backend Engineer"
     assert data["difficulty"] == "advanced"
-    # First question must be for Backend Engineer (not overridden by React frontend)
-    assert any(term in data["planned_topics"][0].lower() for term in ["api", "database", "protocol", "backend", "concurrency"])
+    # Planned topics must reflect Backend Engineer technical domain (not overridden by React frontend)
+    assert any(any(term in t.lower() for term in ["api", "database", "protocol", "backend", "concurrency"]) for t in data["planned_topics"])
 
 
 def test_3_missing_resume_produces_valid_role_only_interview():
@@ -222,16 +222,16 @@ def test_7_followup_limits_and_deadlines():
     })
     session_id = res.json()["session_id"]
 
-    # Turn 1 answer: follow-up 1
+    # Turn 1 answer: substantive self-introduction -> triggers follow-up 1
     t1 = client.post(f"/api/interview/session/{session_id}/submit-turn", json={
-        "answer": "We use REST endpoints with JSON serialization."
+        "answer": "I am a backend engineer with six years of experience building distributed systems, REST APIs, and database pipelines."
     }).json()
     assert t1["action"] == "follow_up"
     assert t1["followups_used"] == 1
 
     # Turn 2 answer: follow-up 2
     t2 = client.post(f"/api/interview/session/{session_id}/submit-turn", json={
-        "answer": "For idempotency, we attach a unique idempotency key header."
+        "answer": "For idempotency and mutation safety, we attach a unique idempotency key header to every mutation endpoint and verify locks."
     }).json()
     assert t2["action"] in ("follow_up", "next_topic")
     
@@ -239,7 +239,7 @@ def test_7_followup_limits_and_deadlines():
     if t2["action"] == "follow_up":
         assert t2["followups_used"] == 2
         t3 = client.post(f"/api/interview/session/{session_id}/submit-turn", json={
-            "answer": "We check the Redis cache before executing the write."
+            "answer": "We check the Redis cache and verify distributed consistency before executing the underlying database write operation."
         }).json()
         assert t3["action"] in ("next_topic", "end")
         assert t3["followups_used"] == 0  # Reset upon topic transition!
@@ -336,6 +336,86 @@ def test_10_candidate_responses_never_contain_expected_points():
         assert "expected_points" not in h
 
 
+def test_11_zero_duplicate_questions_in_multi_turn_session():
+    """
+    Verify across multiple roles and difficulties that multi-turn sessions
+    produce ZERO duplicate or near-duplicate questions across all turns,
+    even under candidate evasion ('I don't know', brief answers, skips).
+    """
+    test_scenarios = [
+        ("Data Analyst", "Easy", [
+            "Hello, my name is Mugilan. I am a data analytics enthusiast with practical experience in Python and SQL.",
+            "I don't know.",
+            "database and structured query language",
+            "sorry I don't know",
+            "We use GROUP BY with aggregate functions to summarize rows.",
+            "I don't know."
+        ]),
+        ("Backend Engineer", "Medium", [
+            "I am a backend developer experienced with FastAPI, PostgreSQL, and Redis caching systems.",
+            "We use gRPC with Protobuf for low-latency internal microservice communication.",
+            "I'm not sure about distributed consensus algorithms.",
+            "skip",
+            "We run EXPLAIN ANALYZE to identify sequential table scans and create composite B-tree indexes.",
+            "We use connection pooling with pgbouncer."
+        ]),
+        ("Full Stack Engineer", "Hard", [
+            "I am a full stack engineer working with React on the frontend and Node.js on the backend.",
+            "I don't know.",
+            "We use optimistic UI updates and React Query caching.",
+            "Next topic please.",
+            "We enforce database transaction isolation levels using PostgreSQL serializable transactions.",
+            "I haven't used that particular framework."
+        ])
+    ]
+
+    for role, difficulty, candidate_answers in test_scenarios:
+        create_res = client.post("/api/interview/session/create", json={
+            "role": role,
+            "difficulty": difficulty,
+            "duration_minutes": 30
+        })
+        assert create_res.status_code == 200, f"Failed to create session for {role}"
+        session_data = create_res.json()
+        session_id = session_data["session_id"]
+
+        asked_questions = [session_data["question"]["question"]]
+
+        for turn_idx, ans in enumerate(candidate_answers, start=1):
+            turn_res = client.post(f"/api/interview/session/{session_id}/submit-turn", json={
+                "answer": ans,
+                "turn_id": f"turn_test_{turn_idx}_{int(time.time()*1000)}"
+            })
+            assert turn_res.status_code == 200, f"Turn {turn_idx} failed for {role}: {turn_res.text}"
+            turn_data = turn_res.json()
+
+            if turn_data.get("next_question"):
+                next_q = turn_data["next_question"]["question"]
+                asked_questions.append(next_q)
+
+            if turn_data.get("is_complete"):
+                break
+
+        # Check all questions asked in this session for ANY exact or near duplicates
+        for i in range(len(asked_questions)):
+            for j in range(i + 1, len(asked_questions)):
+                q1 = asked_questions[i]
+                q2 = asked_questions[j]
+                # 1. Exact string duplicate assertion
+                assert q1.strip().lower() != q2.strip().lower(), (
+                    f"Duplicate question detected in {role} session!\n"
+                    f"Turn {i+1}: {q1}\n"
+                    f"Turn {j+1}: {q2}"
+                )
+                # 2. Near duplicate assertion using local Jaccard similarity
+                is_near = local_interview_model._is_near_duplicate(q1, [q2], threshold=0.55)
+                assert not is_near, (
+                    f"Near-duplicate question detected in {role} session!\n"
+                    f"Turn {i+1}: {q1}\n"
+                    f"Turn {j+1}: {q2}"
+                )
+
+
 if __name__ == "__main__":
     tests = [
         test_1_setup_selections_reach_backend,
@@ -347,7 +427,8 @@ if __name__ == "__main__":
         test_7_followup_limits_and_deadlines,
         test_8_duplicate_submissions_do_not_advance_twice,
         test_9_invalid_json_and_duplicate_questions,
-        test_10_candidate_responses_never_contain_expected_points
+        test_10_candidate_responses_never_contain_expected_points,
+        test_11_zero_duplicate_questions_in_multi_turn_session
     ]
     passed = 0
     failed = 0

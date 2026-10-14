@@ -84,6 +84,7 @@ class CandidateQuestionResponse(BaseModel):
     topic: str
     kind: str  # "main" | "follow_up" | "clarify"
     difficulty: str  # "beginner" | "intermediate" | "advanced"
+    phase: str = "technical"  # "intro" | "general" | "technical" | "closing"
     # Note: expected_points is deliberately omitted to prevent exposing answer keys
 
 
@@ -92,6 +93,7 @@ class InterviewQuestionInternal(BaseModel):
     topic: str
     kind: str = "main"  # "main" | "follow_up" | "clarify"
     difficulty: str = "intermediate"  # "beginner" | "intermediate" | "advanced"
+    phase: str = "technical"  # "intro" | "general" | "technical" | "closing"
     expected_points: List[str] = []
     review_status: str = "unreviewed"  # "reviewed" | "unreviewed"
 
@@ -114,6 +116,7 @@ class InterviewSessionResponse(BaseModel):
     planned_topics: List[str]
     current_turn: int
     current_topic_index: int
+    current_phase: str = "intro"  # "intro" | "general" | "technical" | "closing"
     question: CandidateQuestionResponse
     deadline_timestamp: float
     is_complete: bool = False
@@ -132,11 +135,13 @@ class TurnSubmitResponse(BaseModel):
     session_id: str
     turn_index: int
     current_topic_index: int
+    current_phase: str = "technical"  # "intro" | "general" | "technical" | "closing"
     followups_used: int
     remaining_topics_count: int
     is_complete: bool
     deadline_expired: bool = False
     evaluation: Optional[Dict[str, Any]] = None
+    closing_message: Optional[str] = None
 
 
 class InterviewQuestionRequest(BaseModel):
@@ -180,6 +185,7 @@ class InterviewTurnRequest(BaseModel):
     answer: str
     turn_index: int = 1
     phase: str = "intro"
+    session_id: Optional[str] = None
 
 
 class InterviewTurnResponse(BaseModel):

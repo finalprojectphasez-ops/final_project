@@ -1,0 +1,64 @@
+{
+  "session_id": "sim_full_stack_engineer_intermediate_130092",
+  "role_key": "full_stack_engineer",
+  "role_label": "Full Stack Engineer",
+  "difficulty": "intermediate",
+  "turns": [
+    {
+      "turn": 0,
+      "action": "session_created",
+      "phase": "intro",
+      "question": "Welcome to your Full Stack Engineer interview! To get started, please introduce yourself \u2014 tell me about your background, your experience, and the key projects and technologies you've worked with.",
+      "topic": "Self-Introduction"
+    },
+    {
+      "turn": 1,
+      "submitted_answer": "I have built full stack web applications with React on the frontend and FastAPI/Node.js on the backend.",
+      "action": "follow_up",
+      "followups_used": 1,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 2,
+      "submitted_answer": "I prioritize breaking down features by API schema contracts and establishing clear boundaries.",
+      "action": "follow_up",
+      "followups_used": 2,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 3,
+      "submitted_answer": "In our API layer, we enforce strict schema validation using Pydantic and JSON schema contracts.",
+      "action": "next_topic",
+      "followups_used": 0,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 4,
+      "submitted_answer": "For optimistic UI updates, we dispatch local state changes immediately while queuing network requests with rollback capability.",
+      "action": "follow_up",
+      "followups_used": 1,
+      "remaining_topics_count": 4,
+      "is_complete": false
+    },
+    {
+      "turn": 5,
+      "submitted_answer": "We handle race conditions by using AbortController on the client and database transactions with row-level locks on the server.",
+      "action": "follow_up",
+      "followups_used": 2,
+      "remaining_topics_count": 4,
+      "is_complete": false
+    }
+  ],
+  "invariants": {
+    "intro_occurs_once": true,
+    "general_precedes_technical": true,
+    "role_respected": true,
+    "difficulty_respected": true,
+    "followups_never_exceed_two": true,
+    "expected_points_never_exposed": true,
+    "simulated_clock_reaches_closing": true
+  }
+}

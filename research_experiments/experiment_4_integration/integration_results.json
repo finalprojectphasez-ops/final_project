@@ -1,0 +1,88 @@
+{
+  "experiment": "EXPERIMENT 4 \u2014 Integration",
+  "status": "EXECUTED (Text Pipeline Functional; Audiovisual Sidecars Offline)",
+  "timestamp": "2026-10-14T03:30:26.024459+00:00",
+  "text_pipeline_execution": {
+    "status": "PASS",
+    "session_id": "e2e_integration_625949",
+    "report_path": "D:\\nishanth_work\\final_project\\backend\\data\\reports\\e2e_integration_625949.json",
+    "verification": {
+      "report_persisted": true,
+      "report_retrieved_correctly": true,
+      "all_7_criteria_present": true,
+      "status_is_partial_for_text_only": true,
+      "assessed_maximum_is_95": true,
+      "total_score_100_is_none": true,
+      "provisional_normalized_computed": true
+    }
+  },
+  "services_audit": {
+    "core_backend": {
+      "service_name": "PreMock Core FastAPI Engine",
+      "configured_port": 8000,
+      "is_port_listening": true,
+      "model_identity": "LocalInterviewModel (Taxonomies + STAR + Dataset CSV)",
+      "model_checkpoint_path": "D:\\nishanth_work\\final_project\\backend\\data\\interview_dataset.csv",
+      "checkpoint_exists_on_disk": true,
+      "service_status": "FUNCTIONAL (In-process and via FastAPI)",
+      "output_nature": "MEASURED",
+      "evidence_note": "Generates questions, manages phased flow, and executes 100-mark rubric locally without paid APIs."
+    },
+    "gaze_estimation": {
+      "service_name": "MPIIGaze Gaze Service",
+      "configured_port": 8001,
+      "is_port_listening": false,
+      "model_identity": "Custom 3-block CNN Gaze Regressor (Pitch, Yaw in radians)",
+      "model_checkpoint_path": "D:\\nishanth_work\\final_project\\backend\\ml_models\\gaze_model.keras",
+      "checkpoint_exists_on_disk": false,
+      "service_status": "OFFLINE (Checkpoint binary absent from repository)",
+      "output_nature": "UNAVAILABLE",
+      "evidence_note": "Service script gaze_service_server.py exists, but gaze_model.keras was not checked into repo."
+    },
+    "facial_emotion": {
+      "service_name": "MobileNetV2 Facial Emotion Service",
+      "configured_port": 8002,
+      "is_port_listening": false,
+      "model_identity": "MobileNetV2 fine-tuned on FER-2013 (7 emotions)",
+      "model_checkpoint_path": "D:\\nishanth_work\\final_project\\backend\\ml_models\\emotion_model.keras",
+      "checkpoint_exists_on_disk": false,
+      "service_status": "OFFLINE (Checkpoint binary absent from repository)",
+      "output_nature": "UNAVAILABLE",
+      "evidence_note": "Trained offline achieving 63.96% test accuracy; emotion_model.keras binary absent locally."
+    },
+    "speech_recognition_asr": {
+      "service_name": "Whisper LoRA ASR Service",
+      "configured_port": 8003,
+      "is_port_listening": false,
+      "model_identity": "OpenAI Whisper Base + LoRA (r=8, alpha=16) on Common Voice",
+      "model_checkpoint_path": "D:\\nishanth_work\\final_project\\ml\\asr_model\\whisper_indian_accent_lora_20k",
+      "checkpoint_exists_on_disk": false,
+      "service_status": "OFFLINE (LoRA adapter directory absent from repository)",
+      "output_nature": "UNAVAILABLE",
+      "evidence_note": "Sidecar script asr_server.py exists; adapter weights not checked into repo. Direct text used."
+    },
+    "posture_analysis": {
+      "service_name": "Posture Analysis Module",
+      "configured_port": null,
+      "is_port_listening": false,
+      "model_identity": "None (Stub / Placeholder)",
+      "model_checkpoint_path": null,
+      "checkpoint_exists_on_disk": false,
+      "service_status": "NOT IMPLEMENTED",
+      "output_nature": "MOCKED / PLACEHOLDER (null)",
+      "evidence_note": "Schema explicitly defines 'posture: null'; no computer vision posture model exists."
+    },
+    "voice_prosody_acoustics": {
+      "service_name": "Voice Acoustic DSP Analysis",
+      "configured_port": null,
+      "is_port_listening": false,
+      "model_identity": "None (Lexical filler counter fallback only)",
+      "model_checkpoint_path": null,
+      "checkpoint_exists_on_disk": false,
+      "service_status": "NOT IMPLEMENTED (Acoustic DSP missing; Lexical fallback active)",
+      "output_nature": "UNAVAILABLE (Acoustic DSP) / MEASURED (Lexical filler regex count)",
+      "evidence_note": "No acoustic feature extractor (pitch, jitter, shimmer); fallback counts verbal filler tokens."
+    }
+  },
+  "key_finding": "A saved report alone is NOT proof that every model ran. Text interview and 100-mark rubric are fully functional. Vision and ASR models require external binary checkpoints."
+}

@@ -144,9 +144,9 @@ async def handle_interview_turn(req: InterviewTurnRequest):
         raise HTTPException(status_code=400, detail="Candidate answer cannot be empty.")
 
     # Match or derive session
-    session_id = f"sess_{abs(hash(req.job_role + req.difficulty)) % 1000000}"
+    session_id = req.session_id or f"sess_{abs(hash(req.job_role + req.difficulty)) % 1000000}"
     existing = session_manager.get_session(session_id)
-    if not existing:
+    if not existing or existing.get("status") == "completed":
         profile = local_interview_model.extract_resume_profile(req.resume_text) if req.resume_text else None
         existing = session_manager.create_session(
             session_id=session_id,
@@ -195,16 +195,23 @@ async def generate_resume_question(req: InterviewQuestionRequest):
     """
     profile = local_interview_model.extract_resume_profile(req.resume_text) if req.resume_text else None
     plan = local_interview_model.build_topic_plan(req.job_role, req.difficulty, 30, profile)
-    topic = plan[0]["topic"] if plan else "Role Fundamentals"
-    q_obj = local_interview_model.generate_main_question(
-        role=req.job_role,
-        difficulty=req.difficulty,
-        required_topic=topic,
-        resume_profile=profile
-    )
+    if plan:
+        q_obj = local_interview_model.generate_question_for_plan_item(
+            plan[0],
+            role=req.job_role,
+            difficulty=req.difficulty,
+            resume_profile=profile
+        )
+    else:
+        q_obj = local_interview_model.generate_main_question(
+            role=req.job_role,
+            difficulty=req.difficulty,
+            required_topic="Role Fundamentals",
+            resume_profile=profile
+        )
     return InterviewQuestionResponse(
         question=q_obj.question,
-        question_type="technical",
+        question_type=q_obj.kind,
         topic=q_obj.topic,
         source="local_model"
     )

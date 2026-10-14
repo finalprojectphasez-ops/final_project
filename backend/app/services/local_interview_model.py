@@ -727,7 +727,110 @@ class LocalInterviewModel:
         )
 
     # --------------------------------------------------------------------------
-    # Task 2: Topic Plan Building
+    # General (non-technical) role questions — motivation, teamwork, problem-solving
+    # --------------------------------------------------------------------------
+
+    GENERAL_QUESTIONS: Dict[str, List[Dict[str, Any]]] = {
+        "full_stack_engineer": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What attracted you to full stack development, and how do you decide whether to focus on the frontend or backend side of a feature?",
+                "intermediate": "When you receive a new feature requirement, how do you break it down into frontend tasks versus backend tasks, and how do you prioritize them?",
+                "advanced": "Describe a situation where a product requirement forced you to make a difficult architectural tradeoff between the frontend experience and backend complexity. How did you decide?",
+                "expected": ["Motivation clarity", "Task decomposition approach", "Prioritization framework"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you typically collaborate with designers and product managers to translate requirements into working features?",
+                "intermediate": "Tell me about a time when you had to resolve a technical disagreement with a teammate. How did you handle it?",
+                "advanced": "Describe how you've structured cross-functional collaboration across frontend, backend, and DevOps teams to ship a complex feature on a tight deadline.",
+                "expected": ["Communication skills", "Conflict resolution", "Cross-functional coordination"]
+            }
+        ],
+        "frontend_developer": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What excites you most about frontend development, and how do you stay current with rapidly evolving web technologies?",
+                "intermediate": "How do you balance delivering pixel-perfect designs with meeting tight deadlines and maintaining code quality?",
+                "advanced": "Describe a project where you had to champion a significant frontend architecture change. How did you convince stakeholders?",
+                "expected": ["Passion for UI/UX", "Learning approach", "Stakeholder communication"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you work with backend engineers to ensure the API contracts meet the frontend's data needs?",
+                "intermediate": "Tell me about a time you received unclear design requirements. How did you clarify them and move forward?",
+                "advanced": "Describe how you've mentored junior frontend developers while managing your own feature delivery responsibilities.",
+                "expected": ["Cross-team communication", "Ambiguity handling", "Mentorship"]
+            }
+        ],
+        "backend_engineer": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What drew you to backend engineering, and what type of backend challenges do you find most engaging?",
+                "intermediate": "How do you approach learning a new backend technology or framework when your team adopts it?",
+                "advanced": "Describe a time when you identified and championed a significant backend infrastructure improvement that wasn't on the roadmap.",
+                "expected": ["Technical motivation", "Self-directed learning", "Initiative and ownership"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you communicate technical backend constraints to non-technical stakeholders or product managers?",
+                "intermediate": "Tell me about a production incident you handled. How did you communicate with the team during the resolution?",
+                "advanced": "Describe how you've driven post-incident reviews and ensured action items were completed across multiple teams.",
+                "expected": ["Communication clarity", "Incident management", "Cross-team accountability"]
+            }
+        ],
+        "devops_sre": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What interests you about DevOps and site reliability, and how do you define the role's core responsibility?",
+                "intermediate": "How do you balance the tension between developer velocity (shipping fast) and system reliability?",
+                "advanced": "Describe how you've established or evolved an SRE culture in an organization that previously had none.",
+                "expected": ["Role understanding", "Velocity vs reliability", "Culture building"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you work with development teams to ensure their applications are production-ready?",
+                "intermediate": "Tell me about a time you had to push back on a deployment that didn't meet reliability standards. How did you handle it?",
+                "advanced": "Describe how you've structured on-call rotations and escalation policies across multiple engineering teams.",
+                "expected": ["Production readiness", "Constructive pushback", "Operational leadership"]
+            }
+        ],
+        "ml_engineer": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What sparked your interest in machine learning, and what area of ML excites you most right now?",
+                "intermediate": "How do you stay current with the fast-moving ML research landscape while delivering production systems?",
+                "advanced": "Describe a situation where you had to decide between a more accurate but complex model versus a simpler, more maintainable one for production.",
+                "expected": ["ML passion", "Research-to-production bridge", "Pragmatic decision-making"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you communicate model results and limitations to non-technical stakeholders?",
+                "intermediate": "Tell me about a time when your model's output didn't meet business expectations. How did you handle the feedback?",
+                "advanced": "Describe how you've built cross-functional alignment between data science, engineering, and product teams for an ML-driven feature.",
+                "expected": ["Stakeholder communication", "Handling failure", "Cross-functional ML delivery"]
+            }
+        ],
+        "data_analyst": [
+            {
+                "topic": "Motivation and role fit",
+                "beginner": "What drew you to data analysis, and what type of business questions do you find most interesting to investigate?",
+                "intermediate": "How do you decide which data requests to prioritize when multiple stakeholders need your analysis?",
+                "advanced": "Describe a situation where your data analysis challenged a widely held assumption in the organization. How did you present your findings?",
+                "expected": ["Analytical curiosity", "Prioritization", "Data storytelling"]
+            },
+            {
+                "topic": "Collaboration and teamwork",
+                "beginner": "How do you ensure that your analysis is understood by non-technical team members?",
+                "intermediate": "Tell me about a time when you worked with engineers to improve data quality or fix a data pipeline issue.",
+                "advanced": "Describe how you've established data governance practices or a self-service analytics culture across your organization.",
+                "expected": ["Communication skills", "Cross-team data work", "Data governance"]
+            }
+        ]
+    }
+
+    # --------------------------------------------------------------------------
+    # Task 2: Phased Topic Plan Building
     # --------------------------------------------------------------------------
 
     def build_topic_plan(
@@ -738,43 +841,79 @@ class LocalInterviewModel:
         resume_profile: Optional[ProfessionalProfile] = None
     ) -> List[Dict[str, Any]]:
         """
-        Builds a role-specific topic plan covering:
-        1. Role fundamentals
-        2. Applied problem-solving
-        3. Practical examples or relevant project experience
-        4. Decisions, tradeoffs, and verification
+        Builds a phased interview topic plan:
+          Phase 1 (intro):     Self-introduction (1 item)
+          Phase 2 (general):   General role questions — motivation, teamwork (1 item)
+          Phase 3 (technical): Role-specific deep-dive topics (2, 4, or 6 items)
 
-        Planning targets:
-        - 15 min -> 4 main questions
-        - 30 min -> 6 main questions
-        - 45 min -> 8 main questions
+        Planning targets (total items across phases):
+        - 15 min -> 1 intro + 1 general + 2 technical = 4
+        - 30 min -> 1 intro + 1 general + 4 technical = 6
+        - 45 min -> 1 intro + 1 general + 6 technical = 8
         Selected role and difficulty remain strictly authoritative!
         """
         canonical_role_key, taxonomy = normalize_role(role)
         norm_diff = normalize_difficulty(difficulty)
 
-        # Starting target count based on duration
+        # Determine counts per phase based on duration
         if duration_minutes <= 15:
-            target_count = 4
+            general_count = 1
+            technical_count = 2
         elif duration_minutes <= 30:
-            target_count = 6
+            general_count = 1
+            technical_count = 4
         else:
-            target_count = 8
+            general_count = 1
+            technical_count = 6
 
+        plan: List[Dict[str, Any]] = []
+        plan_idx = 0
+
+        # --- Phase 1: Intro ---
+        plan_idx += 1
+        plan.append({
+            "index": plan_idx,
+            "topic": "Self-Introduction",
+            "category": "intro",
+            "phase": "intro",
+            "difficulty": norm_diff,
+            "preferred_question": None,  # Generated dynamically
+            "expected_points": ["Background overview", "Key projects", "Technology strengths"],
+            "relevant_skills": []
+        })
+
+        # --- Phase 2: General ---
+        general_pool = self.GENERAL_QUESTIONS.get(canonical_role_key,
+                          self.GENERAL_QUESTIONS.get("full_stack_engineer", []))
+        for g_item in general_pool[:general_count]:
+            plan_idx += 1
+            plan.append({
+                "index": plan_idx,
+                "topic": g_item["topic"],
+                "category": "general",
+                "phase": "general",
+                "difficulty": norm_diff,
+                "preferred_question": g_item.get(norm_diff) or g_item.get("intermediate"),
+                "expected_points": g_item.get("expected", ["Clear communication", "Structured reasoning"]),
+                "relevant_skills": []
+            })
+
+        # --- Phase 3: Technical ---
         all_topics = taxonomy["topics"]
-        selected_topics = all_topics[:target_count]
+        selected_topics = all_topics[:technical_count]
 
-        plan = []
-        for idx, t in enumerate(selected_topics):
-            # Check for candidate relevant skills in resume to personalize question context
+        for t in selected_topics:
+            plan_idx += 1
             matching_skills = []
             if resume_profile and resume_profile.core_skills:
-                matching_skills = [s for s in resume_profile.core_skills if s.lower() in t["topic"].lower() or any(d in t["topic"].lower() for d in taxonomy["core_domains"])]
-
+                matching_skills = [s for s in resume_profile.core_skills
+                                   if s.lower() in t["topic"].lower()
+                                   or any(d in t["topic"].lower() for d in taxonomy["core_domains"])]
             plan.append({
-                "index": idx + 1,
+                "index": plan_idx,
                 "topic": t["topic"],
                 "category": t["category"],
+                "phase": "technical",
                 "difficulty": norm_diff,
                 "preferred_question": t.get(norm_diff) or t.get("intermediate"),
                 "expected_points": t.get("expected", ["Foundational understanding", "Tradeoff analysis", "Verification"]),
@@ -782,6 +921,217 @@ class LocalInterviewModel:
             })
 
         return plan
+
+    # --------------------------------------------------------------------------
+    # Task 3a: Intro Question Generation
+    # --------------------------------------------------------------------------
+
+    def generate_intro_question(
+        self,
+        role: str,
+        resume_profile: Optional[ProfessionalProfile] = None
+    ) -> InterviewQuestionInternal:
+        """
+        Generates the self-introduction prompt.
+        Personalised with resume info when available; never invents facts.
+        """
+        _, taxonomy = normalize_role(role)
+        display_name = taxonomy["display_name"]
+
+        if resume_profile and resume_profile.current_title:
+            question_text = (
+                f"Welcome to your {display_name} interview! "
+                f"I see you've been working as a {resume_profile.current_title}. "
+                f"Please introduce yourself — tell me about your background, "
+                f"the key projects you've worked on, and the technologies you're most experienced with."
+            )
+        else:
+            question_text = (
+                f"Welcome to your {display_name} interview! "
+                f"To get started, please introduce yourself — tell me about your background, "
+                f"your experience, and the key projects and technologies you've worked with."
+            )
+
+        return InterviewQuestionInternal(
+            question=question_text,
+            topic="Self-Introduction",
+            kind="main",
+            difficulty="beginner",
+            phase="intro",
+            expected_points=["Background overview", "Key projects", "Technology strengths"],
+            review_status="unreviewed"
+        )
+
+    # --------------------------------------------------------------------------
+    # Task 3b: General (Non-Technical) Question Generation
+    # --------------------------------------------------------------------------
+
+    # --------------------------------------------------------------------------
+    # Task 3b: General (Non-Technical) Question Generation
+    # --------------------------------------------------------------------------
+
+    def generate_general_question(
+        self,
+        role: str,
+        difficulty: str,
+        required_topic: str,
+        resume_profile: Optional[ProfessionalProfile] = None,
+        history: Optional[List[str]] = None
+    ) -> InterviewQuestionInternal:
+        """
+        Generates a general role question (motivation, teamwork, problem-solving).
+        Uses the GENERAL_QUESTIONS bank matched to role and topic, strictly deduplicating against history.
+        """
+        canonical_role_key, _ = normalize_role(role)
+        norm_diff = normalize_difficulty(difficulty)
+        history = history or []
+
+        general_pool = self.GENERAL_QUESTIONS.get(canonical_role_key,
+                          self.GENERAL_QUESTIONS.get("full_stack_engineer", []))
+
+        # Find matching topic
+        matched_item = None
+        for g_item in general_pool:
+            if g_item["topic"].lower() == required_topic.lower() or required_topic.lower() in g_item["topic"].lower():
+                matched_item = g_item
+                break
+
+        # If not matched or already in history, find first unasked item in pool
+        if not matched_item or self._is_near_duplicate(matched_item.get(norm_diff, ""), history):
+            for g_item in general_pool:
+                candidate_text = g_item.get(norm_diff) or g_item.get("intermediate", "")
+                if not self._is_near_duplicate(candidate_text, history):
+                    matched_item = g_item
+                    break
+
+        if not matched_item and general_pool:
+            matched_item = general_pool[0]
+
+        if not matched_item:
+            # Fallback generic general questions
+            fallbacks = [
+                f"What motivates you in your work as a {role}, and how do you approach collaboration with cross-functional teams?",
+                f"Can you describe a challenging project or technical tradeoff you faced as a {role} and how you navigated it?",
+                f"How do you prioritize competing deadlines and maintain engineering quality in your work as a {role}?"
+            ]
+            question_text = fallbacks[0]
+            for fb in fallbacks:
+                if not self._is_near_duplicate(fb, history):
+                    question_text = fb
+                    break
+            return InterviewQuestionInternal(
+                question=question_text,
+                topic=required_topic or "Motivation and role fit",
+                kind="main",
+                difficulty=norm_diff,
+                phase="general",
+                expected_points=["Motivation clarity", "Team collaboration"],
+                review_status="unreviewed"
+            )
+
+        question_text = matched_item.get(norm_diff) or matched_item.get("intermediate", "")
+        expected_points = matched_item.get("expected", ["Clear communication", "Structured reasoning"])
+
+        # Duplicate check: try alternatives from pool if question text is in history
+        attempts = 0
+        while self._is_near_duplicate(question_text, history) and attempts < len(general_pool):
+            attempts += 1
+            alt_item = general_pool[attempts % len(general_pool)]
+            alt_text = alt_item.get(norm_diff) or alt_item.get("intermediate", "")
+            if not self._is_near_duplicate(alt_text, history):
+                matched_item = alt_item
+                question_text = alt_text
+                expected_points = alt_item.get("expected", expected_points)
+                break
+
+        if self._is_near_duplicate(question_text, history):
+            question_text = f"Thinking about your career as a {role}, what key engineering values guide your technical decision-making and teamwork?"
+
+        return InterviewQuestionInternal(
+            question=question_text,
+            topic=matched_item["topic"],
+            kind="main",
+            difficulty=norm_diff,
+            phase="general",
+            expected_points=expected_points,
+            review_status="unreviewed"
+        )
+
+    # --------------------------------------------------------------------------
+    # Task 3c: Closing Question Generation
+    # --------------------------------------------------------------------------
+
+    def generate_closing_question(
+        self,
+        role: str,
+        resume_profile: Optional[ProfessionalProfile] = None
+    ) -> InterviewQuestionInternal:
+        """
+        Generates the closing wrap-up question.
+        """
+        _, taxonomy = normalize_role(role)
+        display_name = taxonomy["display_name"]
+
+        question_text = (
+            f"We're coming to the end of the interview. "
+            f"Before we wrap up, is there anything about your experience or skills "
+            f"that we haven't covered that you'd like to highlight? "
+            f"And do you have any questions about the {display_name} role or the team?"
+        )
+
+        return InterviewQuestionInternal(
+            question=question_text,
+            topic="Closing",
+            kind="main",
+            difficulty="beginner",
+            phase="closing",
+            expected_points=["Wrap-up reflection", "Questions for interviewer"],
+            review_status="unreviewed"
+        )
+
+    # --------------------------------------------------------------------------
+    # Task 3d: Plan Item Question Dispatcher
+    # --------------------------------------------------------------------------
+
+    def generate_question_for_plan_item(
+        self,
+        topic_item: Dict[str, Any],
+        role: str,
+        difficulty: str,
+        resume_profile: Optional[ProfessionalProfile] = None,
+        history: Optional[List[str]] = None
+    ) -> InterviewQuestionInternal:
+        """
+        Generates the appropriate question for a topic plan item based on its phase:
+        - intro: generate_intro_question
+        - general: generate_general_question
+        - closing: generate_closing_question
+        - technical: generate_main_question
+        """
+        phase = topic_item.get("phase", "technical")
+        topic_name = topic_item.get("topic", "")
+        norm_diff = normalize_difficulty(topic_item.get("difficulty") or difficulty)
+
+        if phase == "intro":
+            return self.generate_intro_question(role=role, resume_profile=resume_profile)
+        elif phase == "general":
+            return self.generate_general_question(
+                role=role,
+                difficulty=norm_diff,
+                required_topic=topic_name,
+                resume_profile=resume_profile,
+                history=history
+            )
+        elif phase == "closing":
+            return self.generate_closing_question(role=role, resume_profile=resume_profile)
+        else:
+            return self.generate_main_question(
+                role=role,
+                difficulty=norm_diff,
+                required_topic=topic_name,
+                resume_profile=resume_profile,
+                history=history
+            )
 
     # --------------------------------------------------------------------------
     # Task 3: Single Main Question Generation
@@ -816,8 +1166,14 @@ class LocalInterviewModel:
                 break
 
         if not topic_match:
-            # Fallback to first topic
-            topic_match = taxonomy["topics"][0]
+            # Fallback: Find the first unasked topic in taxonomy rather than defaulting to topics[0]
+            for t in taxonomy["topics"]:
+                cand_text = t.get(norm_diff) or t.get("intermediate") or t["topic"]
+                if not self._is_near_duplicate(cand_text, history):
+                    topic_match = t
+                    break
+            if not topic_match:
+                topic_match = taxonomy["topics"][0]
 
         base_question = topic_match.get(norm_diff) or topic_match.get("intermediate") or topic_match["topic"]
         expected_points = topic_match.get("expected", ["Core architecture", "Tradeoff justification", "Reliability consideration"])
@@ -845,22 +1201,35 @@ class LocalInterviewModel:
             if not final_question_text.startswith(("Consider", "Suppose", "Imagine", "How", "What", "Explain", "Can")):
                 final_question_text = f"In a production scenario involving {taxonomy['display_name']}, {base_question[0].lower() + base_question[1:]}"
 
-        # Duplicate check against history using local token Jaccard similarity
+        # Duplicate check against history using local token Jaccard similarity and alternative phrasing
         attempts = 0
-        while self._is_near_duplicate(final_question_text, history) and attempts < 3:
+        alt_questions = [
+            f"Regarding {topic_match['topic']}, what specific failure modes and validation steps guide your technical implementation?",
+            f"How would you approach {topic_match['topic']} from an architectural perspective, specifically balancing latency against consistency?",
+            f"Can you walk through a concrete scenario involving {topic_match['topic']} and justify your primary design decisions?",
+            f"What trade-offs between performance, maintainability, and operational complexity do you evaluate when implementing {topic_match['topic']}?",
+            f"In a high-throughput production environment, how do you diagnose bottlenecks and enforce reliability around {topic_match['topic']}?"
+        ]
+        while self._is_near_duplicate(final_question_text, history) and attempts < len(alt_questions):
+            final_question_text = alt_questions[attempts]
             attempts += 1
-            alt_questions = [
-                f"Regarding {required_topic}, what specific failure modes and validation steps would guide your technical implementation?",
-                f"How would you approach {required_topic} from an architectural perspective, specifically balancing latency against consistency?",
-                f"Can you walk through a concrete scenario involving {required_topic} and justify your primary design decisions?"
-            ]
-            final_question_text = alt_questions[attempts % len(alt_questions)]
+
+        # If still duplicate, pick another unasked topic from taxonomy
+        if self._is_near_duplicate(final_question_text, history):
+            for t in taxonomy["topics"]:
+                cand_text = t.get(norm_diff) or t.get("intermediate") or t["topic"]
+                if not self._is_near_duplicate(cand_text, history):
+                    topic_match = t
+                    final_question_text = cand_text
+                    expected_points = t.get("expected", expected_points)
+                    break
 
         return InterviewQuestionInternal(
             question=final_question_text,
             topic=topic_match["topic"],
             kind="main",
             difficulty=norm_diff,
+            phase="technical",
             expected_points=expected_points,
             review_status="unreviewed"
         )
@@ -905,6 +1274,11 @@ class LocalInterviewModel:
         ans_lower = ans.lower()
         word_count = len(ans.split())
 
+        # Extract all past questions from history for deduplication
+        past_questions = [h.get("question") for h in (conversation_history or []) if h.get("question")]
+        if current_question and current_question.question and current_question.question not in past_questions:
+            past_questions.append(current_question.question)
+
         # 1. Enforce session deadline or completion
         if deadline_expired or (not remaining_topics and followups_used >= max_followups_per_topic):
             return "end", None, {"reason": "Session deadline reached or all topics completed."}
@@ -915,7 +1289,7 @@ class LocalInterviewModel:
             if remaining_topics:
                 next_t = remaining_topics[0]
                 next_diff = normalize_difficulty(next_main_difficulty or difficulty)
-                next_q = self.generate_main_question(role, next_diff, next_t["topic"], resume_profile)
+                next_q = self.generate_question_for_plan_item(next_t, role, next_diff, resume_profile, history=past_questions)
                 return "next_topic", next_q, {"reason": "Candidate explicitly requested to skip topic."}
             else:
                 return "end", None, {"reason": "Candidate skipped last topic."}
@@ -926,12 +1300,41 @@ class LocalInterviewModel:
         ])
         if is_dont_know:
             if followups_used == 0 and "clarify" in allowed:
-                # Offer a reasonable clarification / scaffolding question within the limit
+                # Offer appropriate clarification / scaffolding based on phase
+                is_intro = getattr(current_question, "phase", "") == "intro" or "introduction" in current_question.topic.lower()
+                is_general = getattr(current_question, "phase", "") == "general"
+
+                if is_intro:
+                    scaffolding_options = [
+                        "No problem at all. We can start simple — what got you interested in technology or this role, and what are you hoping to learn or work on?",
+                        "That's completely fine. Tell me a little about what motivated you to pursue this career and any tools you've enjoyed experimenting with.",
+                        "No worries. Could you share what kind of software or data projects excite you most, even if from personal study?"
+                    ]
+                elif is_general:
+                    scaffolding_options = [
+                        f"No worries at all. In your own words, what kinds of projects or challenges do you most enjoy tackling in your work?",
+                        f"That's fine. Thinking about your team experiences, how do you usually communicate or align when working toward a shared goal?",
+                        f"No problem. What core values or habits help you do your best work as a {role}?"
+                    ]
+                else:
+                    scaffolding_options = [
+                        f"No problem. To break this down, what foundational concepts or related technologies come to mind when you think about {current_question.topic}?",
+                        f"That's completely fine. From a high level, how would you begin investigating or approaching {current_question.topic} if tasked with it?",
+                        f"No worries at all. If you had to tackle a problem involving {current_question.topic}, what basic building blocks or documentation would you consult?"
+                    ]
+
+                clarify_text = scaffolding_options[0]
+                for opt in scaffolding_options:
+                    if not self._is_near_duplicate(opt, past_questions):
+                        clarify_text = opt
+                        break
+
                 clarify_q = InterviewQuestionInternal(
-                    question=f"No problem. To break this down, what foundational concepts or related technologies come to mind when you think about {current_question.topic}?",
+                    question=clarify_text,
                     topic=current_question.topic,
                     kind="clarify",
                     difficulty=norm_diff,
+                    phase=getattr(current_question, "phase", "technical"),
                     expected_points=current_question.expected_points,
                     review_status="unreviewed"
                 )
@@ -941,7 +1344,7 @@ class LocalInterviewModel:
                 if remaining_topics:
                     next_t = remaining_topics[0]
                     next_diff = normalize_difficulty(next_main_difficulty or difficulty)
-                    next_q = self.generate_main_question(role, next_diff, next_t["topic"], resume_profile)
+                    next_q = self.generate_question_for_plan_item(next_t, role, next_diff, resume_profile, history=past_questions)
                     return "next_topic", next_q, {"reason": "Candidate unfamiliar with topic, advancing to next topic."}
                 else:
                     return "end", None, {"reason": "Interview topics completed."}
@@ -951,19 +1354,32 @@ class LocalInterviewModel:
             if remaining_topics and "next_topic" in allowed:
                 next_t = remaining_topics[0]
                 next_diff = normalize_difficulty(next_main_difficulty or difficulty)
-                next_q = self.generate_main_question(role, next_diff, next_t["topic"], resume_profile)
+                next_q = self.generate_question_for_plan_item(next_t, role, next_diff, resume_profile, history=past_questions)
                 return "next_topic", next_q, {"reason": f"Follow-up limit ({max_followups_per_topic}) reached for topic {current_question.topic}."}
             else:
                 return "end", None, {"reason": "All planned topics and topic follow-ups completed."}
 
         # 5. Evaluate answer depth and formulate targeted question grounded in candidate's response
-        # Detect vague answer
+        # Detect vague / brief answer
         if word_count < 12 and "clarify" in allowed:
+            ans_clean = ans[:60].strip()
+            clarify_templates = [
+                f"You mentioned '{ans_clean}' briefly. Could you elaborate with a concrete example or explain the reasoning behind that?",
+                f"Could you expand on your point about '{ans_clean}'? Specifically, what technical trade-offs or implementation details stood out to you?",
+                f"That touches on the topic. To give more depth, how would you apply '{ans_clean}' in a production scenario or live system?"
+            ]
+            clarify_text = clarify_templates[0]
+            for ct in clarify_templates:
+                if not self._is_near_duplicate(ct, past_questions):
+                    clarify_text = ct
+                    break
+
             clarify_q = InterviewQuestionInternal(
-                question=f"You mentioned that briefly. Could you elaborate with a concrete example or explain the reasoning behind '{ans[:60]}'?",
+                question=clarify_text,
                 topic=current_question.topic,
                 kind="clarify",
                 difficulty=norm_diff,
+                phase=getattr(current_question, "phase", "technical"),
                 expected_points=current_question.expected_points,
                 review_status="unreviewed"
             )
@@ -977,51 +1393,94 @@ class LocalInterviewModel:
             if not any(w in ans_lower for w in ep_words):
                 missing_points.append(ep)
 
-        # Formulate answer-grounded follow-up
-        if missing_points and "follow_up" in allowed:
-            target_probe = missing_points[0]
-            # Probe specific missing reasoning without giving away the exact answer
+        # Collect all points already probed in past turns to prevent repeating the same probe!
+        already_probed_points = set()
+        for h in (conversation_history or []):
+            if h.get("kind") in ("follow_up", "clarify"):
+                for ep in h.get("expected_points", []):
+                    already_probed_points.add(ep.lower())
+                past_q_lower = h.get("question", "").lower()
+                for ep in current_question.expected_points:
+                    ep_tokens = [w.lower() for w in ep.split() if len(w) > 3]
+                    if any(t in past_q_lower for t in ep_tokens):
+                        already_probed_points.add(ep.lower())
+
+        unprobed_missing = [ep for ep in missing_points if ep.lower() not in already_probed_points]
+
+        # Formulate answer-grounded follow-up on unprobed point
+        if unprobed_missing and "follow_up" in allowed:
+            target_probe = unprobed_missing[0]
+            ans_snip = ans[:45].strip()
+            followup_templates = [
+                f"In your response, you discussed how '{ans_snip}...' works. How would you handle {target_probe.lower()} in that setup, and what tradeoffs would you consider?",
+                f"Building on your point about '{ans_snip}', how do you approach {target_probe.lower()} when designing for reliability and maintainability?",
+                f"Regarding your explanation of '{ans_snip}', what specific constraints or edge cases arise around {target_probe.lower()}?",
+                f"You highlighted '{ans_snip}'. From an architectural standpoint, how would you address {target_probe.lower()} and validate its correctness?"
+            ]
+            fu_text = followup_templates[0]
+            for ft in followup_templates:
+                if not self._is_near_duplicate(ft, past_questions):
+                    fu_text = ft
+                    break
+
             followup_q = InterviewQuestionInternal(
-                question=f"In your response, you discussed how '{ans[:50]}...' works. How would you handle {target_probe.lower()} in that setup, and what tradeoffs would you consider?",
+                question=fu_text,
                 topic=current_question.topic,
                 kind="follow_up",
                 difficulty=norm_diff,
+                phase=getattr(current_question, "phase", "technical"),
                 expected_points=[target_probe],
                 review_status="unreviewed"
             )
             return "follow_up", followup_q, {"reason": f"Probing missing dimension: {target_probe}."}
 
-        # Strong answer: either ask a high-level extension within difficulty or move to next topic
+        # Strong answer (or all missing points already probed):
         if followups_used == 0 and "follow_up" in allowed:
+            ext_templates = [
+                f"That is a clear explanation. If the system's traffic scaled 10x and network partitions occurred, how would your approach to {current_question.topic} adapt?",
+                f"Great explanation. How would you design comprehensive observability, alerting, and automated rollback strategies for {current_question.topic} in production?",
+                f"Building on that, what potential security vulnerabilities or concurrency bottlenecks could arise with {current_question.topic}, and how would you mitigate them?"
+            ]
+            ext_text = ext_templates[0]
+            for et in ext_templates:
+                if not self._is_near_duplicate(et, past_questions):
+                    ext_text = et
+                    break
+
             ext_q = InterviewQuestionInternal(
-                question=f"That is a clear explanation. If the system's traffic scaled 10x and network partitions occurred, how would your approach to {current_question.topic} adapt?",
+                question=ext_text,
                 topic=current_question.topic,
                 kind="follow_up",
                 difficulty=norm_diff,
+                phase=getattr(current_question, "phase", "technical"),
                 expected_points=["Scaling constraints", "Partition tolerance", "Reliability verification"],
                 review_status="unreviewed"
             )
             return "follow_up", ext_q, {"reason": "Strong answer: probing high-scale extension."}
 
-        # If followups already done or candidate answer is exhaustive -> advance to next topic
+        # If followups already done or candidate answer is exhaustive or topic covered -> advance to next topic
         if remaining_topics and "next_topic" in allowed:
             next_t = remaining_topics[0]
             next_diff = normalize_difficulty(next_main_difficulty or difficulty)
-            next_q = self.generate_main_question(role, next_diff, next_t["topic"], resume_profile)
+            next_q = self.generate_question_for_plan_item(next_t, role, next_diff, resume_profile, history=past_questions)
             return "next_topic", next_q, {"reason": "Topic adequately covered, advancing to next planned topic."}
 
         return "end", None, {"reason": "Interview successfully completed."}
 
     # --------------------------------------------------------------------------
-    # Helper: Local Token Jaccard Similarity for Duplicate Question Rejection
+    # Helper: Local Token Jaccard & String Matching for Duplicate Question Rejection
     # --------------------------------------------------------------------------
 
-    def _is_near_duplicate(self, candidate_q: str, history: List[str], threshold: float = 0.65) -> bool:
+    def _is_near_duplicate(self, candidate_q: str, history: List[str], threshold: float = 0.55) -> bool:
         """
-        Evaluates token-level Jaccard similarity between candidate question and
-        any question in history to reject exact and near duplicates locally.
+        Evaluates token-level Jaccard similarity and exact matching between
+        candidate question and any question in history to reject exact and near duplicates locally.
         """
-        if not history:
+        if not history or not candidate_q:
+            return False
+
+        clean_cand = re.sub(r'[^a-zA-Z0-9\s]', '', candidate_q).strip().lower()
+        if not clean_cand:
             return False
 
         def tokenize(text: str) -> set:
@@ -1032,16 +1491,32 @@ class LocalInterviewModel:
             return False
 
         for past in history:
+            if not past:
+                continue
+            clean_past = re.sub(r'[^a-zA-Z0-9\s]', '', past).strip().lower()
+            # 1. Exact string match (ignoring punctuation & case)
+            if clean_cand == clean_past:
+                return True
+
             past_tokens = tokenize(past)
             if not past_tokens:
                 continue
+
+            # 2. Token Jaccard overlap
             intersection = len(candidate_tokens.intersection(past_tokens))
             union = len(candidate_tokens.union(past_tokens))
             sim = intersection / union if union > 0 else 0
             if sim >= threshold:
                 return True
+
+            # 3. Substantial substring match (for questions > 35 chars)
+            if len(clean_cand) > 35 and len(clean_past) > 35:
+                if clean_cand in clean_past or clean_past in clean_cand:
+                    return True
+
         return False
 
 
 # Global singleton provider instance
 local_interview_model = LocalInterviewModel()
+

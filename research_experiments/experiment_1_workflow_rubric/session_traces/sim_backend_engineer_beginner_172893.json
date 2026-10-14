@@ -1,0 +1,64 @@
+{
+  "session_id": "sim_backend_engineer_beginner_172893",
+  "role_key": "backend_engineer",
+  "role_label": "Backend Engineer",
+  "difficulty": "beginner",
+  "turns": [
+    {
+      "turn": 0,
+      "action": "session_created",
+      "phase": "intro",
+      "question": "Welcome to your Backend Engineer interview! To get started, please introduce yourself \u2014 tell me about your background, your experience, and the key projects and technologies you've worked with.",
+      "topic": "Self-Introduction"
+    },
+    {
+      "turn": 1,
+      "submitted_answer": "I design and maintain distributed backend systems, REST/gRPC microservices, and PostgreSQL databases.",
+      "action": "follow_up",
+      "followups_used": 1,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 2,
+      "submitted_answer": "I handle technical trade-offs by writing technical design docs and consulting cross-functional stakeholders.",
+      "action": "follow_up",
+      "followups_used": 2,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 3,
+      "submitted_answer": "REST APIs provide uniform interface semantics; we ensure idempotency using idempotency keys stored in Redis.",
+      "action": "next_topic",
+      "followups_used": 0,
+      "remaining_topics_count": 5,
+      "is_complete": false
+    },
+    {
+      "turn": 4,
+      "submitted_answer": "We inspect EXPLAIN ANALYZE execution plans to convert sequential scans into index scans on high-cardinality foreign keys.",
+      "action": "follow_up",
+      "followups_used": 1,
+      "remaining_topics_count": 4,
+      "is_complete": false
+    },
+    {
+      "turn": 5,
+      "submitted_answer": "We use connection pooling with HikariCP, sizing the pool according to Little's law to prevent thread starvation.",
+      "action": "follow_up",
+      "followups_used": 2,
+      "remaining_topics_count": 4,
+      "is_complete": false
+    }
+  ],
+  "invariants": {
+    "intro_occurs_once": true,
+    "general_precedes_technical": true,
+    "role_respected": true,
+    "difficulty_respected": true,
+    "followups_never_exceed_two": true,
+    "expected_points_never_exposed": true,
+    "simulated_clock_reaches_closing": true
+  }
+}
