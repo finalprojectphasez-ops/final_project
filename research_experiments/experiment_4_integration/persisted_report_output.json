@@ -1,0 +1,25 @@
+{
+  "report_id": "e2e_integration_625949",
+  "session_id": "e2e_integration_625949",
+  "role": "Backend Engineer",
+  "difficulty": "intermediate",
+  "rubric_version": "interview_practice_100_v1",
+  "assessed_score": 52.5,
+  "assessed_maximum": 95.0,
+  "total_score_100": null,
+  "provisional_normalized_100": 55.26,
+  "assessment_status": "partial",
+  "coverage_percent": 95.0,
+  "criteria_ratings": {
+    "technical_knowledge": 3.0,
+    "problem_solving": 1.0,
+    "practical_application": 2.0,
+    "relevance_completeness": 1.0,
+    "communication_clarity": 3.0,
+    "followup_reflection": 3.0,
+    "spoken_delivery": null
+  },
+  "topic_groups_count": 2,
+  "turns_count": 5,
+  "generated_at": "2026-10-14T03:30:26.017095+00:00"
+}

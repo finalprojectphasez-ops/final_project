@@ -1,0 +1,252 @@
+{
+  "session_id": "e2e_integration_625949",
+  "role": "Backend Engineer",
+  "role_key": "backend_engineer",
+  "difficulty": "intermediate",
+  "duration_minutes": 15,
+  "start_timestamp": 1791948625.9495447,
+  "deadline_timestamp": 1791949525.9495447,
+  "status": "active",
+  "session_version": 6,
+  "current_turn": 6,
+  "current_topic_index": 1,
+  "current_phase": "general",
+  "followups_used": 2,
+  "max_followups_per_topic": 2,
+  "topic_plan": [
+    {
+      "index": 1,
+      "topic": "Self-Introduction",
+      "category": "intro",
+      "phase": "intro",
+      "difficulty": "intermediate",
+      "preferred_question": null,
+      "expected_points": [
+        "Background overview",
+        "Key projects",
+        "Technology strengths"
+      ],
+      "relevant_skills": []
+    },
+    {
+      "index": 2,
+      "topic": "Motivation and role fit",
+      "category": "general",
+      "phase": "general",
+      "difficulty": "intermediate",
+      "preferred_question": "How do you approach learning a new backend technology or framework when your team adopts it?",
+      "expected_points": [
+        "Technical motivation",
+        "Self-directed learning",
+        "Initiative and ownership"
+      ],
+      "relevant_skills": []
+    },
+    {
+      "index": 3,
+      "topic": "API architecture and protocol design",
+      "category": "fundamentals",
+      "phase": "technical",
+      "difficulty": "intermediate",
+      "preferred_question": "Compare REST, gRPC, and GraphQL: under what specific network and latency constraints would you select gRPC over REST?",
+      "expected_points": [
+        "Idempotency keys and semantics",
+        "Serialization efficiency (Protobuf vs JSON)",
+        "HTTP status codes and error models",
+        "Backward-compatible schema evolution"
+      ],
+      "relevant_skills": []
+    },
+    {
+      "index": 4,
+      "topic": "Relational databases, indexing and query execution plans",
+      "category": "fundamentals",
+      "phase": "technical",
+      "difficulty": "intermediate",
+      "preferred_question": "How do you read a database EXPLAIN ANALYZE execution plan to identify sequential scans, index scans, and join bottlenecks?",
+      "expected_points": [
+        "B-tree index mechanics",
+        "Query planner cost models",
+        "Composite index column order",
+        "Index selectivity"
+      ],
+      "relevant_skills": []
+    }
+  ],
+  "current_question": {
+    "question": "Building on your point about 'If Redis crashes or experiences a partition,', how do you approach technical motivation when designing for reliability and maintainability?",
+    "topic": "Motivation and role fit",
+    "kind": "follow_up",
+    "difficulty": "intermediate",
+    "phase": "general",
+    "expected_points": [
+      "Technical motivation"
+    ],
+    "review_status": "unreviewed"
+  },
+  "history": [
+    {
+      "turn_index": 1,
+      "topic": "Self-Introduction",
+      "question": "Welcome to your Backend Engineer interview! To get started, please introduce yourself \u2014 tell me about your background, your experience, and the key projects and technologies you've worked with.",
+      "kind": "main",
+      "difficulty": "beginner",
+      "expected_points": [
+        "Background overview",
+        "Key projects",
+        "Technology strengths"
+      ],
+      "review_status": "unreviewed",
+      "candidate_answer": "I am a backend engineer with 4 years of experience building Python microservices and PostgreSQL databases.",
+      "evaluation": {
+        "score": 53,
+        "relevance": 50,
+        "technical_depth": 45,
+        "clarity": 65,
+        "completeness": 20,
+        "matched_expected_points_count": 0,
+        "strengths": [
+          "Clear articulation",
+          "Addressed question requirements"
+        ],
+        "improvements": [
+          "Elaborate on production tradeoffs",
+          "Provide architectural edge cases"
+        ],
+        "evaluation": "Turn answered covering 0/3 key criteria."
+      },
+      "timestamp": 1791948625.9620836
+    },
+    {
+      "turn_index": 2,
+      "topic": "Self-Introduction",
+      "question": "In your response, you discussed how 'I am a backend engineer with 4 years of exper...' works. How would you handle background overview in that setup, and what tradeoffs would you consider?",
+      "kind": "follow_up",
+      "difficulty": "intermediate",
+      "expected_points": [
+        "Background overview"
+      ],
+      "review_status": "unreviewed",
+      "candidate_answer": "In my previous role at a fintech company, I focused primarily on high-throughput payment transaction pipelines.",
+      "evaluation": {
+        "score": 53,
+        "relevance": 50,
+        "technical_depth": 45,
+        "clarity": 65,
+        "completeness": 20,
+        "matched_expected_points_count": 0,
+        "strengths": [
+          "Clear articulation",
+          "Addressed question requirements"
+        ],
+        "improvements": [
+          "Elaborate on production tradeoffs",
+          "Provide architectural edge cases"
+        ],
+        "evaluation": "Turn answered covering 0/1 key criteria."
+      },
+      "timestamp": 1791948625.9726746
+    },
+    {
+      "turn_index": 3,
+      "topic": "Self-Introduction",
+      "question": "Building on your point about 'In my previous role at a fintech company, I f', how do you approach background overview when designing for reliability and maintainability?",
+      "kind": "follow_up",
+      "difficulty": "intermediate",
+      "expected_points": [
+        "Background overview"
+      ],
+      "review_status": "unreviewed",
+      "candidate_answer": "I typically use FastAPI with SQLAlchemy and asyncpg for optimal async performance.",
+      "evaluation": {
+        "score": 52,
+        "relevance": 50,
+        "technical_depth": 45,
+        "clarity": 64,
+        "completeness": 20,
+        "matched_expected_points_count": 0,
+        "strengths": [
+          "Clear articulation",
+          "Addressed question requirements"
+        ],
+        "improvements": [
+          "Elaborate on production tradeoffs",
+          "Provide architectural edge cases"
+        ],
+        "evaluation": "Turn answered covering 0/1 key criteria."
+      },
+      "timestamp": 1791948625.9813726
+    },
+    {
+      "turn_index": 4,
+      "topic": "Motivation and role fit",
+      "question": "How do you approach learning a new backend technology or framework when your team adopts it?",
+      "kind": "main",
+      "difficulty": "intermediate",
+      "expected_points": [
+        "Technical motivation",
+        "Self-directed learning",
+        "Initiative and ownership"
+      ],
+      "review_status": "unreviewed",
+      "candidate_answer": "To make POST endpoints idempotent, we generate a unique idempotency key on the client and store it in Redis with an atomic SETNX lock and a 24-hour TTL.",
+      "evaluation": {
+        "score": 55,
+        "relevance": 50,
+        "technical_depth": 45,
+        "clarity": 69,
+        "completeness": 20,
+        "matched_expected_points_count": 0,
+        "strengths": [
+          "Clear articulation",
+          "Addressed question requirements"
+        ],
+        "improvements": [
+          "Elaborate on production tradeoffs",
+          "Provide architectural edge cases"
+        ],
+        "evaluation": "Turn answered covering 0/3 key criteria."
+      },
+      "timestamp": 1791948625.9912374
+    },
+    {
+      "turn_index": 5,
+      "topic": "Motivation and role fit",
+      "question": "In your response, you discussed how 'To make POST endpoints idempotent, we generat...' works. How would you handle technical motivation in that setup, and what tradeoffs would you consider?",
+      "kind": "follow_up",
+      "difficulty": "intermediate",
+      "expected_points": [
+        "Technical motivation"
+      ],
+      "review_status": "unreviewed",
+      "candidate_answer": "If Redis crashes or experiences a partition, we fall back to a database unique constraint on the idempotency_key column in Postgres with transactional retries.",
+      "evaluation": {
+        "score": 54,
+        "relevance": 50,
+        "technical_depth": 45,
+        "clarity": 68,
+        "completeness": 20,
+        "matched_expected_points_count": 0,
+        "strengths": [
+          "Clear articulation",
+          "Addressed question requirements"
+        ],
+        "improvements": [
+          "Elaborate on production tradeoffs",
+          "Provide architectural edge cases"
+        ],
+        "evaluation": "Turn answered covering 0/1 key criteria."
+      },
+      "timestamp": 1791948625.999486
+    }
+  ],
+  "resume_profile": null,
+  "resume_text": null,
+  "job_description": null,
+  "last_submission_hash": null,
+  "created_at": "2026-10-14T03:30:25.949753+00:00",
+  "updated_at": "2026-10-14T03:30:25.999946+00:00",
+  "last_submitted_answer": "If Redis crashes or experiences a partition, we fall back to a database unique constraint on the idempotency_key column in Postgres with transactional retries.",
+  "last_submitted_timestamp": 1791948625.999486,
+  "last_processed_turn_id": "e2e_integration_625949_technical_followup"
+}

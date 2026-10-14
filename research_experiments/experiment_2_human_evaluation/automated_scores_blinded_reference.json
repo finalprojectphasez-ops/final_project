@@ -1,0 +1,562 @@
+[
+  {
+    "item_id": "PILOT-01",
+    "role": "Full Stack Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-02",
+    "role": "Full Stack Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-03",
+    "role": "Full Stack Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-04",
+    "role": "Full Stack Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-05",
+    "role": "Full Stack Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 0.0,
+      "problem_solving": 0.0,
+      "practical_application": 0.0,
+      "relevance_completeness": 0.0,
+      "communication_clarity": 0.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 0.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 0.0
+  },
+  {
+    "item_id": "PILOT-06",
+    "role": "Full Stack Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 4.0,
+      "problem_solving": 2.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 60.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 70.59
+  },
+  {
+    "item_id": "PILOT-07",
+    "role": "Frontend Developer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-08",
+    "role": "Frontend Developer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-09",
+    "role": "Frontend Developer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-10",
+    "role": "Frontend Developer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-11",
+    "role": "Frontend Developer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 2.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 36.25,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 42.65
+  },
+  {
+    "item_id": "PILOT-12",
+    "role": "Frontend Developer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 4.0,
+      "problem_solving": 2.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 65.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 76.47
+  },
+  {
+    "item_id": "PILOT-13",
+    "role": "Backend Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-14",
+    "role": "Backend Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-15",
+    "role": "Backend Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 4.0,
+      "problem_solving": 2.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 4.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 67.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 79.41
+  },
+  {
+    "item_id": "PILOT-16",
+    "role": "Backend Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-17",
+    "role": "Backend Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-18",
+    "role": "Backend Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-19",
+    "role": "DevOps / SRE",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 48.75,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 57.35
+  },
+  {
+    "item_id": "PILOT-20",
+    "role": "DevOps / SRE",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-21",
+    "role": "DevOps / SRE",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 4.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-22",
+    "role": "DevOps / SRE",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-23",
+    "role": "DevOps / SRE",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-24",
+    "role": "DevOps / SRE",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-25",
+    "role": "ML Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-26",
+    "role": "ML Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-27",
+    "role": "ML Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-28",
+    "role": "ML Engineer",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 45.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 52.94
+  },
+  {
+    "item_id": "PILOT-29",
+    "role": "ML Engineer",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 0.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 18.75,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 22.06
+  },
+  {
+    "item_id": "PILOT-30",
+    "role": "ML Engineer",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 4.0,
+      "problem_solving": 2.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 65.0,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 76.47
+  },
+  {
+    "item_id": "PILOT-31",
+    "role": "Data Analyst",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 4.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 52.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 61.76
+  },
+  {
+    "item_id": "PILOT-32",
+    "role": "Data Analyst",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 3.0,
+      "problem_solving": 1.0,
+      "practical_application": 2.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 47.5,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 55.88
+  },
+  {
+    "item_id": "PILOT-33",
+    "role": "Data Analyst",
+    "difficulty": "advanced",
+    "ratings": {
+      "technical_knowledge": 2.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 36.25,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 42.65
+  },
+  {
+    "item_id": "PILOT-34",
+    "role": "Data Analyst",
+    "difficulty": "beginner",
+    "ratings": {
+      "technical_knowledge": 2.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 2.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 36.25,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 42.65
+  },
+  {
+    "item_id": "PILOT-35",
+    "role": "Data Analyst",
+    "difficulty": "intermediate",
+    "ratings": {
+      "technical_knowledge": 2.0,
+      "problem_solving": 1.0,
+      "practical_application": 1.0,
+      "relevance_completeness": 1.0,
+      "communication_clarity": 3.0,
+      "followup_reflection": null
+    },
+    "assessed_score": 33.75,
+    "assessed_maximum": 85.0,
+    "provisional_normalized_100": 39.71
+  }
+]

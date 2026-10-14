@@ -1,0 +1,331 @@
+{
+  "experiment": "EXPERIMENT 1 \u2014 Interview workflow and rubric correctness",
+  "timestamp": "2026-10-14T03:30:19.809170+00:00",
+  "status": "EXECUTED",
+  "overall_result": "PASS",
+  "details": {
+    "unit_tests": {
+      "tests_run": 10,
+      "failures": 0,
+      "errors": 0,
+      "was_successful": true,
+      "elapsed_seconds": 0.0124
+    },
+    "scripted_matrix_18": {
+      "total_combinations": 18,
+      "all_passed": true,
+      "results": [
+        {
+          "role": "Full Stack Engineer",
+          "role_key": "full_stack_engineer",
+          "difficulty": "beginner",
+          "session_id": "sim_full_stack_engineer_beginner_618476",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Full Stack Engineer",
+          "role_key": "full_stack_engineer",
+          "difficulty": "intermediate",
+          "session_id": "sim_full_stack_engineer_intermediate_618552",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Full Stack Engineer",
+          "role_key": "full_stack_engineer",
+          "difficulty": "advanced",
+          "session_id": "sim_full_stack_engineer_advanced_618625",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Frontend Developer",
+          "role_key": "frontend_developer",
+          "difficulty": "beginner",
+          "session_id": "sim_frontend_developer_beginner_618686",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Frontend Developer",
+          "role_key": "frontend_developer",
+          "difficulty": "intermediate",
+          "session_id": "sim_frontend_developer_intermediate_618757",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Frontend Developer",
+          "role_key": "frontend_developer",
+          "difficulty": "advanced",
+          "session_id": "sim_frontend_developer_advanced_618824",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Backend Engineer",
+          "role_key": "backend_engineer",
+          "difficulty": "beginner",
+          "session_id": "sim_backend_engineer_beginner_618897",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Backend Engineer",
+          "role_key": "backend_engineer",
+          "difficulty": "intermediate",
+          "session_id": "sim_backend_engineer_intermediate_618966",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Backend Engineer",
+          "role_key": "backend_engineer",
+          "difficulty": "advanced",
+          "session_id": "sim_backend_engineer_advanced_619039",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "DevOps / SRE",
+          "role_key": "devops_sre",
+          "difficulty": "beginner",
+          "session_id": "sim_devops_sre_beginner_619124",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "DevOps / SRE",
+          "role_key": "devops_sre",
+          "difficulty": "intermediate",
+          "session_id": "sim_devops_sre_intermediate_619208",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "DevOps / SRE",
+          "role_key": "devops_sre",
+          "difficulty": "advanced",
+          "session_id": "sim_devops_sre_advanced_619272",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "ML Engineer",
+          "role_key": "ml_engineer",
+          "difficulty": "beginner",
+          "session_id": "sim_ml_engineer_beginner_619339",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "ML Engineer",
+          "role_key": "ml_engineer",
+          "difficulty": "intermediate",
+          "session_id": "sim_ml_engineer_intermediate_619414",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "ML Engineer",
+          "role_key": "ml_engineer",
+          "difficulty": "advanced",
+          "session_id": "sim_ml_engineer_advanced_619490",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Data Analyst",
+          "role_key": "data_analyst",
+          "difficulty": "beginner",
+          "session_id": "sim_data_analyst_beginner_619573",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Data Analyst",
+          "role_key": "data_analyst",
+          "difficulty": "intermediate",
+          "session_id": "sim_data_analyst_intermediate_619650",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        },
+        {
+          "role": "Data Analyst",
+          "role_key": "data_analyst",
+          "difficulty": "advanced",
+          "session_id": "sim_data_analyst_advanced_619721",
+          "passed": true,
+          "invariants": {
+            "intro_occurs_once": true,
+            "general_precedes_technical": true,
+            "role_respected": true,
+            "difficulty_respected": true,
+            "followups_never_exceed_two": true,
+            "expected_points_never_exposed": true,
+            "simulated_clock_reaches_closing": true
+          }
+        }
+      ]
+    },
+    "quote_verification": {
+      "valid_quote_detected": true,
+      "hallucinated_quote_flagged": true,
+      "pass": true
+    },
+    "topic_weight_invariant": {
+      "groups_detected": 2,
+      "topic_1_turns": 1,
+      "topic_2_turns": 4,
+      "topic_group_rating": 3.0,
+      "naive_turn_rating": 2.4,
+      "topic_1_effective_weight": "50.0%",
+      "topic_2_effective_weight": "50.0%",
+      "invariant_holds": true,
+      "pass": true
+    },
+    "missing_signals_handling": {
+      "partial_text_only_handled_correctly": true,
+      "all_missing_unassessed_handled_correctly": true,
+      "complete_handled_correctly": true,
+      "pass": true
+    }
+  }
+}

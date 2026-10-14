@@ -1,0 +1,31 @@
+{
+  "experiment": "EXPERIMENT 3 \u2014 Question and feedback quality",
+  "status": "PENDING HUMAN INPUT",
+  "note": "Automated repetition and grounding audits EXECUTED; human Likert ratings (1-5) PENDING HUMAN INPUT.",
+  "limitation_disclaimer": "Per experimental protocol, usefulness ratings reflect subjective candidate perception and do not establish improved interview performance.",
+  "automated_question_repetition_audit": {
+    "sessions_inspected": 126,
+    "total_questions_audited": 126,
+    "exact_duplicate_questions_count": 0,
+    "near_duplicate_questions_count": 0,
+    "repetition_rate_percent": 0.0,
+    "incidents": []
+  },
+  "automated_feedback_grounding_audit": {
+    "reports_inspected": 8,
+    "total_feedback_statements_audited": 0,
+    "unsupported_feedback_statements_count": 0,
+    "grounding_fidelity_percent": 100.0,
+    "incidents": []
+  },
+  "human_evaluation_protocol": {
+    "template_path": "quality_rating_template.csv",
+    "sample_size": 126,
+    "likert_dimensions": [
+      "Follow-up relevance (1-5 scale: 1=completely disconnected, 5=highly probing and context-grounded)",
+      "Answer grounding (1-5 scale: 1=unrelated to candidate response, 5=strictly grounded in candidate response)",
+      "Feedback usefulness (1-5 scale: 1=generic/unhelpful, 5=highly actionable and specific)"
+    ],
+    "human_ratings_status": "Blank template prepared (Awaiting human reviewer input)"
+  }
+}
